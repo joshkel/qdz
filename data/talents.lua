@@ -32,7 +32,7 @@ newTalent{
 		if not x or not y or not target then return nil end
 		if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
-		target:knockback(self.x, self.y, 2 + self:getDex())
+		target:knockback(self.x, self.y, 2 + self:getSki())
 		return true
 	end,
 	info = function(self, t)
@@ -51,7 +51,7 @@ newTalent{
 		local tg = {type="ball", range=self:getTalentRange(t), radius=1, talent=t}
 		local x, y = self:getTarget(tg)
 		if not x or not y then return nil end
-		self:project(tg, x, y, DamageType.ACID, 1 + self:getDex(), {type="acid"})
+		self:project(tg, x, y, DamageType.ACID, 1 + self:getSki(), {type="acid"})
 		return true
 	end,
 	info = function(self, t)

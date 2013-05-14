@@ -17,15 +17,21 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
-name = "Example Module"
-long_name = "Example Module for T-Engine4"
-short_name = "example"
-author = { "DarkGod", "darkgod@te4.org" }
-homepage = "http://te4.org/modules:example"
-version = {1,0,1}
-engine = {1,0,1,"te4"}
+name = "Qi Dao Zei"
+long_name = "Qi Dao Zei"
+short_name = "qdz"
+author = { "Castler", "castler@example.com" }
+homepage = "http://te4.org/modules:qdz"
+version = {0,0,1}
+engine = {1,0,3,"te4"}
 description = [[
-This is *NOT* a game, just an example/template to make your own using the T-Engine4.
+An Oriental-themed fantasy roguelike. Fight mythical creatures and absorb their qi to gain new abilities, while fleeing the sinister minions of the Imperial warlocks.
 ]]
 starter = "mod.load"
-show_only_on_cheat = true -- Example modules are not shown to normal players
+
+allow_userchat = true
+-- TODO: show_funfacts = true, load_tips = {}
+
+background_name = {
+    "peach_festival" -- https://en.wikipedia.org/wiki/File:Freer_019.jpg
+}
