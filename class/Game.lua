@@ -32,6 +32,7 @@ local Grid = require "mod.class.Grid"
 local Actor = require "mod.class.Actor"
 local Player = require "mod.class.Player"
 local NPC = require "mod.class.NPC"
+local PlayerDisplay = require "mod.class.PlayerDisplay"
 
 local HotkeysDisplay = require "engine.HotkeysDisplay"
 local ActorsSeenDisplay = require "engine.ActorsSeenDisplay"
@@ -56,11 +57,13 @@ function _M:init()
 end
 
 function _M:run()
-	self.flash = LogFlasher.new(0, 0, self.w, 20, nil, nil, nil, {255,255,255}, {0,0,0})
+    local player_display_width = 200
+	self.flash = LogFlasher.new(player_display_width + 8, 0, self.w, 20, nil, nil, nil, {255,255,255}, {30,30,30})
 	self.logdisplay = LogDisplay.new(0, self.h * 0.8, self.w * 0.5, self.h * 0.2, nil, nil, nil, {255,255,255}, {30,30,30})
 	self.hotkeys_display = HotkeysDisplay.new(nil, self.w * 0.5, self.h * 0.8, self.w * 0.5, self.h * 0.2, {30,30,0})
 	self.npcs_display = ActorsSeenDisplay.new(nil, self.w * 0.5, self.h * 0.8, self.w * 0.5, self.h * 0.2, {30,30,0})
 	self.tooltip = Tooltip.new(nil, nil, {255,255,255}, {30,30,30})
+    self.player_display = PlayerDisplay.new(0, 0, player_display_width, self.h * 0.8, {0,0,0}, "data/font/VeraMono.ttf", 12)
 	self.flyers = FlyingText.new()
 	self:setFlyingText(self.flyers)
 
@@ -68,7 +71,7 @@ function _M:run()
 	self.logSeen = function(e, style, ...) if e and self.level.map.seens(e.x, e.y) then self.log(style, ...) end end
 	self.logPlayer = function(e, style, ...) if e == self.player then self.log(style, ...) end end
 
-	self.log(self.flash.GOOD, "Welcome to #00FF00#the template module!")
+	self.log(self.flash.GOOD, "Welcome to #00FF00#Qi Dao Zei!")
 
 	-- Setup inputs
 	self:setupCommands()
@@ -230,6 +233,7 @@ function _M:display(nb_keyframe)
 
 	-- We display the player's interface
 	self.flash:toScreen(nb_keyframe)
+    self.player_display:toScreen(nb_keyframe)
 	self.logdisplay:toScreen()
 	if self.show_npc_list then
 		self.npcs_display:toScreen()

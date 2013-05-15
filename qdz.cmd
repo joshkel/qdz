@@ -1,3 +1,3 @@
 @echo off
 cd ..\..\..
-t-engine.exe -Mqdz -udefault -n
+start t-engine.exe -Mqdz -udefault -n
