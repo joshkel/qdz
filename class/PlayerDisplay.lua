@@ -9,6 +9,8 @@ function _M:init(x, y, w, h, bgcolor, font, size)
     self.bgcolor = bgcolor
     self.font = core.display.newFont(font, size)
     self:resize(x, y, w, h)
+
+    self.first_run = true
 end
 
 --- Resize the display area
@@ -67,7 +69,11 @@ end
 -- Displays the stats
 function _M:display()
     local player = game.player
-    if not player or not player.changed or not game.level then return end
+    if player and game.level and self.first_run then
+        self.first_run = false
+    elseif not player or not player.changed or not game.level then
+        return
+    end
 
     self.items = {}
 
