@@ -1,12 +1,11 @@
 To do:
-Qi Focus
 Absorb abilities
 Random name generator
 
 To do a while later:
 Logo
 Custom skin
-Reword all dialogs
+Rework all dialogs
 
 To do much later:
 Figure out an email address

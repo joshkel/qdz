@@ -102,7 +102,7 @@ function _M:newGame()
     self:setupDisplayMode()
 
     self.creating_player = true
-    local birth = Birther.new(nil, self.player, {"base", "role" }, function()
+    local birth = Birther.new(nil, self.player, {"base"}, function()
         self:changeLevel(1, "dungeon")
         print("[PLAYER BIRTH] resolve...")
         self.player:resolve()

@@ -22,39 +22,20 @@
 -- darkgod@te4.org
 
 newBirthDescriptor{
-	type = "base",
-	name = "base",
-	desc = {
-	},
-	experience = 1.0,
+    type = "base",
+    name = "base",
+    desc = {
+    },
+    experience = 1.0,
 
-	copy = {
-		max_level = 10,
-		lite = 4,
-		max_life = 25,
-	},
+    copy = {
+        max_level = 10,
+        lite = 4,
+        max_life = 25,
+    },
+    
+    talents = {
+        [ActorTalents.T_FOCUS_QI] = 1,
+    }
 }
 
-newBirthDescriptor{
-	type = "role",
-	name = "Destroyer",
-	desc =
-	{
-		"Crashhhhh!",
-	},
-	talents = {
-		[ActorTalents.T_KICK]=1,
-	},
-}
-
-newBirthDescriptor{
-	type = "role",
-	name = "Acid-maniac",
-	desc =
-	{
-		"Zshhhhhhhh!",
-	},
-	talents = {
-		[ActorTalents.T_ACID_SPRAY]=1,
-	},
-}

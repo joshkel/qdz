@@ -21,7 +21,24 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
+newTalentType{ type="basic", name = "basic", description = "Basic abilities" }
 newTalentType{ type="role/combat", name = "combat", description = "Combat techniques" }
+
+newTalent{
+    -- FIXME: Add particle effects for qi aura; better describe effects of qi focus on combat
+    name = "Focus Qi",
+    type = {"basic", 1},
+    points = 1,
+    cooldown = 50,
+    action = function(self, t)
+        self:setEffect(self.EFF_FOCUSED_QI, 1, {})
+    end,
+    info = function(self, t)
+        return [[Focuses your qi into a visibly glowing aura around you.
+
+If you deal a killing blow to an opponent while focused, you will absorb a portion of the opponent's qi, granting you a new ability or experience.]]
+    end
+}
 
 newTalent{
 	name = "Kick",

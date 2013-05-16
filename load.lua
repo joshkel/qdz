@@ -48,11 +48,11 @@ ActorTemporaryEffects:loadDefinition("/data/timed_effects.lua")
 ActorResource:defineResource("Power", "power", nil, "power_regen", "Power represent your ability to use special talents.")
 
 -- Actor stats
-ActorStats:defineStat("Strength",     "str", 10, 1, 100, "Raw physical strength. This affects your melee damage and carrying capacity. Strength is associated with the right hand.")
-ActorStats:defineStat("Skill",        "ski", 10, 1, 100, "Skill indicates your fine motor control and physical and mental dexterity. It affects your accuracy (especially with ranged weapons) and your aptitude with several skills. Skill is associated with the left hand.")
-ActorStats:defineStat("Constitution", "con", 10, 1, 100, "Constitution represents your overall health and endurance. It determines your maximum life. Constitution is associated with the heart.")
-ActorStats:defineStat("Agility",      "agi", 10, 1, 100, "Agility gives your gross motor skills and overall quickness. It affects your ability to dodge as well as your overall speed. Agility is associated with the feet.")
-ActorStats:defineStat("Mind",         "mnd", 10, 1, 100, "Mind covers your intelligence, insight, and strength of will. Numerous special abilities derive their power from your mind. Mind is associated with the head.")
+ActorStats:defineStat("Strength",     "str", 10, 1, 100, "Raw physical strength. This affects your melee damage and carrying capacity as well as the number of qi abilities you can bind to your right hand.")
+ActorStats:defineStat("Skill",        "ski", 10, 1, 100, "Skill indicates your fine motor control and physical and mental dexterity. It affects your accuracy (especially with ranged weapons) and your aptitude with several skills. It also affects the number of qi abilities you can bind to your left hand.")
+ActorStats:defineStat("Constitution", "con", 10, 1, 100, "Constitution represents your overall health and endurance. It determines your maximum life and the number of qi abilities you can bind to your chest.")
+ActorStats:defineStat("Agility",      "agi", 10, 1, 100, "Agility gives your gross motor skills and overall quickness. It affects your ability to dodge as well as your overall speed. It also affects the number of qi abilities you can bind to your feet.")
+ActorStats:defineStat("Mind",         "mnd", 10, 1, 100, "Mind covers your intelligence, insight, and strength of will. Numerous special abilities derive their effectiveness from your mind. Mind also affects the number of qi abilities you can bind to your head.")
 
 -- Actor AIs
 ActorAI:loadDefinition("/engine/ai/")
