@@ -1,3 +1,7 @@
+-- Qi Dao Zei
+-- Copyright (C) 2013 Castler
+--
+-- based on
 -- ToME - Tales of Middle-Earth
 -- Copyright (C) 2009, 2010, 2011, 2012, 2013 Nicolas Casalini
 --
