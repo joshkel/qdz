@@ -1,5 +1,4 @@
 To do:
-Move tooltips to lower right
 Qi Focus
 Absorb abilities
 Random name generator
@@ -10,7 +9,6 @@ Custom skin
 Reword all dialogs
 
 To do much later:
-Replace DG's license info with my own
 Figure out an email address
 Attribution for artwork
 
