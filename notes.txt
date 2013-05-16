@@ -1,6 +1,5 @@
 To do:
 Move tooltips to lower right
-Add resource bars to left
 Qi Focus
 Absorb abilities
 Random name generator

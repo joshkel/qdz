@@ -243,7 +243,7 @@ function _M:display(nb_keyframe)
 	if self.player then self.player.changed = false end
 
 	-- Tooltip is displayed over all else
-	self:targetDisplayTooltip()
+	self:targetDisplayTooltip(self.w, self.h)
 
 	engine.GameTurnBased.display(self, nb_keyframe)
 end
