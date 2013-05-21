@@ -32,6 +32,7 @@ newTalent{
     cooldown = 50,
     action = function(self, t)
         self:setEffect(self.EFF_FOCUSED_QI, 1, {})
+        return true
     end,
     info = function(self, t)
         return [[Focuses your qi into a visibly glowing aura around you.

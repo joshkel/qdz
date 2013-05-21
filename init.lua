@@ -27,7 +27,7 @@ short_name = "qdz"
 author = { "Castler", "castler@example.com" }
 homepage = "http://te4.org/modules:qdz"
 version = {0,0,1}
-engine = {1,0,3,"te4"}
+engine = {1,0,4,"te4"}
 description = [[
 An Oriental-themed fantasy roguelike. Fight mythical creatures and absorb their qi to gain new abilities, while fleeing the sinister minions of the Imperial warlocks.
 ]]

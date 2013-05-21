@@ -101,22 +101,34 @@ function _M:move(x, y, force)
 end
 
 function _M:tooltip()
-    return ([[%s%s
+    local text = ([[%s%s
 #00ffff#Level: %d
-#ff0000#HP: %d (%d%%)
-Stats: %d / %d / %d / %d / %d
+#WHITE#HP: #LIGHT_RED#%d (%d%%)
+#WHITE#Stats: #LIGHT_GREEN#%d#WHITE# / #LIGHT_GREEN#%d#WHITE# / #LIGHT_GREEN#%d#WHITE# / #LIGHT_GREEN#%d#WHITE# / #LIGHT_GREEN#%d#WHITE#
 %s]]):format(
-    self:getDisplayString(),
-    self.name,
-    self.level,
-    self.life, self.life * 100 / self.max_life,
-    self:getStr(),
-    self:getSki(),
-    self:getCon(),
-    self:getAgi(),
-    self:getMnd(),
-    self.desc or ""
+        self:getDisplayString(),
+        self.name,
+        self.level,
+        self.life, self.life * 100 / self.max_life,
+        self:getStr(),
+        self:getSki(),
+        self:getCon(),
+        self:getAgi(),
+        self:getMnd(),
+        self.desc and ("\n" .. self.desc .. "\n") or ""
     )
+
+    for tid, act in pairs(self.sustain_talents) do
+        if act then text = text .. ("- #LIGHT_GREEN#%s#WHITE#"):format(self.getTalentFromId(tid).name) end
+    end
+    for eff_id, p in pairs(self.tmp) do
+        local e = self.tempeffect_def[eff_id]
+        local dur = p.dur + 1
+        local color = e.status == "detrimental" and "LIGHT_RED" or "LIGHT_GREEN"
+        text = text .. ("- #%s#%s (%d)#WHITE#"):format(color, e.desc, dur)
+    end
+ 
+    return text
 end
 
 function _M:onTakeHit(value, src)
