@@ -201,3 +201,11 @@ end
 function _M:mouseMove(tmx, tmy)
     return engine.interface.PlayerMouse.mouseMove(self, tmx, tmy, spotHostiles)
 end
+
+function _M:absorbAbility(src, t_id)
+    -- TODO: Replace this with the full implementation (limited # of abilities,
+    -- tracking the order learned, etc.)
+    self:learnTalent(t_id, true)
+    t = self:getTalentFromId(t_id)
+    game.log(("You absorb a portion of %s's qi and learn %s!"):format(src.name, self:getTalentDisplayName(t)))
+end

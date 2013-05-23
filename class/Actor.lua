@@ -143,6 +143,13 @@ function _M:die(src)
         src:gainExp(self:worthExp(src))
     end
 
+    if src and src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI) then
+        if src.absorbAbility and self.can_absorb then
+            -- TODO: Figure out rhand / lhand / etc.
+            src:absorbAbility(self, self.can_absorb)
+        end
+    end
+
     return true
 end
 

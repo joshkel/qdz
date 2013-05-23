@@ -367,6 +367,7 @@ function _M:setupCommands()
         end,
 
         -- Lua console, you probably want to disable it for releases
+        -- TODO: Disable?
         LUA_CONSOLE = function()
             self:registerDialog(DebugConsole.new())
         end,

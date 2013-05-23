@@ -28,7 +28,7 @@ newEffect{
     desc = "Focused Qi",
     type = "physical", -- TODO?
     status = "beneficial",
-    on_gain = function(self, err) return "#Target# focuses its qi.", "+Qi focus" end,
+    on_gain = function(self, err) return "#Target# focuses its qi.", "+Qi focus" end, -- TODO: his / her, not its
     on_lose = function(self, err) return "#Target#'s qi focus dissipates.", "-Qi focus" end,
 }
 
