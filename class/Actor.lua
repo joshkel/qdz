@@ -147,6 +147,7 @@ function _M:die(src)
         if src.absorbAbility and self.can_absorb then
             -- TODO: Figure out rhand / lhand / etc.
             src:absorbAbility(self, self.can_absorb)
+            src:removeEffect(src.EFF_FOCUSED_QI)
         end
     end
 
