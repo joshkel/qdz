@@ -21,4 +21,14 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
-load("/data/general/objects/objects.lua")
+require "engine.class"
+require "engine.Object"
+
+module(..., package.seeall, class.inherit(
+    engine.Object
+))
+
+function _M:tooltip(x, y)
+    -- TODO? Probably want a TOME-style "You see...more objects"
+    return self:getDisplayString()..self.name
+end

@@ -30,6 +30,7 @@ local ActorTalents = require "engine.interface.ActorTalents"
 local ActorAI = require "engine.interface.ActorAI"
 local ActorLevel = require "engine.interface.ActorLevel"
 local ActorTemporaryEffects = require "engine.interface.ActorTemporaryEffects"
+local ActorInventory = require "engine.interface.ActorInventory"
 local Birther = require "engine.Birther"
 
 -- Useful keybinds
@@ -56,6 +57,13 @@ ActorStats:defineStat("Mind",         "mnd", 10, 1, 100, "Mind covers your intel
 
 -- Actor AIs
 ActorAI:loadDefinition("/engine/ai/")
+
+-- Actor Inventory
+ActorInventory:defineInventory("RHAND", "Right hand", true, "Your right hand, generally used for your main weapon")
+ActorInventory:defineInventory("LHAND", "Left hand", true, "Your left hand, usable for a shield or lighter weapon")
+ActorInventory:defineInventory("BODY", "Body", true, "Armor to protect your body")
+ActorInventory:defineInventory("FEET", "Feed", true, "Sandals, boots, or other footwear")
+ActorInventory:defineInventory("HEAD", "Head", true, "Helmets or other headgear")
 
 -- Birther descriptor
 Birther:loadDefinition("/data/birth/descriptors.lua")

@@ -28,6 +28,8 @@ newBirthDescriptor{
     },
     experience = 1.0,
 
+    body = { RHAND = 1, LHAND = 1, BODY = 1, FEET = 1, HEAD = 1 },
+
     copy = {
         max_level = 10,
         lite = 4,

@@ -32,11 +32,13 @@ require "engine.interface.ActorStats"
 require "engine.interface.ActorTalents"
 require "engine.interface.ActorResource"
 require "engine.interface.ActorFOV"
+require "engine.interface.ActorInventory"
 require "mod.class.interface.Combat"
 local Map = require "engine.Map"
 
 module(..., package.seeall, class.inherit(
     engine.Actor,
+    engine.interface.ActorInventory,
     engine.interface.ActorTemporaryEffects,
     engine.interface.ActorLife,
     engine.interface.ActorProject,
@@ -60,6 +62,7 @@ function _M:init(t, no_default)
     self.combat = { dam=1 }
 
     engine.Actor.init(self, t, no_default)
+    engine.interface.ActorInventory.init(self, t)
     engine.interface.ActorTemporaryEffects.init(self, t)
     engine.interface.ActorLife.init(self, t)
     engine.interface.ActorProject.init(self, t)

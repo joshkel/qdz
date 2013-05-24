@@ -21,4 +21,10 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
-load("/data/general/objects/objects.lua")
+local loadIfNot = function(f)
+	if loaded[f] then return end
+	load(f, entity_mod)
+end
+
+loadIfNot("/data/general/objects/weapons.lua")
+
