@@ -1,5 +1,6 @@
 To do:
-Absorb abilities
+'U'se fails
+Fully implement absorbing abilities
 Random name generator
 Right-click menu
 Quick switch weapons (probably - binding qi to multiple body parts will probably be too unpleasant otherwise)

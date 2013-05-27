@@ -21,11 +21,28 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
-local loadIfNot = function(f)
-	if loaded[f] then return end
-	load(f, entity_mod)
-end
+newEntity{
+    define_as = "BASE_POTION",
+    type = "consumable", subtype="potion",
+    display = "!", color=colors.BLUE,
+    encumber = 1,
+    rarity = 5,
+    name = "a generic potion",
+    desc = [[Potions may have a variety of effects.]]
+}
 
-loadIfNot("/data/general/objects/consumables.lua")
-loadIfNot("/data/general/objects/weapons.lua")
-
+newEntity{
+    base = "BASE_POTION",
+    name = "minor healing potion",
+    level_range = {1, 10},
+    cost = 5,
+    use_simple = {
+        name = "minor healing",
+        use = function(self, who)
+            -- TODO: Correct arguments?
+            who:heal(10, self)
+            game.log(("%s's wounds heal."):format(who.name))
+            return {used = true, destroy = true}
+        end
+    }
+}
