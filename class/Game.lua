@@ -358,6 +358,11 @@ function _M:setupCommands()
             self.player:playerDrop()
         end,
 
+        USE_ITEM = function()
+            if self.player.no_inventory_access then return end
+            self.player:playerUseItem()
+        end,
+
         SHOW_INVENTORY = function()
             if self.player.no_inventory_access then return end
             local d
@@ -371,7 +376,6 @@ function _M:setupCommands()
                 self:registerDialog(ud)
             end)
         end,
-
 
         -- Exit the game
         QUIT_GAME = function()

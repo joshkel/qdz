@@ -229,6 +229,44 @@ function _M:playerDrop()
     end)
 end
 
+function _M:playerUseItem(object, item, inven)
+    local use_fct = function(o, inven, item)
+        if not o then return end
+        local co = coroutine.create(function()
+            self.changed = true
+
+            local ret = o:use(self, nil, inven, item) or {}
+            if not ret.used then return end
+            if ret.destroy then
+                if o.multicharge and o.multicharge > 1 then
+                    o.multicharge = o.multicharge - 1
+                else
+                    local _, del = self:removeObject(self:getInven(inven), item)
+                    if del then
+                        game.log("You have no more %s.", o:getName{no_count=true, do_color=true})
+                    else
+                        game.log("You have %s.", o:getName{do_color=true})
+                    end
+                    self:sortInven(self:getInven(inven))
+                end
+            end
+        end)
+        local ok, ret = coroutine.resume(co)
+        if not ok and ret then print(debug.traceback(co)) error(ret) end
+        return true
+    end
+
+    if object and item then return use_fct(object, inven, item) end
+
+    local titleupdator = self:getEncumberTitleUpdator("Use object")
+    self:showEquipInven(titleupdator(),
+        function(o)
+            return o:canUseObject()
+        end,
+        use_fct
+    )
+end
+
 function _M:doDrop(inven, item, on_done, nb)
     if self.no_inventory_access then return end
     

@@ -2,6 +2,7 @@ To do:
 Absorb abilities
 Random name generator
 Right-click menu
+Quick switch weapons (probably - binding qi to multiple body parts will probably be too unpleasant otherwise)
 
 To do a while later:
 Logo
