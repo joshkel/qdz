@@ -1,6 +1,7 @@
 To do:
 Absorb abilities
 Random name generator
+Right-click menu
 
 To do a while later:
 Logo
