@@ -310,3 +310,22 @@ function _M:canBe(what)
     if what == "instakill" and rng.percent(100 * (self:attr("instakill_immune") or 0)) then return false end
     return true
 end
+
+function _M:getMaxEncumbrance()
+    -- TODO: Different math here
+	return math.floor(40 + self:getStr() * 1.8 + (self.max_encumber or 0))
+end
+
+function _M:getEncumbrance()
+    local enc = 0
+
+    -- Compute encumbrance
+    for inven_id, inven in pairs(self.inven) do
+        for item, o in ipairs(inven) do
+            o:forAllStack(function(so) enc = enc + so.encumber end)
+        end
+    end
+
+    return math.floor(enc)
+end
+

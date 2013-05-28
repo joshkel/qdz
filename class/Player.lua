@@ -202,6 +202,28 @@ function _M:mouseMove(tmx, tmy)
     return engine.interface.PlayerMouse.mouseMove(self, tmx, tmy, spotHostiles)
 end
 
+function _M:getEncumberTitleUpdator(title)
+    return function()
+        local enc, max = self:getEncumbrance(), self:getMaxEncumbrance()
+        local color = "#00ff00#"
+        if enc > max then color = "#ff0000#"
+        elseif enc > max * 0.9 then color = "#ff8a00#"
+        elseif enc > max * 0.75 then color = "#fcff00#"
+        end
+        return ("%s - %sEncumbrance %d/%d"):format(title, color, enc, max)
+    end
+end
+
+function _M:showEquipInven(title, filter, action, on_select, inven)
+    return engine.interface.ActorInventory.showEquipInven(self,
+        self:getEncumberTitleUpdator(title)(), filter, action, on_select, inven)
+end
+
+function _M:showInventory(title, inven, filter, action)
+    return engine.interface.ActorInventory.showInventory(self,
+        self:getEncumberTitleUpdator(title)(), inven, filter, action)
+end
+
 function _M:playerPickup()
     -- If 2 or more objects, display a pickup dialog, otherwise just picks up
     if game.level.map:getObject(self.x, self.y, 2) then
@@ -258,8 +280,7 @@ function _M:playerUseItem(object, item, inven)
 
     if object and item then return use_fct(object, inven, item) end
 
-    local titleupdator = self:getEncumberTitleUpdator("Use object")
-    self:showEquipInven(titleupdator(),
+    self:showEquipInven("Use object",
         function(o)
             return o:canUseObject()
         end,

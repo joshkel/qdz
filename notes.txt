@@ -1,5 +1,4 @@
 To do:
-'U'se fails
 Fully implement absorbing abilities
 Random name generator
 Right-click menu
