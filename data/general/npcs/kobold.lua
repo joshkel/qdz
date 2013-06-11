@@ -41,7 +41,7 @@ newEntity{ base = "BASE_NPC_KOBOLD",
     max_life = resolvers.rngavg(5,9),
     combat = { dam=2 },
 
-    can_absorb = Talents.T_KICK
+    can_absorb = Talents.T_ACID_SPRAY
 }
 
 newEntity{ base = "BASE_NPC_KOBOLD",

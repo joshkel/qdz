@@ -1,5 +1,6 @@
 To do:
 Fully implement absorbing abilities
+Order default hotkeys better
 Random name generator
 Right-click menu
 Quick switch weapons (probably - binding qi to multiple body parts will probably be too unpleasant otherwise)
@@ -7,7 +8,7 @@ Quick switch weapons (probably - binding qi to multiple body parts will probably
 To do a while later:
 Logo
 Custom skin
-Rework all dialogs
+Rework all dialogs (especially the quit prompt)
 
 To do much later:
 Figure out an email address

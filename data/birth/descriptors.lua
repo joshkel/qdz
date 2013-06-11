@@ -38,6 +38,8 @@ newBirthDescriptor{
     
     talents = {
         [ActorTalents.T_FOCUS_QI] = 1,
+        [ActorTalents.T_BASH] = 1,
+        [ActorTalents.T_KICK] = 1,
     }
 }
 
