@@ -233,10 +233,11 @@ function _M:playerPickup()
             d:used()
         end)
     else
-        self:pickupFloor(1, true)
-        self:sortInven()
-        self:useEnergy()
-        self.changed = true
+        if self:pickupFloor(1, true) then
+            self:sortInven()
+            self:useEnergy()
+            self.changed = true
+        end
     end
 end
 

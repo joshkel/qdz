@@ -63,10 +63,11 @@ newTalent{
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
         target:knockback(self.x, self.y, 2 + self:getSki())
+        self:attackTarget(target)
         return true
     end,
     info = function(self, t)
-        return [[Bash an enemy with your shield (if you have one) or a tackle, possibly knocking it back.
+        return [[Bashes an enemy with your shield (if you have one) or a tackle, possibly knocking it back.
 
 If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your chest.]]
     end,
@@ -80,11 +81,18 @@ newTalent{
     power = 2,
     range = 1,
     action = function(self, t)
-        -- FIXME: Some sort of unique effect here
+        -- FIXME: Some sort of unique effect here, and update the description below
+        local tg = {type="hit", range=self:getTalentRange(t)}
+        local x, y, target = self:getTarget(tg)
+        if not x or not y or not target then return nil end
+        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
+
+        target:knockback(self.x, self.y, 2 + self:getSki())
+        self:attackTarget(target)
         return true
     end,
     info = function(self, t)
-        return [[Kick!
+        return [[Kicks an enemy.
 
 If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your feet.]]
     end,
