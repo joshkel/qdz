@@ -35,6 +35,7 @@ module(..., package.seeall, class.make)
 function _M:bumpInto(target)
     local reaction = self:reactionToward(target)
     if reaction < 0 then
+        self.last_action_type = 'attack'
         self:attackTarget(target)
     elseif reaction >= 0 then
         if self.move_others then

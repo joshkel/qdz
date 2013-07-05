@@ -183,7 +183,7 @@ end
 -- Check the actor can cast it
 -- @param ab the talent (not the id, the table)
 -- @return true to continue, false to stop
-function _M:preUseTalent(ab, silent)
+function _M:preUseTalent(ab, silent, fake)
     if not self:enoughEnergy() then print("fail energy") return false end
 
     if ab.mode == "sustained" then
@@ -212,6 +212,12 @@ function _M:preUseTalent(ab, silent)
             game.logSeen(self, "%s uses %s.", self.name:capitalize(), ab.name)
         end
     end
+
+    if not fake then
+        self.last_action_type = 'talent'
+        self.last_talent = ab.id
+    end
+
     return true
 end
 
@@ -240,6 +246,8 @@ function _M:postUseTalent(ab, ret)
             self:incPower(-ab.power)
         end
     end
+
+    self.last_action_type = nil
 
     return true
 end
