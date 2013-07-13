@@ -21,9 +21,9 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
- require "engine.class"
+require "engine.class"
 
-local Dialog = require "engine.ui.Dialog"
+local Dialog = require "mod.class.ui.Dialog"
 local Talents = require "engine.interface.ActorTalents"
 local Tab = require "engine.ui.Tab"
 local SurfaceZone = require "engine.ui.SurfaceZone"
@@ -55,7 +55,9 @@ Mouse: Hover over stat for info
 
     self.c_desc = SurfaceZone.new{width=self.iw, height=self.ih - self.c_general.h - self.vs.h - self.c_tut.h,alpha=0}
 
-    self.hoffset = 17 + self.c_tut.h + self.vs.h + self.c_general.h
+    -- The wiki and ToME itself add 17 instead of 5 here...  I'm not sure why...
+    local extra_offset = 5
+    self.hoffset = extra_offset + self.c_tut.h + self.vs.h + self.c_general.h
 
     self:loadUI{
         {left=0, top=0, ui=self.c_tut},
@@ -64,7 +66,7 @@ Mouse: Hover over stat for info
         {left=15+self.c_general.w+self.c_attack.w, top=self.c_tut.h, ui=self.c_defense},
         {left=0, top=self.c_tut.h + self.c_general.h, ui=self.vs},
 
-        {left=0, top=self.c_tut.h + self.c_general.h + 5 + self.vs.h, ui=self.c_desc},
+        {left=0, top=self.c_tut.h + self.c_general.h + extra_offset + self.vs.h, ui=self.c_desc},
     }
     self:setFocus(self.c_general)
     self:setupUI()
@@ -104,12 +106,6 @@ function _M:tabTabs()
     self.c_defense.selected == true then self.c_general:select() end
 end
 
-function _M:mouseTooltip(text, _, _, _, w, h, x, y)
-    self:mouseZones({
-        { x=x, y=y+self.hoffset, w=w, h=h, fct=function(button) game.tooltip_x, game.tooltip_y = 1, 1; game.tooltip:displayAtMap(nil, nil, game.w, game.h, text) end},
-    }, true)
-end
-
 function _M:mouseZones(t, no_new)
     -- Offset the x and y with the window position and window title
     if not t.norestrict then
@@ -146,17 +142,23 @@ function _M:drawDialog(kind)
         h = h + self.font_h -- Adds an empty row
         
         -- Draw some text with an attatched tooltip
-        self:mouseTooltip([[#GOLD#A Tooltip!!#LAST#]], s:drawColorStringBlended(self.font, ("#c00000#Life: #00ff00#%d/%d"):format(player.life, player.max_life), w, h, 255, 255, 255, true)) h = h + self.font_h
+        self:drawString(s, ("#c00000#Life : #00ff00#%d/%d"):format(player.life, player.max_life), w, h,
+            "#GOLD#Life#LAST#\nYour health. When this reaches 0, you die.") h = h + self.font_h
+        self:drawString(s, ("#ffcc80#Power: #00ff00#%d/%d"):format(player:getPower(), player.max_power), w, h,
+            "#GOLD#Power#LAST#\nYour available qi energy. Many qi abilities require this.") h = h + self.font_h
         
         h = 0
         w = self.w * 0.25 
         -- start on second column
         
-        s:drawColorStringBlended(self.font, "Strength     : #00ff00# "..player:getStr(), w, h, 255, 255, 255, true) h = h + self.font_h
-        s:drawColorStringBlended(self.font, "Skill        : #00ff00# "..player:getSki(), w, h, 255, 255, 255, true) h = h + self.font_h
-        s:drawColorStringBlended(self.font, "Constitution : #00ff00# "..player:getCon(), w, h, 255, 255, 255, true) h = h + self.font_h
-        s:drawColorStringBlended(self.font, "Agility      : #00ff00# "..player:getAgi(), w, h, 255, 255, 255, true) h = h + self.font_h
-        s:drawColorStringBlended(self.font, "Mind         : #00ff00# "..player:getMnd(), w, h, 255, 255, 255, true) h = h + self.font_h
+        function statTooltip(short_name)
+            return ("#GOLD#%s#LAST#\n%s"):format(player.stats_def[short_name].name, player.stats_def[short_name].description)
+        end
+        self:drawString(s, "Strength     : #00ff00# "..player:getStr(), w, h, statTooltip('str')) h = h + self.font_h
+        self:drawString(s, "Skill        : #00ff00# "..player:getSki(), w, h, statTooltip('ski')) h = h + self.font_h
+        self:drawString(s, "Constitution : #00ff00# "..player:getCon(), w, h, statTooltip('con')) h = h + self.font_h
+        self:drawString(s, "Agility      : #00ff00# "..player:getAgi(), w, h, statTooltip('agi')) h = h + self.font_h
+        self:drawString(s, "Mind         : #00ff00# "..player:getMnd(), w, h, statTooltip('mnd')) h = h + self.font_h
         
     elseif kind=="attack" then
         h = 0
@@ -187,17 +189,16 @@ function _M:dump()
     --prepare label and value
     local makelabel = function(s,r) while s:len() < labelwidth do s = s.." " end return ("%s: %s"):format(s, r) end
 
-    w1("  [MyModule Character Dump]")
+    w1("  [Qi Dao Zei Character Dump]")
     w1()
     
     w1(("%-32s"):format(makelabel("Name", player.name)))
-    w1(("%-32s"):format(makelabel("Role", player.descriptor.role or player.type:capitalize())))
     
     w1(("STR:  %d"):format(player:getStr()))
-    
     w1(("SKI:  %d"):format(player:getSki()))
-
     w1(("CON:  %d"):format(player:getCon()))
+    w1(("AGI:  %d"):format(player:getAgi()))
+    w1(("MND:  %d"):format(player:getMnd()))
 
     fff:close()
 

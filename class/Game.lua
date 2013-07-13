@@ -31,6 +31,7 @@ local Zone = require "engine.Zone"
 local Map = require "engine.Map"
 local Level = require "engine.Level"
 local Birther = require "engine.Birther"
+local Dialog = require "mod.class.ui.Dialog"
 
 local Grid = require "mod.class.Grid"
 local Actor = require "mod.class.Actor"
@@ -45,8 +46,6 @@ local LogFlasher = require "engine.LogFlasher"
 local DebugConsole = require "engine.DebugConsole"
 local FlyingText = require "engine.FlyingText"
 local Tooltip = require "engine.Tooltip"
-
-local QuitDialog = require "mod.dialogs.Quit"
 
 module(..., package.seeall, class.inherit(engine.GameTurnBased, engine.interface.GameTargeting))
 
@@ -390,7 +389,8 @@ function _M:setupCommands()
                 "keybinds",
                 "video",
                 "save",
-                "quit"
+                "quit",
+                "exit"
             }
             self:registerDialog(menu)
         end,
@@ -450,14 +450,38 @@ function _M:setupMouse(reset)
     self.mouse:setCurrent()
 end
 
---- Ask if we really want to close, if so, save the game first
+-- Quit to main menu
 function _M:onQuit()
-    self.player:restStop()
+    self.player:runStop("quitting")
+    self.player:restStop("quitting")
 
-    if not self.quit_dialog then
-        self.quit_dialog = QuitDialog.new()
-        self:registerDialog(self.quit_dialog)
-    end
+	if not self.quit_dialog and not self.player.dead and not self:hasDialogUp() then
+		self.quit_dialog = Dialog:yesnoPopup("Save and exit to the menu?", "Save and exit to the menu?", function(ok)
+			if ok then
+				self:saveGame()
+                util.showMainMenu()
+			end
+			self.quit_dialog = nil
+		end)
+	end
+end
+
+-- Exit game
+function _M:onExit()
+	self.player:runStop("quitting")
+	self.player:restStop("quitting")
+
+	if not self.quit_dialog and not self.player.dead and not self:hasDialogUp() then
+		self.quit_dialog = Dialog:yesnoPopup("Save and exit game?", "Save and exit game?", function(ok)
+			if ok then
+				-- savefile_pipe is created as a global by the engine
+				self:saveGame()
+				savefile_pipe:forceWait()
+				os.exit()
+			end
+			self.quit_dialog = nil
+		end)
+	end
 end
 
 --- Requests the game to save
