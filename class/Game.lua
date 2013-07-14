@@ -215,6 +215,8 @@ function _M:onTurn()
 end
 
 function _M:display(nb_keyframe)
+    self.player_display:toScreen(nb_keyframe)
+
     -- If switching resolution, blank everything but the dialog
     if self.change_res_dialog then engine.GameTurnBased.display(self, nb_keyframe) return end
 
@@ -236,7 +238,6 @@ function _M:display(nb_keyframe)
 
     -- We display the player's interface
     self.flash:toScreen(nb_keyframe)
-    self.player_display:toScreen(nb_keyframe)
     self.logdisplay:toScreen()
     if self.show_npc_list then
         self.npcs_display:toScreen()

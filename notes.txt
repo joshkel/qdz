@@ -5,10 +5,6 @@ Random name generator
 Right-click menu
 Quick switch weapons (probably - binding qi to multiple body parts will probably be too unpleasant otherwise)
 
-Misc bugs:
-Dumping a character sheet doesn't work
-Character shows as starting with 100 health
-
 To do a while later:
 Logo
 Custom skin
