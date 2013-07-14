@@ -255,20 +255,29 @@ end
 --- Return the full description of a talent
 -- You may overload it to add more data (like power usage, ...)
 function _M:getTalentFullDescription(t)
-    local d = {}
+    local d = tstring{}
+    local caption_color = { "color", 0x6f, 0xff, 0x83 }
+    local text_color = { "color", 0xff, 0xff, 0xff }
+    local power_color = { "color", 0x7f, 0xff, 0xd4 }
+    local use_color = { "color", 0x00, 0xff, 0x00 }
 
-    if t.mode == "passive" then d[#d+1] = "#6fff83#Use mode: #00FF00#Passive"
-    elseif t.mode == "sustained" then d[#d+1] = "#6fff83#Use mode: #00FF00#Sustained"
-    else d[#d+1] = "#6fff83#Use mode: #00FF00#Activated"
+    d:add(caption_color, "Use mode: ", use_color)
+    if t.mode == "passive" then d:add("Passive")
+    elseif t.mode == "sustained" then d:add("Sustained")
+    else d:add("Active")
     end
+    d:add(true)
 
-    if t.power or t.sustain_power then d[#d+1] = "#6fff83#Power cost: #7fffd4#"..(t.power or t.sustain_power) end
-    if self:getTalentRange(t) > 1 then d[#d+1] = "#6fff83#Range: #FFFFFF#"..self:getTalentRange(t)
-    else d[#d+1] = "#6fff83#Range: #FFFFFF#melee/personal"
+    if t.power or t.sustain_power then d:add(caption_color, "Power cost: ", text_color, ""..(t.power or t.sustain_power), true) end
+    if self:getTalentRange(t) > 1 then d:add(caption_color, "Range: ", text_color, ""..self:getTalentRange(t), true)
+    else d:add(caption_color, "Range: ", text_color, "melee/personal", true)
     end
-    if t.cooldown then d[#d+1] = "#6fff83#Cooldown: #FFFFFF#"..t.cooldown end
+    if t.cooldown then d:add(caption_color, "Cooldown: ", text_color, ""..t.cooldown, true) end
 
-    return table.concat(d, "\n").."\n#6fff83#Description: #FFFFFF#"..t.info(self, t)
+    d:add(true, caption_color, "Description: ", true, text_color)
+    d:merge(t.info(self, t):toTString())
+
+    return d
 end
 
 --- How much experience is this actor worth

@@ -55,8 +55,8 @@ Mouse: Hover over stat for info
 
     self.c_desc = SurfaceZone.new{width=self.iw, height=self.ih - self.c_general.h - self.vs.h - self.c_tut.h,alpha=0}
 
-    -- The wiki and ToME itself add 17 instead of 5 here...  I'm not sure why...
     local extra_offset = 5
+    -- The wiki and ToME itself add 17 instead of 5 here...  I'm not sure why...
     self.hoffset = extra_offset + self.c_tut.h + self.vs.h + self.c_general.h
 
     self:loadUI{
