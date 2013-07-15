@@ -51,7 +51,11 @@ newDamageType{
 	name = "physical", type = "PHYSICAL",
 }
 
--- Acid destroys potions
 newDamageType{
 	name = "acid", type = "ACID", text_color = "#GREEN#",
 }
+
+newDamageType{
+    name = "poison gas", type = "POISON_GAS", text_color = "#GREEN#"
+}
+

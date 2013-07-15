@@ -21,6 +21,8 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
+local Map = require("engine.Map")
+
 newTalent{
     name = "Acid Spray",
     type = {"qi abilities/right hand", 1},
@@ -46,18 +48,46 @@ newTalent {
     points = 1,
     cooldown = 6,
     power = 2,
-    range = 6,
+    range = 1,
+    radius = 1,
+    getDuration = function(self, t) return 5 end,
+    getDamage = function(self, t) return 5 end,
+    target = function(self, t)
+         return {type="ball", range=self:getTalentRange(t), radius=self:getTalentRadius(t), nowarning=true, nolock=true, talent=t}
+    end,
     action = function(self, t)
-        -- TODO: Implement
+        -- TODO: Immediate bonus damage if a creature is struck directly in the wall
+        local tg = self:getTalentTarget(t)
+        local x, y, target = self:getTarget(tg)
+        if not x or not y then return nil end
+
+        local feat = game.level.map(x, y, Map.TERRAIN)
+        if not feat then return nil end
+        if not feat.dig or not feat.is_stone then
+            game.logPlayer(self, "You must select a section of diggable stone to poison.")
+            return nil
+        end
+
+        game.level.map:addEffect(self,
+            x, y, t.getDuration(self, t),
+            DamageType.POISON_GAS, t.getDamage(self, t),
+            self:getTalentRadius(t),
+            5, nil,   -- dir (5 for ball effect), angle
+            engine.Entity.new{alpha=100, display='', color_br=30, color_bg=180, color_bb=60},
+            nil,      -- update_fct
+            false)    -- selffire / friendlyfire
+
         return true
     end,
     info = function(self, t)
         return flavorText(
+            ("Strikes an adjacent section of diggable stone, releasing clouds "..
+            "of poisonous gas in a radius of %i. The gas clouds "..
+            "last %i turns and do %i damage each turn."):format(
+                self:getTalentRadius(t), t.getDuration(self, t), t.getDamage(self, t)),
             "Dog-head men are cunning tricksters and trapsmiths, but one of " ..
             "their simplest methods for discouraging interlopers is to curse " ..
             "a vein of ore, causing it to release poisonous gas when anyone " ..
-            "tries to mine it.",
-            "Strikes an adjacent section of diggable stone, releasing a cloud "..
-            "of poisonous gas that damages anyone in it.")
+            "tries to mine it.")
     end,
 }

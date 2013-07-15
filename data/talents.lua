@@ -32,8 +32,12 @@ newTalentType{ type="qi abilities/feet", name = "feet", description = "Qi abilit
 newTalentType{ type="qi abilities/head", name = "head", description = "Qi abilities bound to your head. These may provide perception or knowledge, let you acquire and enhance allies to assist you in combat, or provide other strange and wonderful effects." }
 
 --- Formats some flavor text plus rules text.
-function flavorText(flavor_text, rules_text)
-    return rules_text .. "\n\n#{italic}#" .. flavor_text .. "#{normal}#"
+function flavorText(rules_text, flavor_text)
+    if flavor_text then
+        return rules_text .. "\n\n#{italic}#" .. flavor_text .. "#{normal}#"
+    else
+        return rules_text
+    end
 end
 
 load("/data/talents/basic.lua")
