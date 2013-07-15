@@ -26,9 +26,9 @@ local Stats = require "engine.interface.ActorStats"
 newEffect{
     name = "FOCUSED_QI",
     desc = "Focused Qi",
-    type = "physical", -- TODO?
+    type = "physical", -- FIXME?
     status = "beneficial",
-    on_gain = function(self, err) return "#Target# focuses its qi.", "+Qi focus" end, -- TODO: his / her, not its
+    on_gain = function(self, err) return "#Target# focuses its qi.", "+Qi focus" end, -- FIXME: his / her, not its
     on_lose = function(self, err) return "#Target#'s qi focus dissipates.", "-Qi focus" end,
 }
 

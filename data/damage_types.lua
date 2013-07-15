@@ -56,6 +56,10 @@ newDamageType{
 }
 
 newDamageType{
+    name = "poison", type = "POISON", text_color = "#GREEN#"
+}
+
+newDamageType{
     name = "poison gas", type = "POISON_GAS", text_color = "#GREEN#"
 }
 

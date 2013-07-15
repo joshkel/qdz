@@ -148,7 +148,7 @@ function _M:die(src)
 
     if src and src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI) then
         if src.absorbAbility and self.can_absorb then
-            -- TODO: Figure out rhand / lhand / etc.
+            -- FIXME: Figure out rhand / lhand / etc.
             src:absorbAbility(self, self.can_absorb)
             src:removeEffect(src.EFF_FOCUSED_QI)
         end
@@ -329,7 +329,7 @@ function _M:canBe(what)
 end
 
 function _M:getMaxEncumbrance()
-    -- TODO: Different math here
+    -- FIXME: Different math here
 	return math.floor(40 + self:getStr() * 1.8 + (self.max_encumber or 0))
 end
 

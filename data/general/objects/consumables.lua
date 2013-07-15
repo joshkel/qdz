@@ -39,7 +39,7 @@ newEntity{
     use_simple = {
         name = "minor healing",
         use = function(self, who)
-            -- TODO: Correct arguments?
+            -- FIXME: Correct arguments?
             who:heal(10, self)
             game.log(("%s's wounds heal."):format(who.name))
             return {used = true, destroy = true}

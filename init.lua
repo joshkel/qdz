@@ -34,7 +34,7 @@ An Oriental-themed fantasy roguelike. Fight mythical creatures and absorb their 
 starter = "mod.load"
 
 allow_userchat = true
--- TODO: show_funfacts = true, load_tips = {}
+-- FIXME: show_funfacts = true, load_tips = {}
 
 background_name = {
     "peach_festival" -- https://en.wikipedia.org/wiki/File:Freer_019.jpg

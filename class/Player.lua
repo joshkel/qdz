@@ -327,7 +327,7 @@ end
 
 -- Absorbs the qi ability (given by t_id) from a slain opponent (given by src)
 function _M:absorbAbility(src, t_id)
-    -- TODO: Replace this with the full implementation (limited # of abilities,
+    -- FIXME: Replace this with the full implementation (limited # of abilities,
     -- tracking the order learned, etc.).  Check self.last_action_type and
     -- self.last_talent.
     self:learnTalent(t_id, true)
