@@ -31,12 +31,13 @@ local Talents = require "engine.interface.ActorTalents"
 module(..., package.seeall, class.make)
 
 --- Checks what to do with the target
--- Talk ? attack ? displace ?
+-- Talk? Attack? Displace?
 function _M:bumpInto(target)
     local reaction = self:reactionToward(target)
     if reaction < 0 then
-        self.last_action_type = 'attack'
+        self.last_action = 'attack'
         self:attackTarget(target)
+        self.last_action = nil
     elseif reaction >= 0 then
         if self.move_others then
             -- Displace

@@ -79,7 +79,10 @@ newTalent {
             -- to allow gas clouds in terrain like portcullises and deep water
             -- but disallow it in walls.  This check will fail on, e.g., glass
             -- walls (if we ever implement those).
-            if pfeat.does_block_move and pfeat.does_block_sight then return end
+            --
+            -- For now, at least, check the does_block_move flag instead of the
+            -- block_move function.
+            if pfeat.does_block_move and pfeat.block_sight then return end
 
             local target = game.level.map(px, py, Map.ACTOR)
             if target and self:reactionToward(target) >= 0 then return end

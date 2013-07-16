@@ -35,6 +35,7 @@ require "engine.interface.ActorFOV"
 require "engine.interface.ActorInventory"
 require "mod.class.interface.Combat"
 local Map = require "engine.Map"
+local Talents = require "engine.interface.ActorTalents"
 
 module(..., package.seeall, class.inherit(
     engine.Actor,
@@ -147,9 +148,7 @@ function _M:die(src)
     end
 
     if src and src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI) then
-        if src.absorbAbility and self.can_absorb then
-            -- FIXME: Figure out rhand / lhand / etc.
-            src:absorbAbility(self, self.can_absorb)
+        if src:absorbAbility(self) then
             src:removeEffect(src.EFF_FOCUSED_QI)
         end
     end
@@ -214,8 +213,7 @@ function _M:preUseTalent(ab, silent, fake)
     end
 
     if not fake then
-        self.last_action_type = 'talent'
-        self.last_talent = ab.id
+        self.last_action = { type = 'talent', talent = ab.id }
     end
 
     return true
@@ -247,7 +245,7 @@ function _M:postUseTalent(ab, ret)
         end
     end
 
-    self.last_action_type = nil
+    self.last_action = nil
 
     return true
 end
@@ -346,3 +344,41 @@ function _M:getEncumbrance()
     return math.floor(enc)
 end
 
+--- Attempts to absorb a qi ability.
+-- Only Player can absorb abilities, so for most actors, this does nothing.
+function _M:absorbAbility()
+    return false
+end
+
+--- Gets the type of qi ability to be absorbed, based on our last action.
+function _M:getAbsorbType()
+    if type(self.last_action) == "table" then
+        if self.last_action.type == "talent" then
+            if self.last_action.talent == Talents.T_KICK then
+                return "feet"
+            elseif self.last_action.talent == Talents.T_BASH then
+                return "chest"
+            else
+                return "head"
+            end
+        else
+            return nil
+        end
+    else
+        return ({
+            attack = "rhand"
+        })[self.last_action]
+    end
+end
+
+--- Gets a human-readable description of getAbsorbType.
+-- I'm not sure where this best belongs.
+function _M:getAbsorbTypeDescription()
+    return ({
+        rhand = "right hand",
+        lhand = "left hand",
+        chest = "chest",
+        feet = "feet",
+        head = "head"
+    })[self:getAbsorbType()]
+end

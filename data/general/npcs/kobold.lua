@@ -45,7 +45,10 @@ newEntity{ base = "BASE_NPC_KOBOLD",
     max_life = resolvers.rngavg(5,9),
     combat = { dam=2 },
 
-    can_absorb = Talents.T_POISON_ORE_STRIKE
+    can_absorb = {
+        rhand = Talents.T_POISON_ORE_STRIKE,
+        feet = Talents.T_DANCING_LIGHTS       -- or mining?
+    }
 }
 
 --[[

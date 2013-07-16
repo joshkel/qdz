@@ -325,13 +325,32 @@ function _M:doTakeoff(inven, item, o)
     self.changed = true
 end
 
--- Absorbs the qi ability (given by t_id) from a slain opponent (given by src)
-function _M:absorbAbility(src, t_id)
+-- Absorbs the qi ability from a slain opponent (given by src)
+function _M:absorbAbility(src)
     -- FIXME: Replace this with the full implementation (limited # of abilities,
-    -- tracking the order learned, etc.).  Check self.last_action_type and
-    -- self.last_talent.
+    -- tracking the order learned, etc.).
+    if not src.can_absorb then
+        game.logSeen(self, ("%s's qi is too weak to absorb."):format(src.name:capitalize()))
+        return false
+    end
+
+    local t_id = src.can_absorb[self:getAbsorbType()]
+    if not t_id then
+        game.logSeen(self, ("You try to absorb %s's qi, but it does nothing when bound to your %s."):format(
+            src.name, self:getAbsorbTypeDescription()))
+        return false
+    end
+
+    if self:knowTalent(t_id) then
+        game.logSeen(self, ("You try to absorb %s's qi, but you already know %s."):format(
+            src.name, self:getTalentDisplayName(self:getTalentFromId(t_id))))
+        return false
+    end
+
     self:learnTalent(t_id, true)
     t = self:getTalentFromId(t_id)
-    game.log(("You absorb a portion of %s's qi and learn %s!"):format(src.name, self:getTalentDisplayName(t)))
+    game.log(("You absorb a portion of %s's qi and bind it to your %s.  You learn %s!"):format(
+        src.name, self:getAbsorbTypeDescription(), self:getTalentDisplayName(t)))
+    return true
 end
 
