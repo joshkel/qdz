@@ -11,7 +11,7 @@ Monsters show as starting with 100 health
 To do a while later:
 Logo
 Custom skin
-Rework all dialogs (especially the quit prompt)
+Rework all dialogs
 
 To do much later:
 Figure out an email address

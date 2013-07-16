@@ -57,17 +57,16 @@ newTalent {
          return {type="ball", range=self:getTalentRange(t), radius=self:getTalentRadius(t), nowarning=true, nolock=true, talent=t}
     end,
     action = function(self, t)
-        -- FIXME: Immediate bonus damage if a creature is struck directly in the wall
         local tg = self:getTalentTarget(t)
         local x, y, target = self:getTarget(tg)
         if not x or not y then return nil end
 
-        --[[local feat = game.level.map(x, y, Map.TERRAIN)
+        local feat = game.level.map(x, y, Map.TERRAIN)
         if not feat then return nil end
         if not feat.dig or not feat.is_stone then
             game.logPlayer(self, "You must select a section of diggable stone to poison.")
             return nil
-        end]]
+        end
 
         if target then
             self:project({type="hit", range=self:getTalentRange(t), talent=t},
@@ -76,7 +75,11 @@ newTalent {
 
         self:project(tg, x, y, function(px, py)
             local pfeat = game.level.map(px, py, Map.TERRAIN)
-            if pfeat.can_pass and pfeat.can_pass.pass_wall then return end
+            -- HACK: Not sure what the best check is here; conceptually, we want
+            -- to allow gas clouds in terrain like portcullises and deep water
+            -- but disallow it in walls.  This check will fail on, e.g., glass
+            -- walls (if we ever implement those).
+            if pfeat.does_block_move and pfeat.does_block_sight then return end
 
             local target = game.level.map(px, py, Map.ACTOR)
             if target and self:reactionToward(target) >= 0 then return end
@@ -105,3 +108,45 @@ newTalent {
             "tries to mine it.")
     end,
 }
+
+newTalent {
+    name = "Dancing Lights",
+    type = {"qi abilities/feet", 1},
+    points = 1,
+    cooldown = 6,
+    power = 2,
+    range = function(self, t) return self.lite or 0 end,
+    target = function(self, t)
+         return {type="hit", range=self:getTalentRange(t), nowarning=true, nolock=true, talent=t}
+    end,
+    action = function(self, t)
+        local tg = self:getTalentTarget(t)
+        local x, y = self:getTarget(tg)
+
+        if not self:hasLOS(x, y) or game.level.map:checkEntity(x, y, Map.TERRAIN, "block_move") then
+            game.logSeen(self, "You cannot dance there.")
+            return false
+        end
+
+		local tx, ty = util.findFreeGrid(x, y, 0, true, {[Map.ACTOR]=true})
+        if not tx or not ty then
+            game.logSeen(self, "You cannot dance there.")
+            return false
+        end
+
+        if not self:teleportRandom(tx, ty, 0) then
+            game.logSeen(self, "The technique fails!")
+        end
+
+        return true
+    end,
+    info = function(self, t)
+        return flavorText(("Transforms into a ball of light that immediately moves"..
+            "to a given location within %i squares, where you reappear. "..
+            "The range is determined by your light radius.").format(self:getTalentRange(t)),
+            "Dog-head men have some small affinity with fire; they can "..
+            "transform their bodies into floating flames that resemble the "..
+            "lanterns in their mining helmets and travel quickly in this form.")
+    end,
+}
+

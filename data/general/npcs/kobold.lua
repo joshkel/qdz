@@ -29,7 +29,7 @@ local Talents = require("engine.interface.ActorTalents")
 -- Germanic folklore than to the D&D cannon fodder.
 newEntity{
     define_as = "BASE_NPC_KOBOLD",
-    type = "humanoid", subtype = "dog-head man",
+    type = "humanoid", subtype = "dog-head",
     display = "h", color=colors.WHITE,
     desc = [[A small, ugly humanoid. Dog-head men are cunning miners and trapsmiths.]],
 
@@ -48,11 +48,12 @@ newEntity{ base = "BASE_NPC_KOBOLD",
     can_absorb = Talents.T_POISON_ORE_STRIKE
 }
 
---newEntity{ base = "BASE_NPC_KOBOLD",
---    name = "armoured kobold warrior", color=colors.AQUAMARINE,
---    level_range = {6, 10}, exp_worth = 1,
---    rarity = 4,
---    max_life = resolvers.rngavg(10,12),
---    combat_armor = 3,
---    combat = { dam=5 },
---}
+--[[
+newEntity{ base = "BASE_NPC_KOBOLD",
+    name = "armoured kobold warrior", color=colors.AQUAMARINE,
+    level_range = {6, 10}, exp_worth = 1,
+    rarity = 4,
+    max_life = resolvers.rngavg(10,12),
+    combat_armor = 3,
+    combat = { dam=5 },
+}]]
