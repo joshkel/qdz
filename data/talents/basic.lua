@@ -22,7 +22,7 @@
 -- darkgod@te4.org
 
 newTalent{
-    -- FIXME: Add particle effects for qi aura; add effects for qi focus on combat and describe them
+    -- FIXME: add combat bonuses for qi focus and describe them
     name = "Focus Qi",
     type = {"basic/qi", 1},
     points = 1,

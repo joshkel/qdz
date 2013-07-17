@@ -22,6 +22,7 @@
 -- darkgod@te4.org
 
 local Stats = require "engine.interface.ActorStats"
+local Particles = require "engine.Particles"
 
 newEffect{
     name = "FOCUSED_QI",
@@ -30,6 +31,12 @@ newEffect{
     status = "beneficial",
     on_gain = function(self, err) return "#Target# focuses its qi.", "+Qi focus" end, -- FIXME: his / her, not its
     on_lose = function(self, err) return "#Target#'s qi focus dissipates.", "-Qi focus" end,
+    activate = function(self, eff)
+        eff.particle = self:addParticles(Particles.new("focused_qi", 1))
+    end,
+    deactivate = function(self, eff)
+        self:removeParticles(eff.particle)
+    end,
 }
 
 newEffect{
