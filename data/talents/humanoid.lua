@@ -42,6 +42,9 @@ newTalent{
     end,
 }
 
+-----------------------------------------------------------------------------
+-- Dog-head talents
+
 newTalent {
     name = "Poison Ore Strike",
     type = {"qi abilities/right hand", 1},
@@ -124,6 +127,7 @@ newTalent {
     end,
     action = function(self, t)
         local tg = self:getTalentTarget(t)
+        local orig_x, orig_y = self.x, self.y
         local x, y = self:getTarget(tg)
 
         if not self:hasLOS(x, y) or game.level.map:checkEntity(x, y, Map.TERRAIN, "block_move") then
@@ -139,6 +143,16 @@ newTalent {
 
         if not self:teleportRandom(tx, ty, 0) then
             game.logSeen(self, "The technique fails!")
+        else
+            self:resetMoveAnim()
+
+            -- Not sure the exact relationship between speed / blur and the
+            -- dancing_lights particle effect, but these values seem to work
+            -- well enough.
+            self:setMoveAnim(orig_x, orig_y, 8, 5)
+
+            game.level.map:particleEmitter(orig_x, orig_y, 0, "dancing_lights",
+                { delta_x = self.x - orig_x, delta_y = self.y - orig_y })
         end
 
         return true
