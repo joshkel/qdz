@@ -74,6 +74,17 @@ function _M:init(t, no_default)
     engine.interface.ActorFOV.init(self, t)
 end
 
+function _M:resetToFull()
+    if self.dead then return end
+    self.life = self.max_life
+    self.power = self.max_power
+end
+
+function _M:resolveLevel()
+    engine.interface.ActorLevel.resolveLevel(self)
+    self:resetToFull()
+end
+
 function _M:act()
     if not engine.Actor.act(self) then return end
 

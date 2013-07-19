@@ -24,8 +24,8 @@
 local Talents = require("engine.interface.ActorTalents")
 
 -- According to Google Translate, "dog-head man" is the literal translation of
--- "kobold."  Even in a Chinese roguelike, it seems, beginning adventurers
--- can't avoid fighting kobolds, although these are closer to their original
+-- "kobold."  Even in a Chinese game, it seems, beginning adventurers can't
+-- avoid fighting kobolds, although these are closer to their original
 -- Germanic folklore than to the D&D cannon fodder.
 newEntity{
     define_as = "BASE_NPC_KOBOLD",
