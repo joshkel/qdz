@@ -1,12 +1,13 @@
+To do NOW:
+Kick and bash need animation
+Need a way to view passive talents
+
 To do:
 Fully implement absorbing abilities
 Order default hotkeys better
 Random name generator
 Right-click menu
 Quick switch weapons (probably - binding qi to multiple body parts will probably be too unpleasant otherwise)
-
-Misc bugs:
-Monsters show as starting with 100 health
 
 To do a while later:
 Logo

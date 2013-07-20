@@ -174,6 +174,8 @@ function _M:restCheck()
     if self:getPower() < self:getMaxPower() and self.power_regen > 0 then return true end
     if self.life < self.max_life and self.life_regen> 0 then return true end
 
+    if self.resting.rest_turns then return true end
+
     return false, "all resources and life at maximum"
 end
 

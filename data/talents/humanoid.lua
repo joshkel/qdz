@@ -57,7 +57,7 @@ newTalent {
     getDamage = function(self, t) return 5 end,
     getDirectDamage = function(self, t) return t.getDamage(self, t) * 3 end,
     target = function(self, t)
-         return {type="ball", range=self:getTalentRange(t), radius=self:getTalentRadius(t), nowarning=true, nolock=true, talent=t}
+         return {type="ball", range=self:getTalentRange(t), radius=self:getTalentRadius(t), nowarning=true, nolock=true, pass_terrain=true, talent=t}
     end,
     action = function(self, t)
         local tg = self:getTalentTarget(t)
@@ -113,6 +113,33 @@ newTalent {
             "a vein of ore, causing it to release poisonous gas when anyone " ..
             "tries to mine it.")
     end,
+}
+
+newTalent {
+    name = "Dog-Head Mining",
+    short_name = "DOG_HEAD_MINING",
+    type = {"qi abilities/chest", 1},
+    points = 1,
+    mode = "passive",
+    on_learn = function(self, t)
+        self:learnTalent(Talents.T_MINING, true)
+    end,
+    on_unlearn = function(self, t)
+        self:unlearnTalent(Talents.T_MINING)
+    end,
+
+    count = 3,
+    chance = 50,
+
+    info = function(self, t)
+        -- FIXME: Implement ability to find treasure
+        return flavorText(("+1 Mining proficiency. The first %i squares you mine "..
+            "on each level have a %i chance of containing gold or gems."):format(
+                t.count, t.chance),
+            "The dog-head have an instinctive ability to find the richest ore veins, "..
+            "such that it often seems to observers that they can swing their pickaxes "..
+            "anywhere they want and find treasure.")
+    end
 }
 
 newTalent {
