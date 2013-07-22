@@ -60,7 +60,7 @@ newTalent{
         return true
     end,
     info = function(self, t)
-        return [[Bashes an enemy with your shield (if you have one) or a tackle, possibly knocking it back.
+        return [[Bashes an enemy with your shield (if you have one) or a tackle, damaging it and knocking it back.
 
 If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your chest.]]
     end,
@@ -86,7 +86,7 @@ newTalent{
         return true
     end,
     info = function(self, t)
-        return [[Kicks an enemy.
+        return [[Kicks an enemy, damaging it and knocking it back.
 
 If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your feet.]]
     end,

@@ -1,5 +1,4 @@
 To do NOW:
-Need a way to view passive talents
 Implement treasures for Dog-Head Mining
 
 To do:

@@ -45,6 +45,16 @@ newTalent{
 -----------------------------------------------------------------------------
 -- Dog-head talents
 
+--[[
+According to Wikipedia (http://en.wikipedia.org/wiki/Kobold):
+
+16th-century miners sometimes encountered what looked to be rich veins of copper
+or silver, but which, when smelted, proved to be little more than a pollutant
+and could even be poisonous. These ores caused a burning sensation to those who
+handled them... Miners called these ores cobalt after the creatures from whom
+they were thought to come. In 1735, Swedish chemist Georg Brandt isolated a
+substance from such ores and named it cobalt rex. In 1780, scientists showed
+that this was in fact a new element, which they named cobalt.]]
 newTalent {
     name = "Poison Ore Strike",
     type = {"qi abilities/right hand", 1},
@@ -125,8 +135,8 @@ newTalent {
 
     info = function(self, t)
         -- FIXME: Implement ability to find treasure
-        return flavorText(("+1 Mining proficiency. The first %i squares you mine "..
-            "on each level have a %i chance of containing gold or gems."):format(
+        return flavorText(("+1 Mining proficiency. The first %i times you mine "..
+            "on each level, you have a %i%% chance of finding gold or gems."):format(
                 t.count, t.chance),
             "The dog-head have an instinctive ability to find the richest ore veins, "..
             "such that it often seems to observers that they can swing their pickaxes "..
@@ -134,6 +144,8 @@ newTalent {
     end
 }
 
+-- Some stories have kobolds flying through the air as a fiery stripe or
+-- appearing as round lights.
 newTalent {
     name = "Dancing Lights",
     type = {"qi abilities/feet", 1},
