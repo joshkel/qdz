@@ -22,33 +22,34 @@
 -- darkgod@te4.org
 
 newTalent{
-	name = "Mining",
-	type = {"basic/proficiencies", 1},
-	findBest = function(self, t)
-		local best = nil
-		local find = function(inven)
-			for item, o in ipairs(inven) do
-				if o.digspeed and (not best or o.digspeed < best.digspeed) then best = o end
-			end
-		end
-		for inven_id, inven in pairs(self.inven) do find(inven) end
-		return best
-	end,
-	points = 5,
-	no_npc_use = true,
-	action = function(self, t)
-		local best = t.findBest(self, t)
-		if not best then game.logPlayer(self, "You require a digger to dig.") return end
+    name = "Mining",
+    type = {"basic/proficiencies", 1},
+    findBest = function(self, t)
+        local best = nil
+        local find = function(inven)
+            for item, o in ipairs(inven) do
+                if o.digspeed and (not best or o.digspeed < best.digspeed) then best = o end
+            end
+        end
+        for inven_id, inven in pairs(self.inven) do find(inven) end
+        return best
+    end,
+    points = 5,
+    no_npc_use = true,
+    no_energy = true, -- energy cost is handled by diggers.lua's wait()
+    action = function(self, t)
+        local best = t.findBest(self, t)
+        if not best then game.logPlayer(self, "You require a mining tool to dig.") return end
         return best:useObject(self)
-	end,
-	info = function(self, t)
-		local best = t.findBest(self, t)
+    end,
+    info = function(self, t)
+        local best = t.findBest(self, t)
         local result = "Mining lets you use a pickaxe or similar tool to dig stone and earth.\n\n"
         if best then
-            result = result .. ("Digging with your %s takes %d turns (based on your talent level and best digger available)."):format(best.name, best.getEffectiveDigSpeed(self))
+            result = result .. ("Digging with your %s takes %d turns (based on your talent level and best mining tool available)."):format(best.name, best.getEffectiveDigSpeed(self))
         else
             result = result .. "You currently have no mining tools."
         end
         return result
-	end,
+    end,
 }

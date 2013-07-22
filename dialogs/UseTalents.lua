@@ -107,7 +107,7 @@ function _M:generateList()
         local where = #list
         local added = false
 
-        -- Find all talents of this school
+        -- Find all talents of this type
         for j, t in ipairs(tt.talents) do
             if self.actor:knowTalent(t.id) then
                 local status = tstring{{"color", "LIGHT_GREEN"}, "Active"}

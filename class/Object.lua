@@ -76,7 +76,10 @@ function _M:use(who, typ, inven, item)
         local ret = {self:useObject(who, inven, item)}
         if ret[1] then
             if self.use_sound then game:playSoundNear(who, self.use_sound) end
-            who:useEnergy(game.energy_to_act * (inven.use_speed or 1))
+            if not self.use_no_energy then
+                -- FIXME: I don't think inven.use_speed does anything.  What *is* inven?
+                who:useEnergy(game.energy_to_act * (inven.use_speed or 1))
+            end
         end
         return unpack(ret)
     end

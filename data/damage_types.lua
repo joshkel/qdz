@@ -73,8 +73,10 @@ newDamageType{
         if type(feat.dig) == "function" then newfeat_name, newfeat, silence = feat.dig(src, x, y, feat) end
         game.level.map(x, y, Map.TERRAIN, newfeat or game.zone.grid_list[newfeat_name])
         if not silence then
-            game.logSeen({x=x,y=y}, "%s turns into %s.", feat.name:capitalize(), (newfeat or game.zone.grid_list[newfeat_name]).name)
+            game.logSeen({x=x,y=y}, "The %s turns into %s.", feat.name, (newfeat or game.zone.grid_list[newfeat_name]).name)
         end
+
+        if src.on_dig then src:on_dig(x, y) end
     end,
 }
 

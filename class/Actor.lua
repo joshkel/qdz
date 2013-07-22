@@ -59,6 +59,8 @@ function _M:init(t, no_default)
     t.power_regen = t.power_regen or 1
     t.life_regen = t.life_regen or 0.25 -- Life regen real slow
 
+    t.money = 0
+
     -- Default melee barehanded damage
     self.combat = { dam=1 }
 
@@ -353,6 +355,13 @@ function _M:getEncumbrance()
     end
 
     return math.floor(enc)
+end
+
+function _M:incMoney(v)
+    if self.summoner then self = self.summoner end
+    self.money = self.money + v
+    if self.money < 0 then self.money = 0 end
+    self.changed = true
 end
 
 --- Attempts to absorb a qi ability.

@@ -172,7 +172,7 @@ function _M:restCheck()
 
     -- Check resources, make sure they CAN go up, otherwise we will never stop
     if self:getPower() < self:getMaxPower() and self.power_regen > 0 then return true end
-    if self.life < self.max_life and self.life_regen> 0 then return true end
+    if self.life < self.max_life and self.life_regen > 0 then return true end
 
     if self.resting.rest_turns then return true end
 
@@ -330,7 +330,7 @@ end
 -- Absorbs the qi ability from a slain opponent (given by src)
 function _M:absorbAbility(src)
     -- FIXME: Replace this with the full implementation (limited # of abilities,
-    -- tracking the order learned, etc.).
+    -- tracking the order learned, update Use Talents screen to match, etc.).
     if not src.can_absorb then
         game.logSeen(self, ("%s's qi is too weak to absorb."):format(src.name:capitalize()))
         return false

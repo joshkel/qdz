@@ -26,6 +26,7 @@ local loadIfNot = function(f)
 	load(f, entity_mod)
 end
 
+loadIfNot("/data/general/objects/money.lua")
 loadIfNot("/data/general/objects/consumables.lua")
 loadIfNot("/data/general/objects/weapons.lua")
 loadIfNot("/data/general/objects/diggers.lua")

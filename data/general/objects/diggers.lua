@@ -21,8 +21,6 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
-local Map = require "engine.Map"
-local Talents = require "engine.interface.ActorTalents"
 
 newEntity{
     define_as = "BASE_DIGGER",
@@ -38,13 +36,14 @@ newEntity{
     
     digspeed = 5,
     use_no_wear = true,
-    use_speed = 0,
+    use_no_energy = true, -- energy cost is handled by wait() below
 
     getEffectiveDigSpeed = function(self, who, show_message)
+        local Talents = require "engine.interface.ActorTalents"
         local mining = who:getTalentLevel(Talents.T_MINING)
         if mining == 0 then
             if show_message then game.logPlayer(who, "You don't know the first thing about mining. This could take a while...") end
-            return math.floor(self.digspeed * 1.5)
+            return math.floor(self.digspeed * 2)
         else
             return math.floor(self.digspeed * math.pow(0.9, mining - 1))
         end
@@ -54,6 +53,7 @@ newEntity{
     use_simple = {
         name = "dig",
         use = function(self, who)
+            local Map = require "engine.Map"
             local tg = {type="bolt", range=1, nolock=true}
             local x, y = who:getTarget(tg)
             if not x or not y then return nil end
