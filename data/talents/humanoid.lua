@@ -77,15 +77,7 @@ newTalent {
         end
 
         self:project(tg, x, y, function(px, py)
-            local pfeat = game.level.map(px, py, Map.TERRAIN)
-            -- HACK: Not sure what the best check is here; conceptually, we want
-            -- to allow gas clouds in terrain like portcullises and deep water
-            -- but disallow it in walls.  This check will fail on, e.g., glass
-            -- walls (if we ever implement those).
-            --
-            -- For now, at least, check the does_block_move flag instead of the
-            -- block_move function.
-            if pfeat.does_block_move and pfeat.block_sight then return end
+            if game.level.map:checkEntity(px, py, engine.Map.TERRAIN, "block_move") and not game.level.map:checkEntity(px, py, engine.Map.TERRAIN, "pass_projectile") then return end
 
             local target = game.level.map(px, py, Map.ACTOR)
             if target and self:reactionToward(target) >= 0 then return end

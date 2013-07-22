@@ -34,7 +34,9 @@ newTalent{
     info = function(self, t)
         return [[Focuses your qi into a visibly glowing aura around you.
 
-If you deal a killing blow to an opponent while focused, you may absorb a portion of the opponent's qi, granting you a new ability or experience.]]
+If you deal a killing blow to an opponent while focused, you may absorb a portion of the opponent's qi, granting you a new ability or experience.
+
+The type of ability absorbed depends on how you deal the killing blow: whether a right hand (or two handed) weapon, left hand (or ranged) weapon, bash, kick, or qi ability.]]
     end
 }
 
@@ -53,6 +55,7 @@ newTalent{
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
         target:knockback(self.x, self.y, 2 + self:getSki())
+        target:setMoveAnim(x, y, 8, 5)
         self:attackTarget(target)
         return true
     end,
@@ -78,6 +81,7 @@ newTalent{
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
         target:knockback(self.x, self.y, 2 + self:getSki())
+        target:setMoveAnim(x, y, 8, 5)
         self:attackTarget(target)
         return true
     end,
