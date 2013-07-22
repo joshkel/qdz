@@ -1,6 +1,3 @@
-To do NOW:
-Implement treasures for Dog-Head Mining
-
 To do:
 Fully implement absorbing abilities
 Better inventory screen (improvements to match my Use Talents screen - wider columns, spaces between slots?)

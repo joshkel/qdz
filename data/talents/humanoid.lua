@@ -134,13 +134,23 @@ newTalent {
     chance = 50,
 
     info = function(self, t)
-        -- FIXME: Implement ability to find treasure
         return flavorText(("+1 Mining proficiency. The first %i times you mine "..
             "on each level, you have a %i%% chance of finding gold or gems."):format(
                 t.count, t.chance),
             "The dog-head have an instinctive ability to find the richest ore veins, "..
             "such that it often seems to observers that they can swing their pickaxes "..
             "anywhere they want and find treasure.")
+    end,
+
+    on_dig = function(self, t, x, y, feat)
+        if game.level.times_dug <= t.count then
+            if rng.percent(t.chance) then
+                local item = game.zone:makeEntityByName(game.level, "object", "MONEY_SMALL")
+                if not item then return end
+                game.level.map:addObject(x, y, item)
+                game.logSeen({x=x,y=y}, "The %s contained some treasure!", feat.name)
+            end
+        end
     end
 }
 

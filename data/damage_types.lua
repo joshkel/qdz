@@ -23,36 +23,36 @@
 
 -- The basic stuff used to damage a grid
 setDefaultProjector(function(src, x, y, type, dam)
-	local target = game.level.map(x, y, Map.ACTOR)
-	if target then
-		local flash = game.flash.NEUTRAL
-		if target == game.player then flash = game.flash.BAD end
-		if src == game.player then flash = game.flash.GOOD end
+    local target = game.level.map(x, y, Map.ACTOR)
+    if target then
+        local flash = game.flash.NEUTRAL
+        if target == game.player then flash = game.flash.BAD end
+        if src == game.player then flash = game.flash.GOOD end
 
-		game.logSeen(target, flash, "%s hits %s for %s%0.2f %s damage#LAST#.", src.name:capitalize(), target.name, DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
-		local sx, sy = game.level.map:getTileToScreen(x, y)
-		if target:takeHit(dam, src) then
-			if src == game.player or target == game.player then
-				game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, "Kill!", {255,0,255})
-			end
-		else
-			if src == game.player then
-				game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, tostring(-math.ceil(dam)), {0,255,0})
-			elseif target == game.player then
-				game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, tostring(-math.ceil(dam)), {255,0,0})
-			end
-		end
-		return dam
-	end
-	return 0
+        game.logSeen(target, flash, "%s hits %s for %s%0.2f %s damage#LAST#.", src.name:capitalize(), target.name, DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
+        local sx, sy = game.level.map:getTileToScreen(x, y)
+        if target:takeHit(dam, src) then
+            if src == game.player or target == game.player then
+                game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, "Kill!", {255,0,255})
+            end
+        else
+            if src == game.player then
+                game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, tostring(-math.ceil(dam)), {0,255,0})
+            elseif target == game.player then
+                game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, tostring(-math.ceil(dam)), {255,0,0})
+            end
+        end
+        return dam
+    end
+    return 0
 end)
 
 newDamageType{
-	name = "physical", type = "PHYSICAL",
+    name = "physical", type = "PHYSICAL",
 }
 
 newDamageType{
-	name = "acid", type = "ACID", text_color = "#GREEN#",
+    name = "acid", type = "ACID", text_color = "#GREEN#",
 }
 
 newDamageType{
@@ -64,8 +64,8 @@ newDamageType{
 }
 
 newDamageType{
-	name = "dig", type = "DIG",
-	projector = function(src, x, y, typ, dam)
+    name = "dig", type = "DIG",
+    projector = function(src, x, y, typ, dam)
         local feat = game.level.map(x, y, Map.TERRAIN)
         if not feat or not feat.dig then return end
 
@@ -76,7 +76,8 @@ newDamageType{
             game.logSeen({x=x,y=y}, "The %s turns into %s.", feat.name, (newfeat or game.zone.grid_list[newfeat_name]).name)
         end
 
-        if src.on_dig then src:on_dig(x, y) end
+        game.level.times_dug = (game.level.times_dug or 0) + 1
+        if src.talentCallbackAllOn then src:talentCallbackAllOn("on_dig", x, y, feat) end
     end,
 }
 

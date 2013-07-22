@@ -291,6 +291,17 @@ function _M:getTalentFullDescription(t)
     return d
 end
 
+--- As engine.interface.ActorTalents.talentCallbackOn, but over *all* talents,
+--- not just current sustaints.
+function _M:talentCallbackAllOn(on, ...)
+    for tid, _ in pairs(self.talents) do
+        local t = self:getTalentFromId(tid)
+        if t and t[on] then
+            self:callTalent(tid, on, ...)
+        end
+    end
+end
+
 --- How much experience is this actor worth
 -- @param target to whom is the exp rewarded
 -- @return the experience rewarded
