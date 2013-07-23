@@ -76,7 +76,6 @@ newDamageType{
             game.logSeen({x=x,y=y}, "The %s turns into %s.", feat.name, (newfeat or game.zone.grid_list[newfeat_name]).name)
         end
 
-        game.level.times_dug = (game.level.times_dug or 0) + 1
         if src.talentCallbackAllOn then src:talentCallbackAllOn("on_dig", x, y, feat) end
     end,
 }

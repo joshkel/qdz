@@ -143,12 +143,17 @@ newTalent {
     end,
 
     on_dig = function(self, t, x, y, feat)
-        if game.level.times_dug <= t.count then
+        if not feat.is_stone then return end
+        game.level.times_dug_stone = (game.level.times_dug_stone or 0) + 1
+        if game.level.times_dug_stone <= t.count then
             if rng.percent(t.chance) then
                 local item = game.zone:makeEntityByName(game.level, "object", "MONEY_SMALL")
                 if not item then return end
                 game.level.map:addObject(x, y, item)
                 game.logSeen({x=x,y=y}, "The %s contained some treasure!", feat.name)
+                if game.level.times_dug_stone == t.count then
+                    game.logSeen({x=x,y=y}, "The ore in this region now seems to be mined out.", feat.name)
+                end
             end
         end
     end
