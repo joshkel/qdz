@@ -56,7 +56,7 @@ newTalent{
 
         target:knockback(self.x, self.y, 2 + self:getSki())
         target:setMoveAnim(x, y, 8, 5)
-        self:attackTarget(target)
+        self:attackTargetWith(target, self:getObjectCombat(nil, "bash"))
         return true
     end,
     info = function(self, t)
@@ -82,7 +82,7 @@ newTalent{
 
         target:knockback(self.x, self.y, 2 + self:getSki())
         target:setMoveAnim(x, y, 8, 5)
-        self:attackTarget(target)
+        self:attackTargetWith(target, self:getObjectCombat(nil, "kick"))
         return true
     end,
     info = function(self, t)

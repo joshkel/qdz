@@ -33,11 +33,14 @@ module(..., package.seeall, class.make)
 --- Checks what to do with the target
 -- Talk? Attack? Displace?
 function _M:bumpInto(target)
+    local speed
+
     local reaction = self:reactionToward(target)
     if reaction < 0 then
         self.last_action = 'attack'
-        self:attackTarget(target)
+        speed = self:attackTarget(target)
         self.last_action = nil
+        if not speed then return end
     elseif reaction >= 0 then
         if self.move_others then
             -- Displace
@@ -49,13 +52,59 @@ function _M:bumpInto(target)
         end
     end
 
-    self:useEnergy(game.energy_to_act)
+    self:useEnergy(game.energy_to_act * (speed or 1))
 end
 
 --- Makes the death happen!
-function _M:attackTarget(target, mult)
-    if self.combat then
-        local dam = self.combat.dam + self:getStr() - target.combat_armor
-        DamageType:get(DamageType.PHYSICAL).projector(self, target.x, target.y, DamageType.PHYSICAL, math.max(0, dam))
+function _M:attackTarget(target)
+    local speed
+    local hit
+
+    if not speed then
+        if self:getInven(self.INVEN_RHAND) then
+            for i, o in ipairs(self:getInven(self.INVEN_RHAND)) do
+                local combat = self:getObjectCombat(o, "rhand")
+                if combat then
+                    local s, h = self:attackTargetWith(target, combat)
+                    speed = math.max(speed or 0, s)
+                    hit = hit or h
+                end
+            end
+        end
+        if self:getInven(self.INVEN_LHAND) then
+            for i, o in ipairs(self:getInven(self.INVEN_RHAND)) do
+                local combat = self:getObjectCombat(o, "lhand")
+                if combat then
+                    local s, h = self:attackTargetWith(target, combat)
+                    speed = math.max(speed or 0, s)
+                    hit = hit or h
+                end
+            end
+        end
     end
+
+    if not speed then
+        local combat = self:getObjectCombat(o, "unarmed")
+        if combat then
+            local s, h = self:attackTargetWith(target, combat)
+            speed = math.max(speed or 0, s)
+            hit = hit or h
+        end
+    end
+
+    return speed
 end
+
+function _M:attackTargetWith(target, combat)
+    local dam = combat.dam + self:getStr() - target.combat_armor
+    DamageType:get(DamageType.PHYSICAL).projector(self, target.x, target.y, DamageType.PHYSICAL, math.max(0, dam))
+    return 1, true
+end
+
+function _M:getObjectCombat(o, kind)
+    if kind == "unarmed" or kind == "bash" or kind == "kick" then return self.combat end
+    if kind == "rhand" then return o.combat end
+    if kind == "lhand" then return o.combat end
+    return nil
+end
+
