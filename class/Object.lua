@@ -45,7 +45,9 @@ end
 
 function _M:tooltip(x, y)
     -- TODO? Probably want a TOME-style "You see...more objects"
-    return self:getDisplayString()..self.name
+    local text = self:getDisplayString()..self.name
+    if self.desc then text = text .. "\n\n" .. self.desc end
+    return text
 end
 
 function _M:canAct()

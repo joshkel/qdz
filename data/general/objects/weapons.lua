@@ -31,7 +31,7 @@ newEntity{
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
     name = "a generic battleaxe",
-    desc = [[Massive two-handed battleaxes.]],
+    desc = [[A massive two-handed battleaxe.]],
 }
 
 newEntity{ base = "BASE_BATTLEAXE",
@@ -41,6 +41,27 @@ newEntity{ base = "BASE_BATTLEAXE",
     cost = 5,
     combat = {
         dam = 10,
+    },
+}
+
+newEntity{
+    define_as = "BASE_DAGGER",
+    slot = "RHAND", offslot = "LHAND",
+    type = "weapon", subtype="dagger",
+    display = "|", color=colors.SLATE,
+    encumber = 3,
+    rarity = 5,
+    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
+    name = "a generic dagger",
+    desc = [[Small, sharp, and pointy.]],
+}
+
+newEntity{ base = "BASE_DAGGER",
+    name = "iron dagger",
+    level_range = {1, 10},
+    cost = 5,
+    combat = {
+        dam = 3,
     },
 }
 
