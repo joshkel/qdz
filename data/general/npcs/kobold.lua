@@ -47,6 +47,7 @@ newEntity{ base = "BASE_NPC_KOBOLD",
 
     can_absorb = {
         rhand = Talents.T_POISON_ORE_STRIKE,
+        lhand = Talents.T_POISONED_DART,      -- or Poisoned Arrow?  Trap Rune?
         chest = Talents.T_DOG_HEAD_MINING,    -- or Trap Sense?  Earth Affinity?  Poison Resistance?  Some fire ability?
         feet = Talents.T_DANCING_LIGHTS       -- or mining?
     }

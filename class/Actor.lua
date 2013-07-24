@@ -240,7 +240,9 @@ end
 function _M:postUseTalent(ab, ret)
     if not ret then return end
 
-    self:useEnergy()
+    if not ab.no_energy then
+        self:useEnergy(game.energy_to_act / (ab.speed or 1))
+    end
 
     if ab.mode == "sustained" then
         if not self:isTalentActive(ab.id) then
@@ -280,9 +282,15 @@ function _M:getTalentFullDescription(t)
     d:add(true)
 
     if t.power or t.sustain_power then d:add(caption_color, "Power cost: ", text_color, ""..(t.power or t.sustain_power), true) end
+
     if self:getTalentRange(t) > 1 then d:add(caption_color, "Range: ", text_color, ""..self:getTalentRange(t), true)
     else d:add(caption_color, "Range: ", text_color, "melee/personal", true)
     end
+
+    if t.no_energy then d:add(caption_color, "Speed: ", text_color, "instantaneous", true)
+    elseif t.speed then d:add(caption_color, "Speed: ", text_color, ("%i%%"):format(t.speed * 100), true)
+    end
+
     if t.cooldown then d:add(caption_color, "Cooldown: ", text_color, ""..t.cooldown, true) end
 
     d:add(true, caption_color, "Description: ", true, text_color)
@@ -381,24 +389,25 @@ function _M:absorbAbility()
     return false
 end
 
+local talent_absorb_type = {
+    [Talents.T_KICK] = "feet",
+    [Talents.T_BASH] = "chest",
+    [Talents.T_OFF_HAND_ATTACK] = "lhand"
+}
+local action_absorb_type = {
+    attack = "rhand"
+}
+
 --- Gets the type of qi ability to be absorbed, based on our last action.
 function _M:getAbsorbType()
     if type(self.last_action) == "table" then
         if self.last_action.type == "talent" then
-            if self.last_action.talent == Talents.T_KICK then
-                return "feet"
-            elseif self.last_action.talent == Talents.T_BASH then
-                return "chest"
-            else
-                return "head"
-            end
+            return talent_absorb_type[self.last_action.talent] or "head"
         else
             return nil
         end
     else
-        return ({
-            attack = "rhand"
-        })[self.last_action]
+        return action_absorb_type[self.last_action]
     end
 end
 

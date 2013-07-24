@@ -46,7 +46,6 @@ newTalent{
     type = {"basic/combat", 1},
     points = 1,
     cooldown = 6,
-    power = 2,
     range = 1,
     action = function(self, t)
         local tg = {type="hit", range=self:getTalentRange(t)}
@@ -71,7 +70,6 @@ newTalent{
     type = {"basic/combat", 1},
     points = 1,
     cooldown = 6,
-    power = 2,
     range = 1,
     action = function(self, t)
         -- FIXME: Some sort of unique effect here, and update the description below
@@ -89,6 +87,31 @@ newTalent{
         return [[Kicks an enemy, damaging it and knocking it back.
 
 If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your feet.]]
+    end,
+}
+
+newTalent{
+    name = "Off-Hand Attack",
+    short_name = "OFF_HAND_ATTACK",
+    type = {"basic/combat", 1},
+    points = 1,
+    cooldown = 6,
+    range = 1,
+    speed = 2.0,
+    action = function(self, t)
+        -- FIXME: Some sort of unique effect here, and update the description below
+        local tg = {type="hit", range=self:getTalentRange(t)}
+        local x, y, target = self:getTarget(tg)
+        if not x or not y or not target then return nil end
+        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
+
+        self:attackTargetWith(target, self:getInvenCombat(self.INVEN_LHAND, true))
+        return true
+    end,
+    info = function(self, t)
+        return [[A quick, unexpected attack with your off-hand weapon, or a quick shield jab, or a quick strike with your left hand, as appropriate.
+
+Although weaker than a normal attack, this can be performed twice as quickly.]]
     end,
 }
 

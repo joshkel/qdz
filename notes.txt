@@ -1,4 +1,6 @@
 To do:
+Test higher-speed off-hand attack
+Implement focus qi + projectiles
 Fully implement absorbing abilities
 Better inventory screen (improvements to match my Use Talents screen - wider columns, spaces between slots?)
 Order default hotkeys better
@@ -6,6 +8,7 @@ Random name generator
 Right-click menu
 Quick switch weapons (probably - binding qi to multiple body parts will probably be too unpleasant otherwise)
 Not sure that dig speed is working right - monsters may get a free move afterwards, and displayed number of turns is always 1 greater than intended digspeed
+Focus Qi should probably be instantaneous (to make it more interesting as an "oh shoot!" ability), but that messes up its duration
 
 To do a while later:
 Logo

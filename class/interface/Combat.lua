@@ -37,6 +37,7 @@ function _M:bumpInto(target)
 
     local reaction = self:reactionToward(target)
     if reaction < 0 then
+        -- FIXME: Need more detail (lhand versus rhand)
         self.last_action = 'attack'
         speed = self:attackTarget(target)
         self.last_action = nil
@@ -72,7 +73,7 @@ function _M:attackTarget(target)
             end
         end
         if self:getInven(self.INVEN_LHAND) then
-            for i, o in ipairs(self:getInven(self.INVEN_RHAND)) do
+            for i, o in ipairs(self:getInven(self.INVEN_LHAND)) do
                 local combat = self:getObjectCombat(o, "lhand")
                 if combat then
                     local s, h = self:attackTargetWith(target, combat)
@@ -105,6 +106,23 @@ function _M:getObjectCombat(o, kind)
     if kind == "unarmed" or kind == "bash" or kind == "kick" then return self.combat end
     if kind == "rhand" then return o.combat end
     if kind == "lhand" then return o.combat end
+    return nil
+end
+
+--- Gets combat for the given inventory slot.
+-- @param allow_unarmed If true, then allow unarmed combat if the inventory slot is empty.
+function _M:getInvenCombat(inven, allow_unarmed)
+    -- User has no inventory slot!
+    if not self:getInven(inven) then return nil end
+
+    for i, o in ipairs(self:getInven(inven)) do
+        if o.combat then return o.combat end
+    end
+
+    if allow_unarmed then
+        return self:getObjectCombat(nil, "unarmed")
+    end
+
     return nil
 end
 

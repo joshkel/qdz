@@ -46,15 +46,15 @@ newTalent{
 -- Dog-head talents
 
 --[[
-According to Wikipedia (http://en.wikipedia.org/wiki/Kobold):
+Quoting Wikipedia (http://en.wikipedia.org/wiki/Kobold):
 
-16th-century miners sometimes encountered what looked to be rich veins of copper
+"16th-century miners sometimes encountered what looked to be rich veins of copper
 or silver, but which, when smelted, proved to be little more than a pollutant
 and could even be poisonous. These ores caused a burning sensation to those who
 handled them... Miners called these ores cobalt after the creatures from whom
 they were thought to come. In 1735, Swedish chemist Georg Brandt isolated a
 substance from such ores and named it cobalt rex. In 1780, scientists showed
-that this was in fact a new element, which they named cobalt.]]
+that this was in fact a new element, which they named cobalt."]]
 newTalent {
     name = "Poison Ore Strike",
     type = {"qi abilities/right hand", 1},
@@ -114,6 +114,41 @@ newTalent {
             "their simplest methods for discouraging interlopers is to curse " ..
             "a vein of ore, causing it to release poisonous gas when anyone " ..
             "tries to mine it.")
+    end,
+}
+
+newTalent {
+    name = "Poisoned Dart",
+    type = {"qi abilities/left hand", 1},
+    points = 1,
+    cooldown = 6,
+    power = 2,
+    range = 5,
+    getDamage = function(self, t) return self:getSki() end,
+    target = function(self, t)
+         return {type="bolt", range=self:getTalentRange(t), talent=t}
+    end,
+    action = function(self, t)
+        local tg = self:getTalentTarget(t)
+        local x, y, target = self:getTarget(tg)
+        if not x or not y then return nil end
+
+        -- FIXME: Add poison damage type
+        self:projectile(tg, x, y, DamageType.PHYSICAL, t.getDamage(self, t))
+
+        return true
+    end,
+    info = function(self, t)
+        local rules_text = ("Hurls a poisoned dart with range %i, doing %i damage."):format(
+            self:getTalentRange(t), t.getDamage(self, t))
+        if self == game.player then
+            return flavorText(rules_text, 
+                "Dog-head often employ poisoned darts in their ambushes.  You can "..
+                "learn to achieve a similar effect by forming your qi into "..
+                "short-lived darts of force.")
+        else
+            return rules_text
+        end
     end,
 }
 

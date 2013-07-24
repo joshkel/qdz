@@ -331,6 +331,10 @@ end
 function _M:absorbAbility(src)
     -- FIXME: Replace this with the full implementation (limited # of abilities,
     -- tracking the order learned, update Use Talents screen to match, etc.).
+    print(("ABSORB ABILITY: getAbsorbType = %s"):format(self:getAbsorbType() or "nil"))
+
+    if not self:getAbsorbType() then return false end
+
     if not src.can_absorb then
         game.logSeen(self, ("%s's qi is too weak to absorb."):format(src.name:capitalize()))
         return false
