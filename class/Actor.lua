@@ -51,6 +51,8 @@ module(..., package.seeall, class.inherit(
     mod.class.interface.Combat
 ))
 
+_M.projectile_class = "mod.class.Projectile"
+
 function _M:init(t, no_default)
     -- Define some basic combat stats
     self.combat_armor = 0

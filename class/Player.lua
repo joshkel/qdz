@@ -134,7 +134,7 @@ function _M:onTalentCooledDown(tid)
 
     local x, y = game.level.map:getTileToScreen(self.x, self.y)
     game.flyers:add(x, y, 30, -0.3, -3.5, ("%s available"):format(t.name:capitalize()), {0,255,00})
-    game.log("#00ff00#Talent %s is ready to use.", t.name)
+    game.log("#00ff00#Talent %s is ready to use.#LAST#", t.name)
 end
 
 function _M:levelup()
@@ -142,7 +142,7 @@ function _M:levelup()
 
     local x, y = game.level.map:getTileToScreen(self.x, self.y)
     game.flyers:add(x, y, 80, 0.5, -2, "LEVEL UP!", {0,255,255})
-    game.log("#00ffff#Welcome to level %d.", self.level)
+    game.log("#00ffff#Welcome to level %d.#LAST#", self.level)
 end
 
 --- Tries to get a target from the user

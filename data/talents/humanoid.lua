@@ -133,7 +133,7 @@ newTalent {
         local x, y, target = self:getTarget(tg)
         if not x or not y then return nil end
 
-        -- FIXME: Add poison damage type
+        -- FIXME: Poison darts don't poison
         self:projectile(tg, x, y, DamageType.PHYSICAL, t.getDamage(self, t))
 
         return true
@@ -194,8 +194,8 @@ newTalent {
     end
 }
 
--- Some stories have kobolds flying through the air as a fiery stripe or
--- appearing as round lights.
+-- According to Wikipedia, some stories have kobolds flying through the air as a
+-- fiery stripe or appearing as round lights.
 newTalent {
     name = "Dancing Lights",
     type = {"qi abilities/feet", 1},
@@ -245,6 +245,31 @@ newTalent {
             "Dog-head men have some small affinity with fire; they can "..
             "transform their bodies into floating flames that resemble the "..
             "lanterns in their mining helmets and travel quickly in this form.")
+    end,
+}
+
+newTalent {
+    name = "Mining Light",
+    type = {"qi abilities/head", 1},
+    points = 1,
+    mode = "passive",
+
+    lite = 1,
+
+    on_learn = function(self, t)
+        self.lite = self.lite + t.lite
+    end,
+    on_unlearn = function(self, t)
+        self.lite = self.lite - t.lite
+    end,
+
+    info = function(self, t)
+        -- FIXME: This should add a morale boost (+hit) once accuracy is implemented
+        return flavorText(("Adds %i to your light radius."):format(t.lite),
+            "Although the dog-head can see in the dark, they often conjure "..
+            "small fires for their mining helmets. The light makes working "..
+            "underground easier and helps bolster their morale if their traps "..
+            "and ambushes fail and they're forced to engage in direct combat.")
     end,
 }
 

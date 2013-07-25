@@ -22,6 +22,8 @@
 -- darkgod@te4.org
 
 -- This file loads the game module, and loads data
+require("mod.class.utils")
+
 local KeyBind = require "engine.KeyBind"
 local DamageType = require "engine.DamageType"
 local ActorStats = require "engine.interface.ActorStats"

@@ -1,10 +1,6 @@
 -- Qi Dao Zei
 -- Copyright (C) 2013 Castler
 --
--- based on
--- ToME - Tales of Middle-Earth
--- Copyright (C) 2009, 2010, 2011, 2012, 2013 Nicolas Casalini
---
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
 -- the Free Software Foundation, either version 3 of the License, or
@@ -17,30 +13,30 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
---
--- Nicolas Casalini "DarkGod"
--- darkgod@te4.org
 
-newBirthDescriptor{
-    type = "base",
-    name = "base",
-    desc = {
-    },
-    experience = 1.0,
+require("engine.utils")
 
-    body = { INVEN = 10, RHAND = 1, LHAND = 1, BODY = 1, FEET = 1, HEAD = 1 },
+--- Debugging utility function: Attempts to print o, regardless of what o is.
+function util.print_anything(o)
+    if type(o) == "table" then
+        if #o then
+            table.iprint(o)
+        else
+            table.print(o)
+        end
+    else
+        print(tostring(o))
+    end
+end
 
-    copy = {
-        max_level = 10,
-        lite = 2,
-        max_life = 25,
-    },
+--- Temporarily sets t[field] to value, then calls f(...)
+function util.scoped_change(t, field, value, f, ...)
+    local old_value = t[field]
+    t[field] = value
     
-    talents = {
-        [ActorTalents.T_FOCUS_QI] = 1,
-        [ActorTalents.T_BASH] = 1,
-        [ActorTalents.T_KICK] = 1,
-        [ActorTalents.T_OFF_HAND_ATTACK] = 1,
-    }
-}
+    local result = f(...)
+    
+    t[field] = old_value
+    return result
+end
 
