@@ -27,8 +27,20 @@ newTalent{
     type = {"basic/qi", 1},
     points = 1,
     cooldown = 50,
+    no_energy = true,
     action = function(self, t)
         self:setEffect(self.EFF_FOCUSED_QI, 1, {})
+
+        -- HACK: Because this is no_energy, duration doesn't count down as we'd
+        -- expect.  (It takes one round for the duration to reach 0 - this is 
+        -- usually the round when the effect is added - then another round for
+        -- the effect to be removed.  So we actually want a duration of 0, so
+        -- that it's immediately removed, but T-Engine interprets "assign a
+        -- duration of 0" as "remove the effect.")
+        --
+        -- Force taking one off the duration now as a workaround.
+        self:timedEffects(function(def, p) return def.id == self.EFF_FOCUSED_QI end)
+
         return true
     end,
     info = function(self, t)

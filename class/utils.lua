@@ -16,16 +16,17 @@
 
 require("engine.utils")
 
---- Debugging utility function: Attempts to print o, regardless of what o is.
-function util.print_anything(o)
-    if type(o) == "table" then
-        if #o then
-            table.iprint(o)
+--- Debugging utility function: Attempts to print obj, regardless of what obj is.
+function util.inspect(name, obj)
+    print(("DEBUG: %s is a %s"):format(name, type(obj)))
+    if type(obj) == "table" then
+        if #obj and #obj ~= 0 then
+            table.iprint(obj, "  ")
         else
-            table.print(o)
+            table.print(obj, "  ")
         end
     else
-        print(tostring(o))
+        print(tostring(obj))
     end
 end
 
