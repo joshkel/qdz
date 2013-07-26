@@ -1,6 +1,10 @@
 -- Qi Dao Zei
 -- Copyright (C) 2013 Castler
 --
+-- based on
+-- ToME - Tales of Middle-Earth
+-- Copyright (C) 2009, 2010, 2011, 2012, 2013 Nicolas Casalini
+--
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
 -- the Free Software Foundation, either version 3 of the License, or
@@ -23,15 +27,29 @@ function _M:init(t, no_default)
     engine.Projectile.init(self, t, no_default)
 end
 
-function _M:makeProject(src, display, def, do_move, do_act, do_stop)
-    local p = engine.Projectile.makeProject(self, src, display, def, do_move, do_act, do_stop)
+---Saves a projectile source's current state so that we can correctly resolve
+---effects when the projectile hits.
+function _M:saveSourceInfo(src)
+    self.last_action = src.last_action
+    self.focused_qi = (src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI)) and true or false
+end
 
-    -- Track the action that created this projectile
-    p.last_action = src.last_action
+function _M:maybeAddQiParticles(src, def, display)
+    if not display.trail and src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI) then
+        display.trail = "qitrail"
+    end
+    return display
+end
+
+function _M:makeProject(src, display, def, do_move, do_act, do_stop)
+    local p = engine.Projectile.makeProject(self, src, self:maybeAddQiParticles(src, def, display), def, do_move, do_act, do_stop)
 
     -- Hack: Turn the engine.projectile into a mod.class.Projectile
+    -- This is a workaround for http://forums.te4.org/viewtopic.php?f=45&t=38519
     p.__CLASSNAME = _M.name
     setmetatable(p, {__index=_M})
+
+    p:saveSourceInfo(src)
 
     return p
 end
@@ -39,17 +57,29 @@ end
 function _M:makeHoming(src, display, def, target, count, on_move, on_hit)
     local p = engine.Projectile.makeHoming(self, src, display, def, target, count, on_move, on_hit)
 
-    -- Track the action that created this projectile
-    p.last_action = src.last_action
-
-    -- Hack: Turn the engine.projectile into a mod.class.Projectile
+    -- Hack: Turn the engine.projectile into a mod.class.Projectile.  See makeProject.
     p.__CLASSNAME = _M.name
     setmetatable(p, {__index=_M})
+
+    p:saveSourceInfo(src)
 
     return p
 end
 
 function _M:act()
-    return util.scoped_change(self.src, 'last_action', self.last_action, engine.Projectile.act, self)
+    return util.scoped_change(self.src, { last_action = self.last_action, intermediate = self }, engine.Projectile.act, self)
+end
+
+--- Move animation (code based on ToME's).
+-- TODO: Animating projectiles in T-Engine works poorly because they're so short-lived.
+function _M:move(x, y, force)
+    local ox, oy = self.x, self.y
+
+    local moved = engine.Projectile.move(self, x, y, force)
+    if moved and not force and ox and oy and (ox ~= self.x or oy ~= self.y) then
+        self:setMoveAnim(ox, oy, 3, self.project and self.project.def and self.project.def.typ.blur_move)
+    end
+
+    return moved
 end
 

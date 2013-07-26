@@ -162,9 +162,19 @@ function _M:die(src)
         src:gainExp(self:worthExp(src))
     end
 
-    if src and src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI) then
+    -- If the killer had focused qi, then try absorbing an ability.
+    -- There are two ways this could happen:
+    --   1) Killer has EFF_FOCUSED_QI directly.
+    --   2) Killer triggered some intermediate effect while focused.
+    if src and ((src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI)) or (src.intermediate and src.intermediate.focused_qi)) then
         if src:absorbAbility(self) then
-            src:removeEffect(src.EFF_FOCUSED_QI)
+            -- Each qi focus is only good for one absorption, so forcibly
+            -- clear any focused state.
+            if src.intermediate and src.intermediate.focused_qi then
+                src.intermediate.focused_qi = false
+            else
+                src:removeEffect(src.EFF_FOCUSED_QI)
+            end
         end
     end
 

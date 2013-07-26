@@ -30,14 +30,20 @@ function util.inspect(name, obj)
     end
 end
 
---- Temporarily sets t[field] to value, then calls f(...)
-function util.scoped_change(t, field, value, f, ...)
-    local old_value = t[field]
-    t[field] = value
+--- Temporarily applies the fields and values within t to obj, then calls f(...)
+function util.scoped_change(obj, t, f, ...)
+    local saved = {}
+    for k, v in pairs(t) do
+        saved[k] = obj[k]
+        obj[k] = v
+    end
     
     local result = f(...)
     
-    t[field] = old_value
+    for k, v in pairs(t) do
+        obj[k] = saved[k]
+    end
+
     return result
 end
 

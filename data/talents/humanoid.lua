@@ -126,7 +126,7 @@ newTalent {
     range = 5,
     getDamage = function(self, t) return self:getSki() end,
     target = function(self, t)
-         return {type="bolt", range=self:getTalentRange(t), talent=t}
+         return {type="bolt", range=self:getTalentRange(t), talent=t, display={display='*', color=colors.GREEN}}
     end,
     action = function(self, t)
         local tg = self:getTalentTarget(t)

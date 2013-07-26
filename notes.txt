@@ -1,5 +1,4 @@
 To do:
-Test higher-speed off-hand attack
 Fully implement absorbing abilities
 Better inventory screen (improvements to match my Use Talents screen - wider columns, spaces between slots?)
 Order default hotkeys better
