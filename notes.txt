@@ -1,4 +1,5 @@
 To do:
+Saving projectiles doesn't work???
 Fully implement absorbing abilities
 Better inventory screen (improvements to match my Use Talents screen - wider columns, spaces between slots?)
 Order default hotkeys better

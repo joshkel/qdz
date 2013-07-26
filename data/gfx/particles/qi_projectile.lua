@@ -2,7 +2,7 @@
 -- Copyright (C) 2013 Castler
 --
 -- ToME - Tales of Maj'Eyal
--- Copyright (C) 2009, 2010, 2011 Nicolas Casalini
+-- Copyright (C) 2009, 2010, 2011, 2012, 2013 Nicolas Casalini
 --
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -20,23 +20,39 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
-base_size = 48
+local nb = 0
 
 return { generator = function()
-    local x = rng.range(-20, 20)
-    local y = 20 - math.abs(math.sin(x / 20) * 10)
-    -- TODO: Is size correction correct here?  It seems to be...
+    -- Determine angle of movement for the projectile
+    local move_a
+    if proj_x == src_x then
+        move_a = proj_y > src_y and math.pi * 0.5 or math.pi * 1.5
+    else
+        move_a = math.atan((proj_y - src_y) / (proj_x - src_x))
+    end
+
     local size = rng.range(1, 8)
+    local r = (engine.Map.tile_w + engine.Map.tile_h) / 2 / 3
+    local x = r * math.cos(move_a) - size / 2
+    local y = r * math.sin(move_a) - size / 2
+    
+    -- Move 120+ degrees to one side or the other of move_a
+    local dir_a
+    if rng.percent(50) then
+        dir_a = 2.6 * math.pi / 3 * rng.table{1, -1} + move_a
+    else
+        dir_a = rng.float(2.6, 3) * math.pi / 3 * rng.table{1, -1} + move_a
+    end
 
     return {
-        trail = 2,
-        life = rng.range(7, 14),
-        size = size, sizev = 0, sizea = 0.025,
+        trail = 1,
+        life = rng.range(10, 15),
+        size = rng.range(3, 5), sizev = 0, sizea = 0,
 
-        x = x - size / 2, xv = 0, xa = 0 - 0.025,
-        y = y - size / 2, yv = 0, ya = -0.4 - 0.025,
-        dir = 0, dirv = 0, dira = 0,
-        vel = 0, velv = 0, vela = 0,
+        x = x, xv = 0, xa = 0,
+        y = y, yv = 0, ya = 0,
+        dir = dir_a, dirv = 0, dira = 0,
+        vel = 1, velv = 0, vela = 0,
 
         r = 0, rv = 0, ra = 0,
         g = 0, gv = 0, ga = 0,
@@ -45,6 +61,5 @@ return { generator = function()
     }
 end, },
 function(self)
-    self.ps:emit(20)
-end,
-80
+    self.ps:emit(2)
+end

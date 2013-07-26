@@ -35,8 +35,8 @@ function _M:saveSourceInfo(src)
 end
 
 function _M:maybeAddQiParticles(src, def, display)
-    if not display.trail and src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI) then
-        display.trail = "qitrail"
+    if not display.particle and src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI) then
+        display.particle = "qi_projectile"
     end
     return display
 end
@@ -46,6 +46,7 @@ function _M:makeProject(src, display, def, do_move, do_act, do_stop)
 
     -- Hack: Turn the engine.projectile into a mod.class.Projectile
     -- This is a workaround for http://forums.te4.org/viewtopic.php?f=45&t=38519
+    -- TODO: It somehow breaks saving games...
     p.__CLASSNAME = _M.name
     setmetatable(p, {__index=_M})
 

@@ -1,0 +1,1 @@
+Saving a game with projectiles in motion will result in a corrupt savefile.
