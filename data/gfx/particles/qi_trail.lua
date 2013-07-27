@@ -22,39 +22,28 @@
 
 local nb = 0
 
--- TODO: This particle effect was based on arcanetrail; not really the effect I want for qi...
-
 return { generator = function()
-	local radius = 0
-	local sradius = (radius + 0.5) * (engine.Map.tile_w + engine.Map.tile_h) / 2
-	local ad = rng.float(0, 360)
-	local a = math.rad(ad)
-	local r = rng.float(0.1, sradius / 2)
-	local x = r * math.cos(a)
-	local y = r * math.sin(a)
-	local bx = math.floor(x / engine.Map.tile_w)
-	local by = math.floor(y / engine.Map.tile_h)
-	local static = rng.percent(40)
+    local sizea = 0.05
 
 	return {
 		trail = 1,
-		life = 3 + 9 * (sradius - r) / sradius,
-		size = 3, sizev = 0, sizea = 0,
+		life = rng.range(7, 14),
+		size = 3, sizev = 0, sizea = sizea,
 
-		x = x, xv = 0, xa = 0,
-		y = y, yv = 0, ya = 0,
+		x = rng.range(-engine.Map.tile_w / 3, engine.Map.tile_w / 3), xv = 0, xa = -sizea,
+		y = rng.range(-engine.Map.tile_h / 3, engine.Map.tile_h / 3), yv = 0, ya = -sizea,
 		dir = 0, dirv = 0, dira = 0,
 		vel = 0, velv = 0, vela = 0,
 
         r = 0, rv = 0, ra = 0,
         g = 0, gv = 0, ga = 0,
         b = rng.range(10, 30)/255,  bv = rng.range(0, 10)/100, ba = 0,
-        a = rng.range(70, 255)/255, av = 0, aa = 0,
+        a = rng.range(70, 255)/255, av = -0.05, aa = 0,
 	}
 end, },
 function(self)
 	if nb < 1 then
-		self.ps:emit(40)
+		self.ps:emit(10)
 	end
 	nb = nb + 1
 end,

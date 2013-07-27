@@ -25,16 +25,18 @@ base_size = 48
 return { generator = function()
     local x = rng.range(-20, 20)
     local y = 20 - math.abs(math.sin(x / 20) * 10)
-    -- TODO: Is size correction correct here?  It seems to be...
+    -- I'm not entirely sure that the "- size / 2" and "- sizea / 2" adjustments
+    -- below are correct, but they seem to be...
     local size = rng.range(1, 8)
+    local sizea = 0.025
 
     return {
         trail = 2,
         life = rng.range(7, 14),
-        size = size, sizev = 0, sizea = 0.025,
+        size = size, sizev = 0, sizea = sizea,
 
-        x = x - size / 2, xv = 0, xa = 0 - 0.025,
-        y = y - size / 2, yv = 0, ya = -0.4 - 0.025,
+        x = x - size / 2, xv = 0, xa = 0 - sizea / 2,
+        y = y - size / 2, yv = 0, ya = -0.4 - sizea / 2,
         dir = 0, dirv = 0, dira = 0,
         vel = 0, velv = 0, vela = 0,
 

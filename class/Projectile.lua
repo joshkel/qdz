@@ -35,8 +35,11 @@ function _M:saveSourceInfo(src)
 end
 
 function _M:maybeAddQiParticles(src, def, display)
-    if not display.particle and src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI) then
-        display.particle = "qi_projectile"
+    -- TODO: qi_projectile is a cooler effect, but most projectiles move so fast
+    -- that you can't see it, so we add qi_trail too, at least for now...
+    if src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI) then
+        if not display.particle then display.particle = "qi_projectile" end
+        if not display.trail then display.trail = "qi_trail" end
     end
     return display
 end
