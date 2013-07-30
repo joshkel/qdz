@@ -115,7 +115,7 @@ function _M:use(item)
 		save:close()
 		util.showMainMenu()
 	elseif act == "cheat" then
-		game.logPlayer(self.actor, "#LIGHT_BLUE#You resurrect! CHEATER !")
+		game.logPlayer(self.actor, "#LIGHT_BLUE#You resurrect! CHEATER!#LAST#")
 
 		self:cleanActor()
 		self:restoreResources()

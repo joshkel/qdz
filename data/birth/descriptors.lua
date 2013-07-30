@@ -33,7 +33,8 @@ newBirthDescriptor{
     copy = {
         max_level = 10,
         lite = 2,
-        max_life = 25,
+        max_life = 10,
+        max_power = 10,
     },
     
     talents = {

@@ -58,8 +58,8 @@ function _M:init(t, no_default)
     self.combat_armor = 0
 
     -- Default regen
-    t.power_regen = t.power_regen or 1
-    t.life_regen = t.life_regen or 0.25 -- Life regen real slow
+    t.power_regen = t.power_regen or 0.25
+    t.life_regen = t.life_regen or 0.25
 
     t.money = 0
 
@@ -86,6 +86,8 @@ end
 
 function _M:resolveLevel()
     engine.interface.ActorLevel.resolveLevel(self)
+    self.max_life = self.max_life + self:getCon() * 2
+    self.max_power = self.max_power + self:getMnd() * 2
     self:resetToFull()
 end
 
@@ -184,7 +186,7 @@ end
 function _M:levelup()
     self.max_life = self.max_life + 2
 
-    self:incMaxPower(3)
+    self:incMaxPower(2)
 
     -- Heal upon new level
     self.life = self.max_life
@@ -192,9 +194,12 @@ function _M:levelup()
 end
 
 --- Notifies a change of stat value
+--- TODO: Also need to change on temporary values and change on negative values??
 function _M:onStatChange(stat, v)
     if stat == self.STAT_CON then
         self.max_life = self.max_life + 2
+    elseif stat == self.STAT_MND then
+        self.max_power = self.max_power + 2
     end
 end
 

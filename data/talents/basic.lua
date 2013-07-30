@@ -65,6 +65,7 @@ newTalent{
         if not x or not y or not target then return nil end
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
+        -- FIXME: Shouldn't knockback if attack misses
         target:knockback(self.x, self.y, 2 + self:getSki())
         target:setMoveAnim(x, y, 8, 5)
         self:attackTargetWith(target, self:getObjectCombat(nil, "bash"))
@@ -90,6 +91,7 @@ newTalent{
         if not x or not y or not target then return nil end
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
+        -- FIXME: Shouldn't knockback if attack misses
         target:knockback(self.x, self.y, 2 + self:getSki())
         target:setMoveAnim(x, y, 8, 5)
         self:attackTargetWith(target, self:getObjectCombat(nil, "kick"))

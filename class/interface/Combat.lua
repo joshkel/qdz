@@ -30,6 +30,40 @@ local Talents = require "engine.interface.ActorTalents"
 --- Interface to add ToME combat system
 module(..., package.seeall, class.make)
 
+--- Represents any kind of skill check: attack versus defense, etc.  Not
+--- combat-specific, although it seems simplest to keep it here with related
+--- mechanics.
+---
+--- This currently uses a logistic distribution.  See
+--- http://en.wikipedia.org/wiki/Logistic_distribution and
+--- http://stackoverflow.com/a/3955904/25507.  A logistic distribution is
+--- similar to the standard distribution but has heavier tails (i.e., slower
+--- than exponential dropoff).  Logistic and normal distributions are both
+--- examples of sigmoid distributions.
+function _M:skillCheck(skill, difficulty)
+    -- A logistic distribution is defined by two parameters: scale and mean.
+    -- Use skill for the mean.  Use a scale (analogous to standard deviation) of
+    -- 5 to give results somewhat similar to D20.
+    local val = rng.float(0, 1)
+    local result = skill + 5 * math.log(val / (1 - val))
+
+    -- Limit values to +/- 100 * s so that we don't have to deal with infinity
+    -- elsewhere in the code.
+    result = math.min(result, skill + 5 * 100)
+    result = math.max(result, skill - 5 * 100)
+
+    print(("Skill check: %f against %f, %f chance of success, result %f"):format(
+        skill, difficulty, self:skillChanceOfSuccess(skill, difficulty), result))
+
+    return result >= difficulty, result
+end
+
+--- Gets the chance of success for the given skill check, as a percentage,
+--- without considering the +/- 100 limit in skillCheck.
+function _M:skillChanceOfSuccess(skill, difficulty)
+    return 50 + 50 * math.tanh((skill - difficulty) / (2 * 5))
+end
+
 --- Checks what to do with the target
 -- Talk? Attack? Displace?
 function _M:bumpInto(target)
@@ -60,6 +94,8 @@ end
 function _M:attackTarget(target)
     local speed
     local hit
+
+    -- TODO: Too much duplication, both in the following code and in alternate methods of attack (kick, bash, ...)
 
     if not speed then
         if self:getInven(self.INVEN_RHAND) then
@@ -96,7 +132,17 @@ function _M:attackTarget(target)
     return speed
 end
 
+---Attempts to attack target using the given combat information.
+---Returns speed, hit
 function _M:attackTargetWith(target, combat)
+    local atk = self:combatAttack(weapon)
+    local def = target:combatDefense()
+
+    if not self:skillCheck(atk, def) then
+        game.logSeen(target, game.flash.NEUTRAL, "%s misses %s.", self.name:capitalize(), target.name)
+        return 1, false
+    end
+
     local dam = combat.dam + self:getStr() - target.combat_armor
     DamageType:get(DamageType.PHYSICAL).projector(self, target.x, target.y, DamageType.PHYSICAL, math.max(0, dam))
     return 1, true
@@ -107,6 +153,14 @@ function _M:getObjectCombat(o, kind)
     if kind == "rhand" then return o.combat end
     if kind == "lhand" then return o.combat end
     return nil
+end
+
+function _M:combatAttack(combat)
+    return math.max(self:getSkiMod() + (self.level or game.level.level) / 3, 0)
+end
+
+function _M:combatDefense()
+    return math.max(self:getAgiMod() + (self.level or game.level.level) / 3, 0)
 end
 
 --- Gets combat for the given inventory slot.
