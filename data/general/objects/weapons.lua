@@ -21,8 +21,33 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
+-- Long staff.  Known in China as "gun."
 newEntity{
-    define_as = "BASE_BATTLEAXE",
+    define_as = "BASE_STAFF",
+    slot = "RHAND",
+    slot_forbid = "LHAND",
+    type = "weapon", subtype="staff",
+    display = "\\", color=colors.UMBER,
+    encumber = 3,
+    rarity = 5,
+    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
+    name = "a generic halberd",
+    desc = [[A polearm.]],
+}
+
+newEntity{ base = "BASE_STAFF",
+    name = "staff",
+    level_range = {1, 10},
+    cost = 1,
+    combat = {
+        dam = 6,
+    },
+    desc = [[A simple wooden staff, useful for self defense.  Staffs are known as "the grandfather of all weapons."]]
+}
+
+-- Ji (Chinese halberd).  Reportedly the favored weapon of Lu Bu.
+newEntity{
+    define_as = "BASE_HALBERD",
     slot = "RHAND",
     slot_forbid = "LHAND",
     type = "weapon", subtype="battleaxe",
@@ -30,20 +55,72 @@ newEntity{
     encumber = 3,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
-    name = "a generic battleaxe",
-    desc = [[A massive two-handed battleaxe.]],
+    name = "a generic halberd",
+    desc = [[A polearm.]],
 }
 
-newEntity{ base = "BASE_BATTLEAXE",
-    name = "iron battleaxe",
+newEntity{ base = "BASE_HALBERD",
+    name = "horse halberd",
     level_range = {1, 10},
-    require = { stat = { str=10 }, },
+    require = { stat = { str=13 }, },
     cost = 5,
     combat = {
         dam = 10,
     },
+    desc = [[A polearm with a spear head for thrusting, a single crescent-shaped blade below the spear head for sweeping and cutting, and a red horsehair tassel tied just below the blade.]]
 }
 
+-- Dao.  Also known as broadsword in some translations.
+newEntity{
+    define_as = "BASE_SABER",
+    slot = "RHAND",
+    slot_forbid = "LHAND",
+    type = "weapon", subtype="saber",
+    display = "|", color=colors.SLATE,
+    encumber = 3,
+    rarity = 5,
+    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
+    name = "a generic saber",
+    desc = [[A saber.]],
+}
+
+newEntity{ base = "BASE_SABER",
+    name = "saber",
+    level_range = {1, 10},
+    cost = 5,
+    combat = {
+        dam = 7,
+    },
+    desc = [[A slightly curved, single-edged sword, made for slashing and chopping. A common weapon in the Imperial army, it's known as "the general of all weapons."]]
+}
+
+-- Jian
+newEntity{
+    define_as = "BASE_SWORD",
+    slot = "RHAND",
+    slot_forbid = "LHAND",
+    type = "weapon", subtype="sword",
+    display = "|", color=colors.SLATE,
+    encumber = 3,
+    rarity = 5,
+    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
+    name = "a generic sword",
+    desc = [[A sword.]],
+}
+
+newEntity{ base = "BASE_SABER",
+    name = "straightsword",
+    level_range = {1, 10},
+    require = { stat = { ski=12 }, },
+    cost = 5,
+    combat = {
+        dam = 8,
+    },
+    desc = [[A straight, narrow, double-edged sword. Considered an elegant and refined weapon, it's known as "the gentleman of all weapons."]]
+}
+
+-- Chinese daggers are known as bi shou, although there appears to be little
+-- to distinguish them from other daggers.
 newEntity{
     define_as = "BASE_DAGGER",
     slot = "RHAND", offslot = "LHAND",
@@ -57,7 +134,7 @@ newEntity{
 }
 
 newEntity{ base = "BASE_DAGGER",
-    name = "iron dagger",
+    name = "dagger",
     level_range = {1, 10},
     cost = 5,
     combat = {

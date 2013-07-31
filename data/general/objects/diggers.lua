@@ -90,10 +90,9 @@ newEntity{
 newEntity{ base = "BASE_DIGGER",
     name = "iron pickaxe",
     level_range = {1, 10},
-    require = { stat = { str=10 }, },
     cost = 5,
     combat = {
-        dam = 5,
+        dam = 6,
     },
     desc = [[A pickaxe. Although designed for mining, it can be used as a weapon in a pinch.]]
 }

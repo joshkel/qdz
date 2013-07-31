@@ -19,4 +19,12 @@ Rework all dialogs
 To do much later:
 Figure out an email address
 Attribution for artwork
+OGL
+
+Game mechanics
+Monster ranks??? (E.g., lower hp per con for minions / mooks, higher hp per con for elites)
+Melee accuracy - based on str, ski, or a combination?  (E.g., average for most weapons, str for power weapons, ski for finesse weapons)  Kick should be based on agi; what about bash?
+
+HP: base + 2 per level + con * 2
+Power: base + 2 per level + mnd * 2
 

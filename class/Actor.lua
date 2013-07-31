@@ -64,7 +64,7 @@ function _M:init(t, no_default)
     t.money = 0
 
     -- Default melee barehanded damage
-    self.combat = { dam=1 }
+    self.combat = { dam=2 }
 
     engine.Actor.init(self, t, no_default)
     engine.interface.ActorInventory.init(self, t)
@@ -86,8 +86,8 @@ end
 
 function _M:resolveLevel()
     engine.interface.ActorLevel.resolveLevel(self)
-    self.max_life = self.max_life + self:getCon() * 2
-    self.max_power = self.max_power + self:getMnd() * 2
+    self.max_life = self.max_life + self:getCon()
+    self.max_power = self.max_power + self:getMnd()
     self:resetToFull()
 end
 
@@ -197,9 +197,9 @@ end
 --- TODO: Also need to change on temporary values and change on negative values??
 function _M:onStatChange(stat, v)
     if stat == self.STAT_CON then
-        self.max_life = self.max_life + 2
+        self.max_life = self.max_life + 1
     elseif stat == self.STAT_MND then
-        self.max_power = self.max_power + 2
+        self.max_power = self.max_power + 1
     end
 end
 
@@ -222,7 +222,7 @@ function _M:preUseTalent(ab, silent, fake)
         end
     else
         if ab.power and self:getPower() < ab.power then
-            game.logPlayer(self, "You do not have enough power to cast %s.", ab.name)
+            game.logPlayer(self, "You do not have enough power to use %s.", ab.name)
             return false
         end
     end
@@ -301,7 +301,7 @@ function _M:getTalentFullDescription(t)
     if t.power or t.sustain_power then d:add(caption_color, "Power cost: ", text_color, ""..(t.power or t.sustain_power), true) end
 
     if self:getTalentRange(t) > 1 then d:add(caption_color, "Range: ", text_color, ""..self:getTalentRange(t), true)
-    else d:add(caption_color, "Range: ", text_color, "melee/personal", true)
+    else d:add(caption_color, "Range: ", text_color, "melee/personal", true) -- TODO: Can we be more precise than "melee/personal"?
     end
 
     if t.no_energy then d:add(caption_color, "Speed: ", text_color, "instantaneous", true)

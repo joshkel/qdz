@@ -2,7 +2,7 @@
 -- Copyright (C) 2013 Castler
 --
 -- based on
--- ToME - Tales of Middle-Earth
+-- ToME - Tales of Maj'Eyal
 -- Copyright (C) 2009, 2010, 2011, 2012, 2013 Nicolas Casalini
 --
 -- This program is free software: you can redistribute it and/or modify
@@ -21,31 +21,26 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
-newBirthDescriptor{
-    type = "base",
-    name = "base",
-    desc = {
-    },
-    experience = 1.0,
+local Talents = require "engine.interface.ActorTalents"
 
-    body = { INVEN = 10, RHAND = 1, LHAND = 1, BODY = 1, FEET = 1, HEAD = 1 },
+--- Resolves equipment creation for an actor
+function resolvers.equip(t)
+    return {__resolver="equip", __resolve_last=true, t}
+end
+--- Actually resolve the equipment creation
+function resolvers.calc.equip(t, e)
+    -- Iterate of object requests, try to create them and equip them
+    for i, filter in ipairs(t[1]) do
+        local o = game.zone:makeEntity(game.level, "object", filter, nil, true)
+        if o then
+            if e:wearObject(o, true, false) == false then
+                e:addObject(e.INVEN_INVEN, o)
+            end
 
-    copy = {
-        max_level = 10,
-        lite = 2,
-        max_life = 10,
-        max_power = 10,
-
-        resolvers.equip {
-            {type="weapon", subtype="staff", name="staff", ego_change=-1000}
-        }
-    },
-    
-    talents = {
-        [ActorTalents.T_FOCUS_QI] = 1,
-        [ActorTalents.T_BASH] = 1,
-        [ActorTalents.T_KICK] = 1,
-        [ActorTalents.T_OFF_HAND_ATTACK] = 1,
-    }
-}
+            game.zone:addEntity(game.level, o, "object")
+        end
+    end
+    -- Delete the origin field
+    return nil
+end
 

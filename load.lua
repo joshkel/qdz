@@ -57,7 +57,7 @@ ActorStats:defineStat("Constitution", "con", 10, 1, 100, "Constitution represent
 ActorStats:defineStat("Agility",      "agi", 10, 1, 100, "Agility gives your gross motor skills and overall quickness. It affects your ability to dodge as well as your overall speed. It is associated with the qi of your feet.")
 ActorStats:defineStat("Mind",         "mnd", 10, 1, 100, "Mind covers your intelligence, insight, and strength of will. Numerous special abilities derive their effectiveness from your mind. Mind is associated with the qi of your head.")
 
--- Add D20-style stat modifiers
+-- Add D20-style stat modifiers.  TODO: Not sure if I'll end up using these...
 for i, s in ipairs(ActorStats.stats_def) do
     ActorStats["get"..s.short_name:lower():capitalize().."Mod"] = function(self, scale, raw, no_inc)
         return (self:getStat(ActorStats["STAT_"..s.short_name:upper()], scale, raw, no_inc) - 10) / 2
@@ -74,6 +74,9 @@ ActorInventory:defineInventory("HEAD", "Head", true, "Helmets or other headgear"
 ActorInventory:defineInventory("BODY", "Body", true, "Armor to protect your body")
 ActorInventory:defineInventory("FEET", "Feet", true, "Sandals, boots, or other footwear")
 
+-- Additional entities resolvers
+dofile("/mod/resolvers.lua")
+ 
 -- Birther descriptor
 Birther:loadDefinition("/data/birth/descriptors.lua")
 

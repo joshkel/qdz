@@ -138,12 +138,16 @@ function _M:attackTargetWith(target, combat)
     local atk = self:combatAttack(weapon)
     local def = target:combatDefense()
 
-    if not self:skillCheck(atk, def) then
+    if not self:skillCheck(atk, def) and not self:hasEffect(self.EFF_FOCUSED_QI) then
         game.logSeen(target, game.flash.NEUTRAL, "%s misses %s.", self.name:capitalize(), target.name)
         return 1, false
     end
 
-    local dam = combat.dam + self:getStr() - target.combat_armor
+    local dam = combat.dam
+    if not self:hasEffect(self.EFF_FOCUSED_QI) then
+        dam = rng.range(combat.min_dam or 1, dam)
+    end
+    dam = dam + self:getStr() / 2 - rng.range(0, target.combat_armor)
     DamageType:get(DamageType.PHYSICAL).projector(self, target.x, target.y, DamageType.PHYSICAL, math.max(0, dam))
     return 1, true
 end
@@ -156,11 +160,11 @@ function _M:getObjectCombat(o, kind)
 end
 
 function _M:combatAttack(combat)
-    return math.max(self:getSkiMod() + (self.level or game.level.level) / 3, 0)
+    return self:getSki() / 2 + (self.level or game.level.level) / 2
 end
 
 function _M:combatDefense()
-    return math.max(self:getAgiMod() + (self.level or game.level.level) / 3, 0)
+    return self:getAgi() / 2 + (self.level or game.level.level) / 2
 end
 
 --- Gets combat for the given inventory slot.

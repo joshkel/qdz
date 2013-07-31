@@ -43,7 +43,7 @@ newEntity{ base = "BASE_NPC_KOBOLD",
     level_range = {1, 4}, exp_worth = 1,
     rarity = 4,
     max_life = resolvers.rngavg(5,9),
-    combat = { dam=2 },
+    combat = { dam=5 },
 
     can_absorb = {
         rhand = Talents.T_POISON_ORE_STRIKE,

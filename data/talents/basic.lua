@@ -22,7 +22,6 @@
 -- darkgod@te4.org
 
 newTalent{
-    -- FIXME: add combat bonuses for qi focus and describe them
     name = "Focus Qi",
     type = {"basic/qi", 1},
     points = 1,
@@ -44,7 +43,7 @@ newTalent{
         return true
     end,
     info = function(self, t)
-        return [[Focuses your qi into a visibly glowing aura around you.
+        return [[Focuses your qi into a visibly glowing aura around you. Qi focus only lasts for one turn, but while focused, your attacks are guaranteed to hit and do maximum damage.
 
 If you deal a killing blow to an opponent while focused, you may absorb a portion of the opponent's qi, granting you a new ability or experience.
 
@@ -123,7 +122,7 @@ newTalent{
         return true
     end,
     info = function(self, t)
-        return [[A quick, unexpected attack with your off-hand weapon, or a quick shield jab, or a quick strike with your left hand, as appropriate.
+        return [[A quick, unexpected attack with your off-hand weapon, or a quick shield jab, or a quick unarmed strike with your left hand, as appropriate.
 
 Although weaker than a normal attack, this can be performed twice as quickly.]]
     end,
