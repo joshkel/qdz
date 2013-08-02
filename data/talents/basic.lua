@@ -32,10 +32,10 @@ newTalent{
 
         -- HACK: Because this is no_energy, duration doesn't count down as we'd
         -- expect.  (It takes one round for the duration to reach 0 - this is 
-        -- usually the round when the effect is added - then another round for
-        -- the effect to be removed.  So we actually want a duration of 0, so
-        -- that it's immediately removed, but T-Engine interprets "assign a
-        -- duration of 0" as "remove the effect.")
+        -- usually the round when a 1-duration effect is added - then another
+        -- round for the effect to be removed.  So we actually want a duration
+        -- of 0, so that it's immediately removed, but T-Engine interprets
+        -- "assign a duration of 0" as "remove the effect.")
         --
         -- Force taking one off the duration now as a workaround.
         self:timedEffects(function(def, p) return def.id == self.EFF_FOCUSED_QI end)
@@ -52,28 +52,35 @@ The type of ability absorbed depends on how you deal the killing blow: whether a
 }
 
 newTalent{
-    -- FIXME: Differentiate cooldown and effect from Kick, and make it use a shield if you have one
+    -- FIXME: Make it use a shield if you have one?
     name = "Bash",
     type = {"basic/combat", 1},
     points = 1,
     cooldown = 6,
     range = 1,
+    getDistance = function(self, t)
+        return (self:getStr() + self:getCon()) / 5
+    end,
     action = function(self, t)
         local tg = {type="hit", range=self:getTalentRange(t)}
         local x, y, target = self:getTarget(tg)
         if not x or not y or not target then return nil end
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
-        -- FIXME: Shouldn't knockback if attack misses
-        target:knockback(self.x, self.y, 2 + self:getSki())
-        target:setMoveAnim(x, y, 8, 5)
-        self:attackTargetWith(target, self:getObjectCombat(nil, "bash"))
+        local speed, hit = self:attackTargetWith(target, self:getObjectCombat(nil, "bash"),
+            DamageType.PHYSICAL_KNOCKBACK, { distance = t.getDistance(self, t) })
+        if not hit then
+            -- TODO: Keep this "driven back a square" mechanic?
+            -- It implies that an immobile target can't dodge a tackle...
+            target:knockback(self.x, self.y, 1)
+            target:setMoveAnim(x, y, 8, 5)
+        end
         return true
     end,
     info = function(self, t)
-        return [[Bashes an enemy with your shield (if you have one) or a tackle, damaging it and knocking it back.
+        return ([[Bashes into an enemy with a shoulder tackle, dealing %s damage and knocking it back %i squares. Damage and knockback distance are determined by your strength and constitution. Even if your opponent manages to dodge, it will be driven back one square.
 
-If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your chest.]]
+If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your chest.]]):format(string.describe_range(self:combatDamageRange(self:getObjectCombat(nil, "bash"))), t.getDistance(self, t))
     end,
 }
 

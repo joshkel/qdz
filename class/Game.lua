@@ -71,8 +71,14 @@ function _M:run()
     self:setFlyingText(self.flyers)
 
     self.log = function(style, ...) if type(style) == "number" then self.logdisplay(...) self.flash(style, ...) else self.logdisplay(style, ...) self.flash(self.flash.NEUTRAL, style, ...) end end
-    self.logSeen = function(e, style, ...) if e and self.level.map.seens(e.x, e.y) then self.log(style, ...) end end
+    self.logSeen = function(e, style, ...) if e and self.level.map.seens(e.x, e.y) then self.log(style, ...); return true end end
     self.logPlayer = function(e, style, ...) if e == self.player then self.log(style, ...) end end
+
+    self.logAnySeen = function(e_list, style, ...)
+        for i, e in ipairs(e_list) do
+            if self.logSeen(e, style, ...) then return true end
+        end
+    end
 
     self.log(self.flash.GOOD, "Welcome to #00FF00#Qi Dao Zei!")
 

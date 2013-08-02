@@ -53,6 +53,8 @@ module(..., package.seeall, class.inherit(
 
 _M.projectile_class = "mod.class.Projectile"
 
+_M.BASE_UNARMED_DAMAGE = 2
+
 function _M:init(t, no_default)
     -- Define some basic combat stats
     self.combat_armor = 0
@@ -64,7 +66,7 @@ function _M:init(t, no_default)
     t.money = 0
 
     -- Default melee barehanded damage
-    self.combat = { dam=2 }
+    self.combat = { dam=_M.BASE_UNARMED_DAMAGE }
 
     engine.Actor.init(self, t, no_default)
     engine.interface.ActorInventory.init(self, t)
@@ -301,7 +303,8 @@ function _M:getTalentFullDescription(t)
     if t.power or t.sustain_power then d:add(caption_color, "Power cost: ", text_color, ""..(t.power or t.sustain_power), true) end
 
     if self:getTalentRange(t) > 1 then d:add(caption_color, "Range: ", text_color, ""..self:getTalentRange(t), true)
-    else d:add(caption_color, "Range: ", text_color, "melee/personal", true) -- TODO: Can we be more precise than "melee/personal"?
+    elseif t.range then d:add(caption_color, "Range: ", text_color, "melee", true)
+    else d:add(caption_color, "Range: ", text_color, "personal", true)
     end
 
     if t.no_energy then d:add(caption_color, "Speed: ", text_color, "instantaneous", true)

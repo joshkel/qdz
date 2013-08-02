@@ -21,15 +21,21 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
+local getDamageFlash = function(src, target)
+    if target == game.player then return game.flash.BAD
+    elseif src == game.player then return game.flash.GOOD
+    else return game.flash.NEUTRAL
+    end
+end
+
 -- The basic stuff used to damage a grid
-setDefaultProjector(function(src, x, y, type, dam)
+setDefaultProjector(function(src, x, y, type, dam, extra)
     local target = game.level.map(x, y, Map.ACTOR)
     if target then
-        local flash = game.flash.NEUTRAL
-        if target == game.player then flash = game.flash.BAD end
-        if src == game.player then flash = game.flash.GOOD end
+        if not extra or not extra.silent then
+            game.logSeen(target, getDamageFlash(src, target), "%s hits %s for %s%i %s damage#LAST#.", src.name:capitalize(), target.name, DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
+        end
 
-        game.logSeen(target, flash, "%s hits %s for %s%i %s damage#LAST#.", src.name:capitalize(), target.name, DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
         local sx, sy = game.level.map:getTileToScreen(x, y)
         if target:takeHit(dam, src) then
             if src == game.player or target == game.player then
@@ -77,6 +83,23 @@ newDamageType{
         end
 
         if src.talentCallbackAllOn then src:talentCallbackAllOn("on_dig", x, y, feat) end
+    end,
+}
+
+newDamageType{
+    name = "physical knockback", type = "PHYSICAL_KNOCKBACK",
+    projector = function(src, x, y, typ, dam)
+        local target = game.level.map(x, y, Map.ACTOR)
+        if not target then return end
+
+        local old_x, old_y = target.x, target.y
+        target:knockback(src.x, src.y, dam.distance)
+        target:setMoveAnim(old_x, old_y, 8, 5)
+
+        game.logAnySeen({{x=old_x, y=old_y}, target}, getDamageFlash(src, target), "%s is knocked back and takes %s%i %s damage#LAST#!",
+            target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color or "#aaaaaa#", dam.dam, DamageType:get(DamageType.PHYSICAL).name)
+ 
+        return DamageType:get(DamageType.PHYSICAL).projector(src, target.x, target.y, DamageType.PHYSICAL, dam.dam, {silent=true} )
     end,
 }
 

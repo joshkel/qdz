@@ -134,7 +134,8 @@ end
 
 ---Attempts to attack target using the given combat information.
 ---Returns speed, hit
-function _M:attackTargetWith(target, combat)
+function _M:attackTargetWith(target, combat, damtype, damargs)
+    damtype = damtype or DamageType.PHYSICAL
     local atk = self:combatAttack(weapon)
     local def = target:combatDefense()
 
@@ -143,19 +144,33 @@ function _M:attackTargetWith(target, combat)
         return 1, false
     end
 
-    local dam = combat.dam
-    if not self:hasEffect(self.EFF_FOCUSED_QI) then
-        dam = rng.range(combat.min_dam or 1, dam)
+    local dam = self:combatDamage(combat)
+    dam = dam - rng.range(0, target.combat_armor)
+    dam = math.max(0, dam)
+
+    if damargs then
+        damargs.dam = dam
+    else
+        damargs = dam
     end
-    dam = dam + self:getStr() / 2 - rng.range(0, target.combat_armor)
-    DamageType:get(DamageType.PHYSICAL).projector(self, target.x, target.y, DamageType.PHYSICAL, math.max(0, dam))
+
+    DamageType:get(damtype).projector(self, target.x, target.y, damtype, damargs)
     return 1, true
 end
 
 function _M:getObjectCombat(o, kind)
-    if kind == "unarmed" or kind == "bash" or kind == "kick" then return self.combat end
+    if kind == "unarmed" or kind == "kick" then return self.combat end
     if kind == "rhand" then return o.combat end
     if kind == "lhand" then return o.combat end
+
+    if kind == "bash" then
+        -- Bash damage is unarmed damage modified by constitution.
+        -- (The bigger you are, the more it hurts someone when you run into them.)
+        local result = table.clone(self:getObjectCombat(nil, "unarmed"))
+        result.dam = result.dam - self.BASE_UNARMED_DAMAGE + math.round(self:getCon() / 2)
+        return result
+    end
+
     return nil
 end
 
@@ -165,6 +180,20 @@ end
 
 function _M:combatDefense()
     return self:getAgi() / 2 + (self.level or game.level.level) / 2
+end
+
+function _M:combatDamage(combat)
+    local min_dam, dam = self:combatDamageRange(combat)
+    if self:hasEffect(self.EFF_FOCUSED_QI) then
+        return dam
+    else
+        return rng.range(min_dam, dam)
+    end
+end
+
+function _M:combatDamageRange(combat)
+    local bonus = math.round(self:getStr() / 2)
+    return (combat.min_dam or 1) + bonus, combat.dam + bonus
 end
 
 --- Gets combat for the given inventory slot.
