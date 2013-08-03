@@ -135,7 +135,9 @@ newTalent {
     cooldown = 6,
     power = 2,
     range = 5,
-    getDamage = function(self, t) return self:getSki() end,
+    getCombat = function(self, t) return {dam=1} end, -- TODO: Adjust damamge?  Feels maybe high; feels like it should maybe be Skill?
+    getPower = function(self, t) return math.round(self:getSki() / 5) end,
+    getDuration = function(self, t) return 3 end,
     target = function(self, t)
          return {type="bolt", range=self:getTalentRange(t), talent=t, display={display='*', color=colors.GREEN}}
     end,
@@ -144,14 +146,20 @@ newTalent {
         local x, y, target = self:getTarget(tg)
         if not x or not y then return nil end
 
-        -- FIXME: Poison darts don't poison
-        self:projectile(tg, x, y, DamageType.PHYSICAL, t.getDamage(self, t))
+        -- TODO: Should probably debuff instead of just damage over time
+        self:projectile(tg, x, y, function(tx, ty, tg, self, tmp)
+            local target = game.level.map(tx, ty, game.level.map.ACTOR)
+            if not target then return end
+            self:attackTargetWith(target, t.getCombat(self, t), DamageType.PHYSICAL_POISON,
+                { power=t.getPower(self, t), duration=t.getDuration(self, t) })
+        end)
 
         return true
     end,
     info = function(self, t)
-        local rules_text = ("Hurls a poisoned dart with range %i, doing %i damage."):format(
-            self:getTalentRange(t), t.getDamage(self, t))
+        local rules_text = ("Hurls a poisoned dart with range %i, doing %s damage immediately and %i per turn for %i turns. Poison damage is based on your skill."):format(
+            self:getTalentRange(t), string.describe_range(self:combatDamageRange(t.getCombat(self, t))),
+            t.getPower(self, t), t.getDuration(self, t))
         if self == game.player then
             return flavorText(rules_text, 
                 "Dog-head often employ poisoned darts in their ambushes.  You can "..

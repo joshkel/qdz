@@ -1,4 +1,8 @@
 To do:
+Absorb qi through timed effects (Poisoned Dart) - and map effects???
+Basic game mechanics: Kick, Mining Light, armor, shields
+Tooltips for weapons
+Starting stats
 Saving projectiles doesn't work???
 Add combat stats to character sheet, with explanation
 AI is quite bad - if there's a row of monsters, the second one won't step around the first to double-team you
@@ -7,8 +11,11 @@ Better inventory screen (improvements to match my Use Talents screen - wider col
 Order default hotkeys better
 Random name generator
 Right-click menu
+Critical hits
+Left vs right hand
 Quick switch weapons???
 Not sure that dig speed is working right - monsters may get a free move afterwards, and displayed number of turns is always 1 greater than intended digspeed
+Search-and-replace talent -> technique for more of a "martial arts" feel?
 
 To do a while later:
 Logo

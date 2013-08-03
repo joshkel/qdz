@@ -69,11 +69,14 @@ newTalent{
 
         local speed, hit = self:attackTargetWith(target, self:getObjectCombat(nil, "bash"),
             DamageType.PHYSICAL_KNOCKBACK, { distance = t.getDistance(self, t) })
-        if not hit then
+        if not hit and target:canBe("knockback") then
             -- TODO: Keep this "driven back a square" mechanic?
             -- It implies that an immobile target can't dodge a tackle...
             target:knockback(self.x, self.y, 1)
             target:setMoveAnim(x, y, 8, 5)
+            game.logSeen(target, ("%s is driven back!"):format(target.name:capitalize()))
+        else
+            game.logSeen(target, ("%s stands is ground!"):format(target.name:capitalize()))
         end
         return true
     end,

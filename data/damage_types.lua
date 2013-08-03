@@ -86,20 +86,42 @@ newDamageType{
     end,
 }
 
+-- Physical damage plus knockback. dam should be a table containing elements dam and distance.
 newDamageType{
     name = "physical knockback", type = "PHYSICAL_KNOCKBACK",
     projector = function(src, x, y, typ, dam)
         local target = game.level.map(x, y, Map.ACTOR)
         if not target then return end
 
-        local old_x, old_y = target.x, target.y
-        target:knockback(src.x, src.y, dam.distance)
-        target:setMoveAnim(old_x, old_y, 8, 5)
+        if target:canBe("knockback") then
+            local old_x, old_y = target.x, target.y
+            target:knockback(src.x, src.y, dam.distance)
+            target:setMoveAnim(old_x, old_y, 8, 5)
 
-        game.logAnySeen({{x=old_x, y=old_y}, target}, getDamageFlash(src, target), "%s is knocked back and takes %s%i %s damage#LAST#!",
-            target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color or "#aaaaaa#", dam.dam, DamageType:get(DamageType.PHYSICAL).name)
+            game.logAnySeen({{x=old_x, y=old_y}, target}, getDamageFlash(src, target), "%s is knocked back and takes %s%i %s damage#LAST#!",
+                target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color or "#aaaaaa#", dam.dam, DamageType:get(DamageType.PHYSICAL).name)
+        else
+            game.logSeen(target, getDamageFlash(src, target), "%s takes %s%i %s damage#LAST# but stands its ground!",
+                target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color or "#aaaaaa#", dam.dam, DamageType:get(DamageType.PHYSICAL).name)
+        end
  
         return DamageType:get(DamageType.PHYSICAL).projector(src, target.x, target.y, DamageType.PHYSICAL, dam.dam, {silent=true} )
     end,
 }
 
+-- Physical damage plus poison.  dam should be a table containing these elements:
+-- - dam - immediate damage
+-- - power - damage per turn of the poison effect
+-- - duration - optional duration of the poison effect
+newDamageType{
+    name = "physical poison", type = "PHYSICAL_POISON",
+    projector = function(src, x, y, typ, dam)
+        local result = DamageType:get(DamageType.PHYSICAL).projector(src, x, y, DamageType.PHYSICAL, dam.dam)
+        if result ~= 0 then
+            local target = game.level.map(x, y, Map.ACTOR)
+            if target.dead then return result end
+            target:setEffect(target.EFF_POISON, dam.duration or 5, {power=dam.power})
+        end
+        return result
+    end
+}

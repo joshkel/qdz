@@ -51,3 +51,17 @@ newEffect{
 		DamageType:get(DamageType.ACID).projector(eff.src or self, self.x, self.y, DamageType.ACID, eff.power)
 	end,
 }
+
+newEffect{
+	name = "POISON",
+	desc = "Poisoned",
+	type = "physical",
+	status = "detrimental",
+	parameters = { power=1 },
+	on_gain = function(self, err) return "#Target# is poisoned!", "+Poison" end,
+	on_lose = function(self, err) return "#Target# recovers from the poison.", "-Poison" end,
+	on_timeout = function(self, eff)
+		DamageType:get(DamageType.POISON).projector(eff.src or self, self.x, self.y, DamageType.POISON, eff.power)
+	end,
+}
+
