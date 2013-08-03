@@ -330,7 +330,7 @@ end
 -- Absorbs the qi ability from a slain opponent (given by src)
 function _M:absorbAbility(src)
     -- FIXME: Replace this with the full implementation (limited # of abilities,
-    -- tracking the order learned, update Use Talents screen to match, etc.).
+    -- tracking the order learned, update Use Talents screen to match, modify stats, etc.).
     print(("ABSORB ABILITY: getAbsorbType = %s"):format(self:getAbsorbType() or "nil"))
 
     if not self:getAbsorbType() then return false end

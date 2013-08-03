@@ -52,7 +52,7 @@ The type of ability absorbed depends on how you deal the killing blow: whether a
 }
 
 newTalent{
-    -- FIXME: Make it use a shield if you have one?
+    -- TODO: Make it use a shield if you have one?
     name = "Bash",
     type = {"basic/combat", 1},
     points = 1,
@@ -119,19 +119,21 @@ newTalent{
     range = 1,
     speed = 2.0,
     action = function(self, t)
-        -- FIXME: Some sort of unique effect here, and update the description below
+        -- TODO: This will need to be reworked if we ever permit the main weapon to be wielded in the left hand
         local tg = {type="hit", range=self:getTalentRange(t)}
         local x, y, target = self:getTarget(tg)
         if not x or not y or not target then return nil end
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
-        self:attackTargetWith(target, self:getInvenCombat(self.INVEN_LHAND, true))
+        local combat = self:getInvenCombat(self.INVEN_LHAND, true)
+        self:attackTargetWith(target, self:combatMod(combat, {attack=2}), nil, nil, self:getOffHandMult(combat))
         return true
     end,
     info = function(self, t)
+        -- TODO: It'd be nice to describe which exactly it is, based on current equipment
         return [[A quick, unexpected attack with your off-hand weapon, or a quick shield jab, or a quick unarmed strike with your left hand, as appropriate.
 
-Although weaker than a normal attack, this can be performed twice as quickly.]]
+Although weaker than a normal attack, this can be performed twice as quickly and has +2 attack.]]
     end,
 }
 

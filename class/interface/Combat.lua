@@ -64,6 +64,15 @@ function _M:skillChanceOfSuccess(skill, difficulty)
     return 50 + 50 * math.tanh((skill - difficulty) / (2 * 5))
 end
 
+--- Modifies the given combat table by mod, returning the modified combat table.
+function _M:combatMod(combat, mod)
+    local result = table.clone(combat)
+    for k, v in pairs(mod) do
+        result[k] = (result[k] or 0) + v
+    end
+    return result
+end
+
 --- Checks what to do with the target
 -- Talk? Attack? Displace?
 function _M:bumpInto(target)
@@ -112,7 +121,7 @@ function _M:attackTarget(target)
             for i, o in ipairs(self:getInven(self.INVEN_LHAND)) do
                 local combat = self:getObjectCombat(o, "lhand")
                 if combat then
-                    local s, h = self:attackTargetWith(target, combat)
+                    local s, h = self:attackTargetWith(target, combat, nil, nil, self:getOffHandMult(combat))
                     speed = math.max(speed or 0, s)
                     hit = hit or h
                 end
@@ -134,9 +143,11 @@ end
 
 ---Attempts to attack target using the given combat information.
 ---Returns speed, hit
-function _M:attackTargetWith(target, combat, damtype, damargs)
+function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     damtype = damtype or DamageType.PHYSICAL
-    local atk = self:combatAttack(weapon)
+    mult = mult or 1
+
+    local atk = self:combatAttack(combat)
     local def = target:combatDefense()
 
     if not self:skillCheck(atk, def) and not self:hasEffect(self.EFF_FOCUSED_QI) then
@@ -144,9 +155,9 @@ function _M:attackTargetWith(target, combat, damtype, damargs)
         return 1, false
     end
 
-    local dam = self:combatDamage(combat)
+    local dam = self:combatDamage(combat) * mult
     dam = dam - rng.range(0, target.combat_armor)
-    dam = math.max(0, dam)
+    dam = math.max(0, math.round(dam))
 
     if damargs then
         damargs.dam = dam
@@ -163,19 +174,15 @@ function _M:getObjectCombat(o, kind)
     if kind == "rhand" then return o.combat end
     if kind == "lhand" then return o.combat end
 
-    if kind == "bash" then
-        -- Bash damage is unarmed damage modified by constitution.
-        -- (The bigger you are, the more it hurts someone when you run into them.)
-        local result = table.clone(self:getObjectCombat(nil, "unarmed"))
-        result.dam = result.dam - self.BASE_UNARMED_DAMAGE + math.round(self:getCon() / 2)
-        return result
-    end
+    -- Bash damage is unarmed damage modified by constitution.
+    -- (The bigger you are, the more it hurts someone when you run into them.)
+    if kind == "bash" then return self:combatMod(self:getObjectCombat(nil, "unarmed"), { dam= -self.BASE_UNARMED_DAMAGE + math.round(self:getCon() / 2) }) end
 
     return nil
 end
 
 function _M:combatAttack(combat)
-    return self:getSki() / 2 + (self.level or game.level.level) / 2
+    return self:getSki() / 2 + (self.level or game.level.level) / 2 + (combat.attack or 0)
 end
 
 function _M:combatDefense()
@@ -196,6 +203,10 @@ function _M:combatDamageRange(combat)
     return (combat.min_dam or 1) + bonus, combat.dam + bonus
 end
 
+function _M:getOffHandMult(combat, mult)
+    return 0.5
+end
+
 --- Gets combat for the given inventory slot.
 -- @param allow_unarmed If true, then allow unarmed combat if the inventory slot is empty.
 function _M:getInvenCombat(inven, allow_unarmed)
@@ -203,7 +214,7 @@ function _M:getInvenCombat(inven, allow_unarmed)
     if not self:getInven(inven) then return nil end
 
     for i, o in ipairs(self:getInven(inven)) do
-        if o.combat then return o.combat end
+        if o.combat then return o.combat, o end
     end
 
     if allow_unarmed then

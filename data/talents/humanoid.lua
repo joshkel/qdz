@@ -64,7 +64,17 @@ newTalent {
     range = 1,
     radius = 1,
     getDuration = function(self, t) return 5 end,
-    getDamage = function(self, t) return 5 end,
+    getDamage = function(self, t)
+        local combat, obj = self:getInvenCombat(self.INVEN_RHAND, true)
+        local min_dam, dam = self:combatDamageRange(combat)
+        if obj and obj.subtype == "digger" then
+            dam = dam / 2
+        else
+            dam = dam / 4
+        end
+        dam = dam + self:getTalentLevel(self.T_MINING)
+        return dam
+    end,
     getDirectDamage = function(self, t) return t.getDamage(self, t) * 3 end,
     target = function(self, t)
          return {type="ball", range=self:getTalentRange(t), radius=self:getTalentRadius(t), nowarning=true, nolock=true, pass_terrain=true, talent=t}
@@ -108,7 +118,8 @@ newTalent {
             "of poisonous gas in a radius of %i. The gas clouds "..
             "last %i turns and do %i damage each turn.\n\n"..
             "If this directly hits a creature within the stone, it also "..
-            "deals %i damage to the creature."):format(
+            "deals %i damage to the creature.\n\n"..
+            "Damage is based on your main weapon but is increased if you have a digging tool equiped or know Mining."):format(
                 self:getTalentRadius(t), t.getDuration(self, t), t.getDamage(self, t), t.getDirectDamage(self, t)),
             "Dog-head men are cunning tricksters and trapsmiths, but one of " ..
             "their simplest methods for discouraging interlopers is to curse " ..

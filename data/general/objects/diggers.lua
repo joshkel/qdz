@@ -92,7 +92,7 @@ newEntity{ base = "BASE_DIGGER",
     level_range = {1, 10},
     cost = 5,
     combat = {
-        dam = 6,
+        dam = 5,
     },
     desc = [[A pickaxe. Although designed for mining, it can be used as a weapon in a pinch.]]
 }
