@@ -33,15 +33,19 @@ end
 --- Temporarily applies the fields and values within t to obj, then calls f(...)
 function util.scoped_change(obj, t, f, ...)
     local saved = {}
-    for k, v in pairs(t) do
-        saved[k] = obj[k]
-        obj[k] = v
+    if obj then
+        for k, v in pairs(t) do
+            saved[k] = obj[k]
+            obj[k] = v
+        end
     end
-    
+
     local result = f(...)
-    
-    for k, v in pairs(t) do
-        obj[k] = saved[k]
+        
+    if obj then
+        for k, v in pairs(t) do
+            obj[k] = saved[k]
+        end
     end
 
     return result

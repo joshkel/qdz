@@ -21,7 +21,9 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
-local getDamageFlash = function(src, target)
+local Qi = require "mod.class.interface.Qi"
+
+local function getDamageFlash(src, target)
     if target == game.player then return game.flash.BAD
     elseif src == game.player then return game.flash.GOOD
     else return game.flash.NEUTRAL
@@ -119,8 +121,14 @@ newDamageType{
         local result = DamageType:get(DamageType.PHYSICAL).projector(src, x, y, DamageType.PHYSICAL, dam.dam)
         if result ~= 0 then
             local target = game.level.map(x, y, Map.ACTOR)
-            if target.dead then return result end
-            target:setEffect(target.EFF_POISON, dam.duration or 5, {power=dam.power})
+            if not target or target.dead then return result end   -- I don't think checking target.dead is necessary
+
+            if not target:canBe("poison") then
+                game.logSeen(target, "%s resists the poison.", target.name:capitalize())
+            else
+                target:setEffect(target.EFF_POISON, dam.duration or 5, {src=src, power=dam.power})
+                Qi:saveSourceInfo(src, target:hasEffect(target.EFF_POISON))
+            end
         end
         return result
     end

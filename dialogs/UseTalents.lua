@@ -32,10 +32,10 @@ module(..., package.seeall, class.inherit(Dialog))
 function _M:init(actor)
     self.actor = actor
     actor.hotkey = actor.hotkey or {}
-    Dialog.init(self, "Use Talents: "..actor.name, game.w * 0.7, game.h * 0.7)
+    Dialog.init(self, "Use Techniques: "..actor.name, game.w * 0.7, game.h * 0.7)
 
     self.c_tut = Textzone.new{width=math.floor(self.iw / 2 - 10), height=1, auto_height=true, no_color_bleed=true, text=[[
-You can bind a talent to a hotkey be pressing the corresponding hotkey while selecting a talent.
+You can bind a technique to a hotkey be pressing the corresponding hotkey while selecting a technique.
 Check out the keybinding screen in the game menu to bind hotkeys to a key (default is 1-0 plus control or shift).
 ]]}
     self.c_desc = TextzoneList.new{width=math.floor(self.iw / 2 - 10), height=self.ih - self.c_tut.h - 20, scrollbar=true, no_color_bleed=true}
@@ -44,7 +44,7 @@ Check out the keybinding screen in the game menu to bind hotkeys to a key (defau
 
     self.c_list = ListColumns.new{width=math.floor(self.iw / 2 - 10), height=self.ih - 10, sortable=true, scrollbar=true, columns={
         {name="", width={26,"fixed"}, display_prop="char", sort="id"},
-        {name="Talent", width=80, display_prop="name", sort="name"},
+        {name="Technique", width=80, display_prop="name", sort="name"},
         {name="Status", width=20, display_prop="status", sort="status"},
     }, list=self.list, fct=function(item) self:use(item) end, select=function(item, sel) self:select(item) end}
 

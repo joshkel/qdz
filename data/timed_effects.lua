@@ -23,11 +23,12 @@
 
 local Stats = require "engine.interface.ActorStats"
 local Particles = require "engine.Particles"
+local Qi = require "mod.class.interface.Qi"
 
 newEffect{
     name = "FOCUSED_QI",
     desc = "Focused Qi",
-    type = "physical", -- FIXME?
+    type = "physical", -- TODO?
     status = "beneficial",
     on_gain = function(self, err) return "#Target# focuses its qi.", "+Qi focus" end, -- FIXME: his / her, not its
     on_lose = function(self, err) return "#Target#'s qi focus dissipates.", "-Qi focus" end,
@@ -40,28 +41,29 @@ newEffect{
 }
 
 newEffect{
-	name = "ACIDBURN",
-	desc = "Burning from acid",
-	type = "physical",
-	status = "detrimental",
-	parameters = { power=1 },
-	on_gain = function(self, err) return "#Target# is covered in acid!", "+Acid" end,
-	on_lose = function(self, err) return "#Target# is free from the acid.", "-Acid" end,
-	on_timeout = function(self, eff)
-		DamageType:get(DamageType.ACID).projector(eff.src or self, self.x, self.y, DamageType.ACID, eff.power)
-	end,
+    name = "ACIDBURN",
+    desc = "Burning from acid",
+    type = "physical",
+    status = "detrimental",
+    parameters = { power=1 },
+    on_gain = function(self, err) return "#Target# is covered in acid!", "+Acid" end,
+    on_lose = function(self, err) return "#Target# is free from the acid.", "-Acid" end,
+    on_timeout = function(self, eff)
+        DamageType:get(DamageType.ACID).projector(eff.src or self, self.x, self.y, DamageType.ACID, eff.power)
+    end,
 }
 
 newEffect{
-	name = "POISON",
-	desc = "Poisoned",
-	type = "physical",
-	status = "detrimental",
-	parameters = { power=1 },
-	on_gain = function(self, err) return "#Target# is poisoned!", "+Poison" end,
-	on_lose = function(self, err) return "#Target# recovers from the poison.", "-Poison" end,
-	on_timeout = function(self, eff)
-		DamageType:get(DamageType.POISON).projector(eff.src or self, self.x, self.y, DamageType.POISON, eff.power)
-	end,
+    name = "POISON",
+    desc = "Poisoned",
+    type = "physical",
+    status = "detrimental",
+    parameters = { power=1 },
+    on_gain = function(self, err) return "#Target# is poisoned!", "+Poison" end,
+    on_lose = function(self, err) return "#Target# recovers from the poison.", "-Poison" end,
+    on_timeout = function(self, eff)
+        --DamageType:get(DamageType.POISON).projector(eff.src or self, self.x, self.y, DamageType.POISON, eff.power)
+        Qi:callIntermediate(eff, eff.src, DamageType:get(DamageType.POISON).projector, eff.src or self, self.x, self.y, DamageType.POISON, eff.power)
+    end,
 }
 

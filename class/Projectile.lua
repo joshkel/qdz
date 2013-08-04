@@ -20,18 +20,12 @@
 
 require "engine.class"
 require "engine.Projectile"
+local Qi = require "mod.class.interface.Qi"
 
 module(..., package.seeall, class.inherit(engine.Projectile))
 
 function _M:init(t, no_default)
     engine.Projectile.init(self, t, no_default)
-end
-
----Saves a projectile source's current state so that we can correctly resolve
----effects when the projectile hits.
-function _M:saveSourceInfo(src)
-    self.last_action = src.last_action
-    self.focused_qi = (src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI)) and true or false
 end
 
 function _M:maybeAddQiParticles(src, def, display)
@@ -53,7 +47,7 @@ function _M:makeProject(src, display, def, do_move, do_act, do_stop)
     p.__CLASSNAME = _M.name
     setmetatable(p, {__index=_M})
 
-    p:saveSourceInfo(src)
+    Qi:saveSourceInfo(src, p)
 
     return p
 end
@@ -65,13 +59,13 @@ function _M:makeHoming(src, display, def, target, count, on_move, on_hit)
     p.__CLASSNAME = _M.name
     setmetatable(p, {__index=_M})
 
-    p:saveSourceInfo(src)
+    Qi:saveSourceInfo(src, p)
 
     return p
 end
 
 function _M:act()
-    return util.scoped_change(self.src, { last_action = self.last_action, intermediate = self }, engine.Projectile.act, self)
+    return Qi:callIntermediate(self, self.src, engine.Projectile.act, self)
 end
 
 --- Move animation (code based on ToME's).

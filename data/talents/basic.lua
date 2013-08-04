@@ -81,7 +81,7 @@ newTalent{
         return true
     end,
     info = function(self, t)
-        return ([[Bashes into an enemy with a shoulder tackle, dealing %s damage and knocking it back %i squares. Damage and knockback distance are determined by your strength and constitution. Even if your opponent manages to dodge, it will be driven back one square.
+        return ([[Bashes into an enemy with a shoulder tackle, dealing %s damage and knocking it back %i squares. Damage and knockback distance are determined by your Strength and Constitution. Even if your opponent manages to dodge, it will be driven back one square.
 
 If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your chest.]]):format(string.describe_range(self:combatDamageRange(self:getObjectCombat(nil, "bash"))), t.getDistance(self, t))
     end,

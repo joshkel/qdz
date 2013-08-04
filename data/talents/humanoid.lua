@@ -102,6 +102,7 @@ newTalent {
             local target = game.level.map(px, py, Map.ACTOR)
             if target and self:reactionToward(target) >= 0 then return end
 
+            -- TODO: Let this trigger absorb qi also??
             game.level.map:addEffect(self,
                 px, py, t.getDuration(self, t),
                 DamageType.POISON_GAS, t.getDamage(self, t),
@@ -119,7 +120,7 @@ newTalent {
             "last %i turns and do %i damage each turn.\n\n"..
             "If this directly hits a creature within the stone, it also "..
             "deals %i damage to the creature.\n\n"..
-            "Damage is based on your main weapon but is increased if you have a digging tool equiped or know Mining."):format(
+            "Damage is based on your main weapon but is increased if you have a digging tool equipped or know Mining."):format(
                 self:getTalentRadius(t), t.getDuration(self, t), t.getDamage(self, t), t.getDirectDamage(self, t)),
             "Dog-head men are cunning tricksters and trapsmiths, but one of " ..
             "their simplest methods for discouraging interlopers is to curse " ..
@@ -157,7 +158,7 @@ newTalent {
         return true
     end,
     info = function(self, t)
-        local rules_text = ("Hurls a poisoned dart with range %i, doing %s damage immediately and %i per turn for %i turns. Poison damage is based on your skill."):format(
+        local rules_text = ("Hurls a poisoned dart with range %i, doing %s damage immediately and %i per turn (based on your Skill) for %i turns."):format(
             self:getTalentRange(t), string.describe_range(self:combatDamageRange(t.getCombat(self, t))),
             t.getPower(self, t), t.getDuration(self, t))
         if self == game.player then

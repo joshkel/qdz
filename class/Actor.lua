@@ -420,14 +420,17 @@ local action_absorb_type = {
 
 --- Gets the type of qi ability to be absorbed, based on our last action.
 function _M:getAbsorbType()
-    if type(self.last_action) == "table" then
-        if self.last_action.type == "talent" then
-            return talent_absorb_type[self.last_action.talent] or "head"
+    local src = self
+    while src.intermediate do src = src.intermediate end
+
+    if type(src.last_action) == "table" then
+        if src.last_action.type == "talent" then
+            return talent_absorb_type[src.last_action.talent] or "head"
         else
             return nil
         end
     else
-        return action_absorb_type[self.last_action]
+        return action_absorb_type[src.last_action]
     end
 end
 

@@ -46,7 +46,7 @@ newTalent{
         local best = t.findBest(self, t)
         local result = "Mining lets you use a pickaxe or similar tool to dig stone and earth.\n\n"
         if best then
-            result = result .. ("Digging with your %s takes %d turns (based on your talent level and best mining tool available)."):format(best.name, best.getEffectiveDigSpeed(self))
+            result = result .. ("Digging with your %s takes %d turns (based on your proficiency level and best mining tool available)."):format(best.name, best.getEffectiveDigSpeed(self))
         else
             result = result .. "You currently have no mining tools."
         end

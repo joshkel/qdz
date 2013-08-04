@@ -1,5 +1,4 @@
 To do:
-Absorb qi through timed effects (Poisoned Dart) - and map effects???
 Basic game mechanics: Kick, Mining Light, armor, shields
 Tooltips for weapons
 Starting stats
@@ -15,7 +14,8 @@ Critical hits
 Left vs right hand
 Quick switch weapons???
 Not sure that dig speed is working right - monsters may get a free move afterwards, and displayed number of turns is always 1 greater than intended digspeed
-Search-and-replace talent -> technique for more of a "martial arts" feel?
+Rename Power to Qi?
+What to do about fractional HP?  It stinks to think you do enough damage to kill a foe and find out you haven't...
 
 To do a while later:
 Logo

@@ -48,7 +48,7 @@ ActorTalents:loadDefinition("/data/talents.lua")
 ActorTemporaryEffects:loadDefinition("/data/timed_effects.lua")
 
 -- Actor resources
-ActorResource:defineResource("Power", "power", nil, "power_regen", "Power represent your ability to use special talents.")
+ActorResource:defineResource("Power", "power", nil, "power_regen", "Power represent your ability to use special techniques.")
 
 -- Actor stats
 ActorStats:defineStat("Strength",     "str", 10, 1, 100, "Raw physical strength. This affects your melee damage and carrying capacity and is associated with qi of the right hand.")
