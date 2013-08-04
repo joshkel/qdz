@@ -22,28 +22,59 @@
 -- darkgod@te4.org
 
 require "engine.class"
-local Talents = require "engine.interface.ActorTalents"
 
---- Interface to add ToME archery combat system
+--- Interface for qi combat
 module(..., package.seeall, class.make)
 
 --- Static function that saves a source's qi state to an intermediate effect
 --- so that the intermediate effect can properly trigger absorb.
-function _M:saveSourceInfo(from, to)
-    if from.intermediate then
-        _M:saveSourceInfo(from.intermediate, to)
-        return
+function _M.saveSourceInfo(from, to)
+    while from.intermediate do
+        from = from.intermediate
     end
 
+    util.inspect("last_action", from.last_action)
     to.last_action = from.last_action
 
     -- Allow focused_qi state to carry over from previous applications, if relevant.
-    if not to.focused_qi and from.focused_qi or (from.hasEffect and from:hasEffect(from.EFF_FOCUSED_QI)) then
+    if from.focused_qi or (from.hasEffect and from:hasEffect(from.EFF_FOCUSED_QI)) then
         to.focused_qi = true
     end
 end
 
-function _M:callIntermediate(intermediate, src, f, ...)
-    return util.scoped_change(src, { intermediate=intermediate }, f, ...)
+--- Calls the given function, correctly applying any intermediate qi state
+function _M.call(intermediate, f, ...)
+    return util.scoped_change(intermediate.src, {intermediate=intermediate}, f, ...)
+end
+
+--- Split pre- and post- version of Qi.call
+function _M.preCall(intermediate)
+    if intermediate.src then return util.apply_temp_change(intermediate.src, {intermediate=intermediate}) end
+end
+
+--- Split pre- and post- version of Qi.call
+function _M.postCall(intermediate, saved)
+    if intermediate.src then util.revert_temp_change(intermediate.src, {intermediate=intermediate}, saved) end
+end
+
+--- Checks if an entity has focused qi.  There are two ways this could happen:
+---  1) Entity has EFF_FOCUSED_QI directly.
+---  2) Entity initiated some intermediate effect while focused.
+function _M.isFocused(e)
+    if e.intermediate then
+        return _M.isFocused(e.intermediate)
+    else
+        return e.focused_qi or (e.hasEffect and e:hasEffect(e.EFF_FOCUSED_QI))
+    end
+end
+
+function _M.clearFocus(e)
+    if e.intermediate then
+        _M.clearFocus(e.intermediate)
+    elseif e.focused_qi then
+        e.focused_qi = false
+    elseif e.removeEffect then
+        e:removeEffect(e.EFF_FOCUSED_QI)
+    end
 end
 

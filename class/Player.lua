@@ -134,7 +134,7 @@ function _M:onTalentCooledDown(tid)
 
     local x, y = game.level.map:getTileToScreen(self.x, self.y)
     game.flyers:add(x, y, 30, -0.3, -3.5, ("%s available"):format(t.name:capitalize()), {0,255,00})
-    game.log("#00ff00#Talent %s is ready to use.#LAST#", t.name)
+    game.log("#00ff00#Technique %s is ready to use.#LAST#", t.name)
 end
 
 function _M:levelup()
@@ -356,7 +356,7 @@ function _M:absorbAbility(src)
     self:learnTalent(t_id, true)
     t = self:getTalentFromId(t_id)
     game.level.map:particleEmitter(self.x, self.y, 1, "absorb_qi")
-    game.log(("You absorb a portion of %s's qi and bind it to your %s.  You learn %s!"):format(
+    game.log(("You absorb a portion of %s's qi and bind it to your %s. You learn %s!"):format(
         src.name, self:getAbsorbTypeDescription(), self:getTalentDisplayName(t)))
     return true
 end

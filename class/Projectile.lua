@@ -47,7 +47,7 @@ function _M:makeProject(src, display, def, do_move, do_act, do_stop)
     p.__CLASSNAME = _M.name
     setmetatable(p, {__index=_M})
 
-    Qi:saveSourceInfo(src, p)
+    Qi.saveSourceInfo(src, p)
 
     return p
 end
@@ -59,13 +59,13 @@ function _M:makeHoming(src, display, def, target, count, on_move, on_hit)
     p.__CLASSNAME = _M.name
     setmetatable(p, {__index=_M})
 
-    Qi:saveSourceInfo(src, p)
+    Qi.saveSourceInfo(src, p)
 
     return p
 end
 
 function _M:act()
-    return Qi:callIntermediate(self, self.src, engine.Projectile.act, self)
+    return Qi.call(self, engine.Projectile.act, self)
 end
 
 --- Move animation (code based on ToME's).
@@ -79,5 +79,15 @@ function _M:move(x, y, force)
     end
 
     return moved
+end
+
+function _M:tooltip(x, y)
+    local tstr = tstring{"Projectile: ", self.name}
+
+    if config.settings.cheat then
+        tstr:add(true, "UID: ", tostring(self.uid))
+    end
+
+    return tstr
 end
 

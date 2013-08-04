@@ -16,8 +16,9 @@
 
 require("engine.utils")
 
---- Debugging utility function: Attempts to print obj, regardless of what obj is.
+--- Debugging utility function: Attempts to print obj, whatever it is.
 function util.inspect(name, obj)
+    if not obj then name, obj = "obj", name end
     print(("DEBUG: %s is a %s"):format(name, type(obj)))
     if type(obj) == "table" then
         if #obj and #obj ~= 0 then
@@ -30,22 +31,33 @@ function util.inspect(name, obj)
     end
 end
 
+--- Temporarily applies the fields and values within t to obj, returning obj's previous values.
+function util.apply_temp_change(obj, t)
+    local saved = {}
+    for k, v in pairs(t) do
+        saved[k] = obj[k]
+        obj[k] = v
+    end
+    return saved
+end
+
+function util.revert_temp_change(obj, t, saved)
+    for k, v in pairs(t) do
+        obj[k] = saved[k]
+    end
+end
+
 --- Temporarily applies the fields and values within t to obj, then calls f(...)
 function util.scoped_change(obj, t, f, ...)
-    local saved = {}
-    if obj then
-        for k, v in pairs(t) do
-            saved[k] = obj[k]
-            obj[k] = v
-        end
+    local saved
+    if obj then 
+        saved = util.apply_temp_change(obj, t)
     end
 
     local result = f(...)
-        
+
     if obj then
-        for k, v in pairs(t) do
-            obj[k] = saved[k]
-        end
+        util.revert_temp_change(obj, t, saved)
     end
 
     return result

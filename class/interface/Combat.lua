@@ -26,6 +26,7 @@ local DamageType = require "engine.DamageType"
 local Map = require "engine.Map"
 local Target = require "engine.Target"
 local Talents = require "engine.interface.ActorTalents"
+local Qi = require "mod.class.interface.Qi"
 
 --- Interface to add ToME combat system
 module(..., package.seeall, class.make)
@@ -150,7 +151,7 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     local atk = self:combatAttack(combat)
     local def = target:combatDefense()
 
-    if not self:skillCheck(atk, def) and not self:hasEffect(self.EFF_FOCUSED_QI) then
+    if not self:skillCheck(atk, def) and not Qi.isFocused(self) then
         game.logSeen(target, game.flash.NEUTRAL, "%s misses %s.", self.name:capitalize(), target.name)
         return 1, false
     end
@@ -191,7 +192,7 @@ end
 
 function _M:combatDamage(combat)
     local min_dam, dam = self:combatDamageRange(combat)
-    if self:hasEffect(self.EFF_FOCUSED_QI) then
+    if Qi.isFocused(self) then
         return dam
     else
         return rng.range(min_dam, dam)

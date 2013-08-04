@@ -49,7 +49,9 @@ newEffect{
     on_gain = function(self, err) return "#Target# is covered in acid!", "+Acid" end,
     on_lose = function(self, err) return "#Target# is free from the acid.", "-Acid" end,
     on_timeout = function(self, eff)
+        local saved = Qi.preCall(eff)
         DamageType:get(DamageType.ACID).projector(eff.src or self, self.x, self.y, DamageType.ACID, eff.power)
+        Qi.postCall(eff, eff.src, saved)
     end,
 }
 
@@ -62,8 +64,9 @@ newEffect{
     on_gain = function(self, err) return "#Target# is poisoned!", "+Poison" end,
     on_lose = function(self, err) return "#Target# recovers from the poison.", "-Poison" end,
     on_timeout = function(self, eff)
-        --DamageType:get(DamageType.POISON).projector(eff.src or self, self.x, self.y, DamageType.POISON, eff.power)
-        Qi:callIntermediate(eff, eff.src, DamageType:get(DamageType.POISON).projector, eff.src or self, self.x, self.y, DamageType.POISON, eff.power)
+        local saved = Qi.preCall(eff)
+        DamageType:get(DamageType.POISON).projector(eff.src or self, self.x, self.y, DamageType.POISON, eff.power)
+        Qi.postCall(eff, saved)
     end,
 }
 

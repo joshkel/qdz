@@ -1,4 +1,5 @@
 To do:
+Clean up qi tracking - isFocused and clearFocus should be Actor (?) methods
 Basic game mechanics: Kick, Mining Light, armor, shields
 Tooltips for weapons
 Starting stats

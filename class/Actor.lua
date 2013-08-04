@@ -36,6 +36,7 @@ require "engine.interface.ActorInventory"
 require "mod.class.interface.Combat"
 local Map = require "engine.Map"
 local Talents = require "engine.interface.ActorTalents"
+local Qi = require "mod.class.interface.Qi"
 
 module(..., package.seeall, class.inherit(
     engine.Actor,
@@ -123,6 +124,15 @@ function _M:move(x, y, force)
     return moved
 end
 
+--- Override ActorTemporaryEffects:setEffect to add qi tracking
+function _M:setEffect(eff_id, dur, p, silent)
+    engine.interface.ActorTemporaryEffects.setEffect(self, eff_id, dur, p, silent)
+
+    if p and p.src then
+        Qi.saveSourceInfo(p.src, self:hasEffect(eff_id))
+    end
+end
+
 function _M:tooltip()
     local text = ([[%s%s
 #00ffff#Level: %d
@@ -167,18 +177,11 @@ function _M:die(src)
     end
 
     -- If the killer had focused qi, then try absorbing an ability.
-    -- There are two ways this could happen:
-    --   1) Killer has EFF_FOCUSED_QI directly.
-    --   2) Killer triggered some intermediate effect while focused.
-    if src and ((src.hasEffect and src:hasEffect(src.EFF_FOCUSED_QI)) or (src.intermediate and src.intermediate.focused_qi)) then
+    if src and Qi.isFocused(src) then
         if src:absorbAbility(self) then
             -- Each qi focus is only good for one absorption, so forcibly
             -- clear any focused state.
-            if src.intermediate and src.intermediate.focused_qi then
-                src.intermediate.focused_qi = false
-            else
-                src:removeEffect(src.EFF_FOCUSED_QI)
-            end
+            Qi.clearFocus(src)
         end
     end
 

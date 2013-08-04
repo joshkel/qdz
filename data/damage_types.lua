@@ -127,7 +127,6 @@ newDamageType{
                 game.logSeen(target, "%s resists the poison.", target.name:capitalize())
             else
                 target:setEffect(target.EFF_POISON, dam.duration or 5, {src=src, power=dam.power})
-                Qi:saveSourceInfo(src, target:hasEffect(target.EFF_POISON))
             end
         end
         return result
