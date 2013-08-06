@@ -32,7 +32,7 @@ newEntity{
 
 newEntity{ base = "BASE_LIGHT",
     name = "paper lantern", color=colors.LIGHT_SLATE,
-    desc = [[A bamboo frame with a small flame, covered by paper.]],
+    desc = [[A small lantern made of paper stretched over a bamboo frame, containing a wick and small container of oil.]],
     level_range = {1, 20},
     rarity = 7,
     cost = 1,

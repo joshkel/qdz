@@ -37,6 +37,7 @@ require "mod.class.interface.Combat"
 local Map = require "engine.Map"
 local Talents = require "engine.interface.ActorTalents"
 local Qi = require "mod.class.interface.Qi"
+local GameUI = require "mod.class.ui.GameUI"
 
 module(..., package.seeall, class.inherit(
     engine.Actor,
@@ -143,37 +144,40 @@ function _M:setEffect(eff_id, dur, p, silent)
 end
 
 function _M:tooltip()
-    local text = ([[%s%s
-#00ffff#Level: %d
-#WHITE#HP: #LIGHT_RED#%d (%d%%)
-#WHITE#Stats: #LIGHT_GREEN#%d#WHITE# / #LIGHT_GREEN#%d#WHITE# / #LIGHT_GREEN#%d#WHITE# / #LIGHT_GREEN#%d#WHITE# / #LIGHT_GREEN#%d#WHITE#
-#WHITE#Attack: #LIGHT_GREEN#%i#WHITE#
-#WHITE#Defense: #LIGHT_GREEN#%i#WHITE#
-%s]]):format(
-        self:getDisplayString(),
-        self.name,
-        self.level,
-        self.life, self.life * 100 / self.max_life,
-        self:getStr(),
-        self:getSki(),
-        self:getCon(),
-        self:getAgi(),
-        self:getMnd(),
-        self:combatAttack(self.combat),  -- TODO: Find equipped item instead of self.combat?
-        self:combatDefense(),
-        self.desc and ("\n" .. self.desc .. "\n") or ""
-    )
+    local color = GameUI.tooltipColor
+    local delim
+
+    local text = GameUI:tooltipTitle(self:getDisplayString(), self.name)
+
+    text:add(true, color.caption, 'Level: ', color.text, tostring(self.level))
+    text:add(true, color.caption, 'HP: ', color.health, ("%d (%d%%)"):format(self.life, self.life * 100 / self.max_life))
+
+    delim = {}
+    text:add(true, color.caption, 'Stats: ')
+    for i, v in ipairs({self:getStr(), self:getSki(), self:getCon(), self:getAgi(), self:getMnd()}) do
+        text:merge(delim)
+        text:add(color.text, tostring(v))
+        delim = { color.caption, ' / ' }
+    end
+
+    -- TODO: Find equipped item instead of self.combat?  Display damage?
+    text:add(true, color.caption, 'Attack: ', color.text, tostring(self:combatAttack(self.combat)))
+
+    -- TODO: Display armor?
+    text:add(true, color.caption, 'Defense: ', color.text, tostring(self:combatDefense()))
 
     for tid, act in pairs(self.sustain_talents) do
-        if act then text = text .. ("- #LIGHT_GREEN#%s#WHITE#"):format(self:getTalentFromId(tid).name) end
+        if act then text:add(true, color.text, ' - ', color.good, self:getTalentFromId(tid).name) end
     end
     for eff_id, p in pairs(self.tmp) do
         local e = self.tempeffect_def[eff_id]
         local dur = p.dur + 1
-        local color = e.status == "detrimental" and "LIGHT_RED" or "LIGHT_GREEN"
-        text = text .. ("- #%s#%s (%d)#WHITE#"):format(color, e.desc, dur)
+        local this_color = e.status == "detrimental" and color.bad or color.good
+        text:add(true, color.text, ' - ', this_color, e.desc, (" (%i)"):format(dur))
     end
- 
+
+    if self.desc then text:add(true, true, self.desc, true) end
+
     return text
 end
 
@@ -304,32 +308,31 @@ end
 -- You may overload it to add more data (like power usage, ...)
 function _M:getTalentFullDescription(t)
     local d = tstring{}
-    local caption_color = { "color", 0x6f, 0xff, 0x83 }
-    local text_color = { "color", 0xff, 0xff, 0xff }
-    local power_color = { "color", 0x7f, 0xff, 0xd4 }
-    local use_color = { "color", 0x00, 0xff, 0x00 }
+    local color = GameUI.tooltipColor
 
-    d:add(caption_color, "Use mode: ", use_color)
+    d:add(color.caption, "Use mode: ", color.use)
     if t.mode == "passive" then d:add("Passive")
     elseif t.mode == "sustained" then d:add("Sustained")
     else d:add("Active")
     end
     d:add(true)
 
-    if t.power or t.sustain_power then d:add(caption_color, "Power cost: ", text_color, ""..(t.power or t.sustain_power), true) end
+    if t.power or t.sustain_power then d:add(color.caption, "Power cost: ", color.text, ""..(t.power or t.sustain_power), true) end
 
-    if self:getTalentRange(t) > 1 then d:add(caption_color, "Range: ", text_color, ""..self:getTalentRange(t), true)
-    elseif t.range then d:add(caption_color, "Range: ", text_color, "melee", true)
-    else d:add(caption_color, "Range: ", text_color, "personal", true)
+    if self:getTalentRange(t) > 1 then d:add(color.caption, "Range: ", color.text, ""..self:getTalentRange(t), true)
+    elseif t.range then d:add(color.caption, "Range: ", color.text, "melee", true)
+    else d:add(color.caption, "Range: ", color.text, "personal", true)
     end
 
-    if t.no_energy then d:add(caption_color, "Speed: ", text_color, "instantaneous", true)
-    elseif t.speed then d:add(caption_color, "Speed: ", text_color, ("%i%%"):format(t.speed * 100), true)
+    if t.no_energy then d:add(color.caption, "Speed: ", color.text, "instantaneous", true)
+    elseif t.speed then d:add(color.caption, "Speed: ", color.text, ("%i%%"):format(t.speed * 100), true)
     end
 
-    if t.cooldown then d:add(caption_color, "Cooldown: ", text_color, ""..t.cooldown, true) end
+    if t.cooldown then d:add(color.caption, "Cooldown: ", color.text, ""..t.cooldown, true) end
 
-    d:add(true, caption_color, "Description: ", true, text_color)
+    -- Two versions, with and without "Description: " caption.
+    --d:add(true, color.caption, "Description: ", true, color.text)
+    d:add(true, color.text)
     d:merge(t.info(self, t):toTString())
 
     return d

@@ -28,6 +28,7 @@ require "engine.interface.ObjectActivable"
 local Stats = require("engine.interface.ActorStats")
 local Talents = require("engine.interface.ActorTalents")
 local DamageType = require("engine.DamageType")
+local GameUI = require "mod.class.ui.GameUI"
 
 module(..., package.seeall, class.inherit(
     engine.Object,
@@ -44,8 +45,10 @@ function _M:init(t, no_default)
 end
 
 function _M:tooltip(x, y)
-    -- TODO? Probably want a TOME-style "You see...more objects"
-    local text = tstring{self:getDisplayString(), self.name, true}
+    local color = GameUI.tooltipColor
+    local text = GameUI:tooltipTitle(self:getDisplayString(), self.name)
+
+    text:add(true, color.caption, 'Type: ', color.text)
     if self.type == self.subtype then
         text:add(self.type)
     else
@@ -57,26 +60,33 @@ function _M:tooltip(x, y)
         local delim = ''
         text:add(true)
         for k, v in pairs(self.wielder) do
-            text:add(delim, ("%+i"):format(v), ({ lite="light radius" })[k] or Stats[k].name)
+            text:add(color.text, delim, v > 0 and color.good or color.bad, ("%+i"):format(v), ({ lite="light radius" })[k] or Stats[k].name)
             delim = ', '
         end
     end
 
     -- Weapon statistics
-    if self.combat then text:add(true, 'Damage: ', tostring(self.combat.dam)) end
+    if self.combat then text:add(true, color.caption, 'Damage: ', color.text, tostring(self.combat.dam)) end
 
     -- Requirements
     if self.require and type(self.require) == "table" and self.require.stat then
         local delim = ''
-        text:add(true, 'Requires: ')
+        text:add(true, color.caption, 'Requires: ', color.text)
         for k, v in pairs(self.require.stat) do
             text:add(delim, tostring(v), ' ', Stats.stats_def[k].name)
             delim = ', '
         end
     end
 
-    if self.desc then text:add(true, true, self.desc) end
+    if self.desc then text:add(true, true, color.text, self.desc) end
+
+    if config.settings.cheat then
+        text:add(true, true, color.caption, 'UID: ', color.text, tostring(self.uid))
+    end
+
     return text
+
+    -- TODO? Probably want a TOME-style "You see...more objects"
 end
 
 function _M:canAct()

@@ -261,7 +261,7 @@ newTalent {
     info = function(self, t)
         return flavorText(("Transforms into a ball of light that immediately moves"..
             "to a given location within %i squares, where you reappear. "..
-            "The range is determined by your light radius.").format(self:getTalentRange(t)),
+            "The range is determined by your light radius."):format(self:getTalentRange(t)),
             "Dog-head men have some small affinity with fire; they can "..
             "transform their bodies into floating flames that resemble the "..
             "lanterns in their mining helmets and travel quickly in this form.")

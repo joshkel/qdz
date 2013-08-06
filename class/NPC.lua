@@ -25,6 +25,7 @@ require "engine.class"
 local ActorAI = require "engine.interface.ActorAI"
 local Faction = require "engine.Faction"
 require "mod.class.Actor"
+local GameUI = require "mod.class.ui.GameUI"
 
 module(..., package.seeall, class.inherit(mod.class.Actor, engine.interface.ActorAI))
 
@@ -61,16 +62,13 @@ function _M:onTakeHit(value, src)
 end
 
 function _M:tooltip()
-    local str = mod.class.Actor.tooltip(self)
-    if not config.settings.cheat then
-        return str
+    local color = GameUI.tooltipColor
+    local text = mod.class.Actor.tooltip(self)
+    if config.settings.cheat then
+        text:add(true, color.caption, 'Target: ', color.text, self.ai_target.actor and self.ai_target.actor.name or "none")
+        text:add(true, color.caption, 'UID: ', color.text, tostring(self.uid))
     end
 
-    return str..([[
-
-Target: %s
-UID: %d]]):format(
-    self.ai_target.actor and self.ai_target.actor.name or "none",
-    self.uid)
+    return text
 end
 
