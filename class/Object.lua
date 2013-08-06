@@ -45,8 +45,37 @@ end
 
 function _M:tooltip(x, y)
     -- TODO? Probably want a TOME-style "You see...more objects"
-    local text = self:getDisplayString()..self.name
-    if self.desc then text = text .. "\n\n" .. self.desc end
+    local text = tstring{self:getDisplayString(), self.name, true}
+    if self.type == self.subtype then
+        text:add(self.type)
+    else
+        text:add(self.type, ' (', self.subtype, ')')
+    end
+
+    -- General item statistics
+    if self.wielder then
+        local delim = ''
+        text:add(true)
+        for k, v in pairs(self.wielder) do
+            text:add(delim, ("%+i"):format(v), ({ lite="light radius" })[k] or Stats[k].name)
+            delim = ', '
+        end
+    end
+
+    -- Weapon statistics
+    if self.combat then text:add(true, 'Damage: ', tostring(self.combat.dam)) end
+
+    -- Requirements
+    if self.require and type(self.require) == "table" and self.require.stat then
+        local delim = ''
+        text:add(true, 'Requires: ')
+        for k, v in pairs(self.require.stat) do
+            text:add(delim, tostring(v), ' ', Stats.stats_def[k].name)
+            delim = ', '
+        end
+    end
+
+    if self.desc then text:add(true, true, self.desc) end
     return text
 end
 

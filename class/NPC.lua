@@ -38,12 +38,16 @@ function _M:act()
     if not mod.class.Actor.act(self) then return end
 
     -- Compute FOV, if needed
-    self:computeFOV(self.sight or 20)
+    self:doFOV()
 
     -- Let the AI think .... beware of Shub !
     -- If AI did nothing, use energy anyway
     self:doAI()
     if not self.energy.used then self:useEnergy() end
+end
+
+function _M:doFOV()
+    self:computeFOV(self.sight or 20)
 end
 
 --- Called by ActorLife interface

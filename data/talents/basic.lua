@@ -136,7 +136,7 @@ newTalent{
         -- TODO: It'd be nice to describe which exactly it is, based on current equipment
         return [[A quick, unexpected attack with your off-hand weapon, or a quick shield jab, or a quick unarmed strike with your left hand, as appropriate.
 
-Although weaker than a normal attack, this can be performed twice as quickly and has +2 attack.]]
+Although weaker than a normal attack, this can be performed twice as quickly and has +2 to Attack.]]
     end,
 }
 

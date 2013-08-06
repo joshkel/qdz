@@ -1,6 +1,7 @@
 To do:
-Clean up qi tracking - isFocused and clearFocus should be Actor (?) methods
-Basic game mechanics: Kick, Mining Light, armor, shields
+Redraw FOV / light radius when light radius changes
+Clean up qi tracking - isFocused and clearFocus should be Actor (?) methods.  If a single ability spawns multiple entities, then it can allow for multiple absorption - bug or feature?
+Basic game mechanics: Kick, armor, shields
 Tooltips for weapons
 Starting stats
 Saving projectiles doesn't work???

@@ -136,7 +136,7 @@ newTalent {
     cooldown = 6,
     power = 2,
     range = 5,
-    getCombat = function(self, t) return {dam=1} end, -- TODO: Adjust damamge?  Feels maybe high; feels like it should maybe be Skill?
+    getCombat = function(self, t) return {dam=1} end, -- TODO: Adjust damage?  Feels maybe high; feels like it should maybe be Skill?
     getPower = function(self, t) return math.round(self:getSki() / 5) end,
     getDuration = function(self, t) return 3 end,
     target = function(self, t)
@@ -272,20 +272,45 @@ newTalent {
     name = "Mining Light",
     type = {"qi abilities/head", 1},
     points = 1,
-    mode = "passive",
+    mode = "sustained",
+    sustain_power = 3,
+    cooldown = 5,
 
     lite = 1,
+    getAttack = function(self, t)
+        local lite = self.lite / 2
 
-    on_learn = function(self, t)
-        self.lite = self.lite + t.lite
+        -- Hack: Let the tooltip display what this would do it if were active.
+        if not self:isTalentActive(t.id) then
+            lite = lite + t.lite
+        end
+
+        return self.lite / 2
     end,
-    on_unlearn = function(self, t)
-        self.lite = self.lite - t.lite
+
+    do_turn = function(self, t)
+        local p = self:isTalentActive(t.id)
+        if p.prev_lite ~= self.lite then
+            if p.attackid then self:removeTemporaryValue("plus_attack", p.attackid) end
+            p.attackid = self:addTemporaryValue("plus_attack", t.getAttack(self, t))
+        end
+    end,
+    activate = function(self, t)
+        local liteid = self:addTemporaryValue("lite", t.lite)
+        if self.doFOV then self:doFOV() end
+        return {
+            liteid = liteid,
+            prev_lite = self.lite
+        }
+    end,
+    deactivate = function(self, t, p)
+        if p.attackid then self:removeTemporaryValue("plus_attack", p.attackid) end
+        self:removeTemporaryValue("lite", p.liteid)
+        return true
     end,
 
     info = function(self, t)
-        -- FIXME: This should add a morale boost (+hit) once accuracy is implemented
-        return flavorText(("Adds %i to your light radius."):format(t.lite),
+        return flavorText(("Adds %i to your light radius and boosts your morale, adding %.1f to Attack (based on your light radius)."):format(t.lite, t.getAttack(self, t)),
             "Although the dog-head can see in the dark, they often conjure "..
             "small fires for their mining helmets. The light makes working "..
             "underground easier and helps bolster their morale if their traps "..

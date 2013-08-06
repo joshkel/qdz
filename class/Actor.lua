@@ -59,6 +59,8 @@ _M.BASE_UNARMED_DAMAGE = 2
 function _M:init(t, no_default)
     -- Define some basic combat stats
     self.combat_armor = 0
+    self.plus_attack = 0
+    self.plus_defense = 0
 
     -- Default regen
     t.power_regen = t.power_regen or 0.25
@@ -107,6 +109,13 @@ function _M:act()
     -- Compute timed effects
     self:timedEffects()
 
+    if not self.dead then
+        if self:isTalentActive(self.T_MINING_LIGHT) then
+            local t = self:getTalentFromId(self.T_MINING_LIGHT)
+            t.do_turn(self, t)
+        end
+    end
+
     -- Still enough energy to act ?
     if self.energy.value < game.energy_to_act then return false end
 
@@ -138,6 +147,8 @@ function _M:tooltip()
 #00ffff#Level: %d
 #WHITE#HP: #LIGHT_RED#%d (%d%%)
 #WHITE#Stats: #LIGHT_GREEN#%d#WHITE# / #LIGHT_GREEN#%d#WHITE# / #LIGHT_GREEN#%d#WHITE# / #LIGHT_GREEN#%d#WHITE# / #LIGHT_GREEN#%d#WHITE#
+#WHITE#Attack: #LIGHT_GREEN#%i#WHITE#
+#WHITE#Defense: #LIGHT_GREEN#%i#WHITE#
 %s]]):format(
         self:getDisplayString(),
         self.name,
@@ -148,11 +159,13 @@ function _M:tooltip()
         self:getCon(),
         self:getAgi(),
         self:getMnd(),
+        self:combatAttack(self.combat),  -- TODO: Find equipped item instead of self.combat?
+        self:combatDefense(),
         self.desc and ("\n" .. self.desc .. "\n") or ""
     )
 
     for tid, act in pairs(self.sustain_talents) do
-        if act then text = text .. ("- #LIGHT_GREEN#%s#WHITE#"):format(self.getTalentFromId(tid).name) end
+        if act then text = text .. ("- #LIGHT_GREEN#%s#WHITE#"):format(self:getTalentFromId(tid).name) end
     end
     for eff_id, p in pairs(self.tmp) do
         local e = self.tempeffect_def[eff_id]

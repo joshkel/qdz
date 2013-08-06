@@ -28,16 +28,16 @@ newBirthDescriptor{
     },
     experience = 1.0,
 
-    body = { INVEN = 10, RHAND = 1, LHAND = 1, BODY = 1, FEET = 1, HEAD = 1 },
+    body = { INVEN = 10, RHAND = 1, LHAND = 1, BODY = 1, FEET = 1, HEAD = 1, LIGHT = 1 },
 
     copy = {
         max_level = 10,
-        lite = 2,
         max_life = 10,
         max_power = 10,
 
         resolvers.equip {
-            {type="weapon", subtype="staff", name="staff", ego_change=-1000}
+            {type="weapon", subtype="staff", name="staff", ego_change=-1000},
+            {type="light", subtype="light", name="paper lantern", ego_change=-1000},
         }
     },
     

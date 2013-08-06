@@ -73,6 +73,7 @@ ActorInventory:defineInventory("LHAND", "Left hand", true, "Your left hand, usab
 ActorInventory:defineInventory("HEAD", "Head", true, "Helmets or other headgear")
 ActorInventory:defineInventory("BODY", "Body", true, "Armor to protect your body")
 ActorInventory:defineInventory("FEET", "Feet", true, "Sandals, boots, or other footwear")
+ActorInventory:defineInventory("LIGHT", "Light source", true, "A light source")
 
 -- Additional entities resolvers
 dofile("/mod/resolvers.lua")

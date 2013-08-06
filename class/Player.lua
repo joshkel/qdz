@@ -100,6 +100,10 @@ function _M:playerFOV()
     self:computeFOV(self.lite, "block_sight", function(x, y, dx, dy, sqdist) game.level.map:applyLite(x, y) end, true, true, true)
 end
 
+function _M:doFOV()
+    self:playerFOV()
+end
+
 --- Called before taking a hit, overload mod.class.Actor:onTakeHit() to stop resting and running
 function _M:onTakeHit(value, src)
     self:runStop("taken damage")

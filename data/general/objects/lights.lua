@@ -21,14 +21,25 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
-local loadIfNot = function(f)
-	if loaded[f] then return end
-	load(f, entity_mod)
-end
+newEntity{
+    define_as = "BASE_LIGHT",
+    slot = "LIGHT",
+    type = "light", subtype="light",
+    display = "~",
+    encumber = 2,
+    desc = [[A light source]],
+}
 
-loadIfNot("/data/general/objects/money.lua")
-loadIfNot("/data/general/objects/consumables.lua")
-loadIfNot("/data/general/objects/weapons.lua")
-loadIfNot("/data/general/objects/diggers.lua")
-loadIfNot("/data/general/objects/lights.lua")
+newEntity{ base = "BASE_LIGHT",
+    name = "paper lantern", color=colors.LIGHT_SLATE,
+    desc = [[A bamboo frame with a small flame, covered by paper.]],
+    level_range = {1, 20},
+    rarity = 7,
+    cost = 1,
+    material_level = 1,
+
+    wielder = {
+        lite = 2,
+    },
+}
 
