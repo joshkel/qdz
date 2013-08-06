@@ -142,7 +142,7 @@ function _M:drawDialog(kind)
     if kind == "general" then
         h = 0
         w = 0
-        s:drawStringBlended(self.font, "Name : "..(player.name or "Unnamed"), w, h, 255, 255, 255, true) h = h + self.font_h
+        s:drawColorStringBlended(self.font, "#GOLD##{bold}#"..(player.name or "Unnamed").."#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
 
         h = h + self.font_h -- Adds an empty row
         
@@ -166,16 +166,40 @@ function _M:drawDialog(kind)
         self:drawString(s, "Mind         : #00ff00# "..player:getMnd(), w, h, statTooltip('mnd')) h = h + self.font_h
         
     elseif kind=="attack" then
-        h = 0
+        local COL_WIDTH = 0.15
         w = 0
-        
-        -- draw the attack tab here
+
+        h = 0
+        if player:getInven(player.INVEN_RHAND) then
+            for i, o in ipairs(player:getInven(player.INVEN_RHAND)) do
+                local combat = player:getObjectCombat(o, "rhand")
+                if combat then
+                    h = self:drawCombatBlock(s, w, h, "Right Hand: "..o.name:capitalize(), combat)
+                end
+            end
+        end
+        if h ~= 0 then w = w + self.w * COL_WIDTH end
+
+        h = 0
+        if player:getInven(player.INVEN_LHAND) then
+            for i, o in ipairs(player:getInven(player.INVEN_LHAND)) do
+                local combat = player:getObjectCombat(o, "lhand")
+                if combat then
+                    h = self:drawCombatBlock(s, w, h, "Left Hand: "..o.name:capitalize(), combat, player:getOffHandMult(combat))
+                end
+            end
+        end
+        if h ~= 0 then w = w + self.w * COL_WIDTH end
+
+        h = 0
+        self:drawCombatBlock(s, w, h, "Unarmed", player:getObjectCombat(nil, "unarmed"))
 
     elseif kind=="defense" then
         h = 0
         w = 0
         
-        -- draw the defense tab here
+        self:drawString(s, "Defense : #00ff00# "..player:combatDefense(), w, h,
+            GameUI:tooltipTitle('Defense'):merge{true, "Ability to dodge or block attacks. Against an evenly matched opponent, +1 Defense decreases the chance to hit by roughly 5%."}) h = h + self.font_h
 
     end
 
@@ -210,3 +234,20 @@ function _M:dump()
     Dialog:simplePopup("Character dump complete", "File: "..fs.getRealPath(file))
 end 
 
+function _M:drawCombatBlock(s, w, h, desc, combat, mult)
+    local player = self.actor
+    mult = mult or 1
+
+    self:drawString(s, "#GOLD##{bold}#"..desc.."#{normal}##LAST#", w, h) h = h + self.font_h
+    self:drawString(s, "Attack : #00ff00# "..player:combatAttack(combat), w, h,
+        GameUI:tooltipTitle('Attack'):merge{true, "Accuracy in combat. Against an evenly matched opponent, +1 Attack increases the chance to hit by roughly 5%."}) h = h + self.font_h
+
+    local dam_min, dam_max = player:combatDamageRange(combat)
+    dam_min = math.round(dam_min * mult)
+    dam_max = math.round(dam_max * mult)
+    self:drawString(s, "Damage : #00ff00# "..string.describe_range(dam_min, dam_max), w, h,
+        GameUI:tooltipTitle('Damage'):merge{true, "The damage range of this attack."}) h = h + self.font_h
+
+    h = h + self.font_h
+    return h
+end

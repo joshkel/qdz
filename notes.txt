@@ -5,7 +5,6 @@ Basic game mechanics: Kick, armor, shields
 Tooltips for weapons
 Starting stats
 Saving projectiles doesn't work???
-Add combat stats to character sheet, with explanation
 AI is quite bad - if there's a row of monsters, the second one won't step around the first to double-team you
 Fully implement absorbing abilities
 Better inventory screen (improvements to match my Use Talents screen - wider columns, spaces between slots?)
