@@ -30,6 +30,7 @@ local SurfaceZone = require "engine.ui.SurfaceZone"
 local Separator = require "engine.ui.Separator"
 local Stats = require "engine.interface.ActorStats"
 local Textzone = require "engine.ui.Textzone"
+local GameUI = require "mod.class.ui.GameUI"
 
 module(..., package.seeall, class.inherit(Dialog))
 
@@ -86,7 +87,7 @@ function _M:switchTo(kind)
 end
 
 function _M:on_register()
-	game:onTickEnd(function() self.key:unicodeInput(true) end)
+    game:onTickEnd(function() self.key:unicodeInput(true) end)
 end
 
 function _M:updateKeys()
@@ -146,17 +147,17 @@ function _M:drawDialog(kind)
         h = h + self.font_h -- Adds an empty row
         
         -- Draw some text with an attatched tooltip
-        self:drawString(s, ("#c00000#Life : #00ff00#%d/%d"):format(player.life, player.max_life), w, h,
-            "#GOLD#Life#LAST#\nYour health. When this reaches 0, you die.") h = h + self.font_h
-        self:drawString(s, ("#ffcc80#Power: #00ff00#%d/%d"):format(player:getPower(), player.max_power), w, h,
-            "#GOLD#Power#LAST#\nYour available qi energy. Many qi abilities require this.") h = h + self.font_h
+        self:drawString(s, ("#LIGHT_RED#Life : #00ff00#%d/%d"):format(player.life, player.max_life), w, h,
+            GameUI:tooltipTitle('Life'):merge{true, "Your health. When this reaches 0, you die."}) h = h + self.font_h
+        self:drawString(s, ("#LIGHT_BLUE#Power: #00ff00#%d/%d"):format(player:getPower(), player.max_power), w, h,
+            GameUI:tooltipTitle('Power'):merge{true, "Your available qi energy. Many qi abilities require this."}) h = h + self.font_h
         
         h = 0
         w = self.w * 0.25 
         -- start on second column
         
         function statTooltip(short_name)
-            return ("#GOLD#%s#LAST#\n%s"):format(player.stats_def[short_name].name, player.stats_def[short_name].description)
+            return GameUI:tooltipTitle(player.stats_def[short_name].name):merge{true, player.stats_def[short_name].description}
         end
         self:drawString(s, "Strength     : #00ff00# "..player:getStr(), w, h, statTooltip('str')) h = h + self.font_h
         self:drawString(s, "Skill        : #00ff00# "..player:getSki(), w, h, statTooltip('ski')) h = h + self.font_h

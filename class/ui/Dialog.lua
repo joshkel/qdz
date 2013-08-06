@@ -36,6 +36,6 @@ end
 function _M:drawString(s, text, w, h, tooltip)
     draw_area = {s:drawColorStringBlended(self.font, text, w, h, 255, 255, 255, true)}
     if tooltip then
-        self:mouseTooltip(tooltip, unpack(draw_area))
+        self:mouseTooltip(tooltip:toString(), unpack(draw_area))
     end
 end

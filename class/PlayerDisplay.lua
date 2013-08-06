@@ -111,13 +111,11 @@ function _M:display()
         h = h + self.font_h
     end
 
-    --self:makeTexture(("Str/Ski/Con/Agi/Mnd: #00ff00#%3d/%3d/%3d/%3d/%3d"):format(player:getStr(), player:getSki(), player:getCon(), player:getAgi(), player:getMnd()), x, h, 255, 255, 255) h = h + self.font_h
-    
     h = h + self.font_h
 
-    self:makeTextureBar("#c00000#Life:", nil, player.life, player.max_life, player.life_regen * util.bound((player.healing_factor or 1), 0, 2.5), x, h, 255, 255, 255, colors.DARK_RED, colors.VERY_DARK_RED) h = h + self.font_h
+    self:makeTextureBar("#LIGHT_RED#Life:", nil, player.life, player.max_life, player.life_regen * util.bound((player.healing_factor or 1), 0, 2.5), x, h, 255, 255, 255, colors.DARK_RED, colors.VERY_DARK_RED) h = h + self.font_h
 
-    self:makeTextureBar("#ffcc80#Power:", nil, player:getPower(), player.max_power, player.power_regen, x, h, 255, 255, 255, colors.DARK_BLUE, {r=colors.DARK_BLUE.r/2, g=colors.DARK_BLUE.g/2, b=colors.DARK_BLUE.b/2}) h = h + self.font_h
+    self:makeTextureBar("#LIGHT_BLUE#Power:", nil, player:getPower(), player.max_power, player.power_regen, x, h, 255, 255, 255, colors.DARK_BLUE, {r=colors.DARK_BLUE.r/2, g=colors.DARK_BLUE.g/2, b=colors.DARK_BLUE.b/2}) h = h + self.font_h
 
     if savefile_pipe.saving then
         h = h + self.font_h

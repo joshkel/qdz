@@ -299,8 +299,7 @@ newTalent {
         local liteid = self:addTemporaryValue("lite", t.lite)
         if self.doFOV then self:doFOV() end
         return {
-            liteid = liteid,
-            prev_lite = self.lite
+            liteid = liteid
         }
     end,
     deactivate = function(self, t, p)

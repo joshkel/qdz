@@ -150,7 +150,7 @@ function _M:tooltip()
     local text = GameUI:tooltipTitle(self:getDisplayString(), self.name)
 
     text:add(true, color.caption, 'Level: ', color.text, tostring(self.level))
-    text:add(true, color.caption, 'HP: ', color.health, ("%d (%d%%)"):format(self.life, self.life * 100 / self.max_life))
+    text:add(true, color.caption, 'Life: ', color.health, ("%d (%d%%)"):format(self.life, self.life * 100 / self.max_life))
 
     delim = {}
     text:add(true, color.caption, 'Stats: ')
@@ -176,7 +176,7 @@ function _M:tooltip()
         text:add(true, color.text, ' - ', this_color, e.desc, (" (%i)"):format(dur))
     end
 
-    if self.desc then text:add(true, true, self.desc, true) end
+    if self.desc then text:add(true, true, color.text, self.desc, true) end
 
     return text
 end
