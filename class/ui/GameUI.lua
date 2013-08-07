@@ -40,6 +40,7 @@ _M.tooltipColor = {
 
     -- Resources
     health = { "color", "LIGHT_RED" },
+    power = { "color", "LIGHT_BLUE" },
 
     -- Good stuff: sustained talents, beneficial timed effects, etc.
     good = { "color", "LIGHT_GREEN" },
@@ -48,7 +49,7 @@ _M.tooltipColor = {
     bad = { "color", "LIGHT_RED" }
 }
 
----Generates a tstring giving the title for a tooltip.
+---Generates a tstring giving the title for a tooltip.  Static function.
 ---@param display_string Optional display string
 ---@param title
 function _M:tooltipTitle(display_string, title)
@@ -58,5 +59,14 @@ function _M:tooltipTitle(display_string, title)
         title = display_string
         return tstring{{"color","GOLD"}, {"font", "bold"}, title:capitalize(), {"font", "normal"}, {"color", "LAST"}}
     end
+end
+
+---Returns a tstring describing a temporary effect on an Actor.  Static function.
+function _M:tempEffectText(actor, eff_id)
+    local color = self.tooltipColor 
+    local e = actor.tempeffect_def[eff_id]
+    local dur = actor:hasEffect(eff_id).dur + 1
+    local this_color = e.status == "detrimental" and color.bad or color.good
+    return tstring{this_color, e.desc, (" (%i)"):format(dur)}
 end
 

@@ -127,6 +127,8 @@ function _M:mouseZones(t, no_new)
 end
 
 function _M:drawDialog(kind)
+    local color = GameUI.tooltipColor
+
     self.mouse:reset()
 
     self:setupUI()
@@ -140,22 +142,22 @@ function _M:drawDialog(kind)
     local w = 0
 
     if kind == "general" then
+        -- First column: Primary stats
         h = 0
         w = 0
-        s:drawColorStringBlended(self.font, "#GOLD##{bold}#"..(player.name or "Unnamed").."#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
+        local name = player.name or "Unnamed"
+        if player ~= game.player then name = name:capitalize() end
+        s:drawColorStringBlended(self.font, "#GOLD##{bold}#"..name.."#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
 
-        h = h + self.font_h -- Adds an empty row
-        
-        -- Draw some text with an attatched tooltip
+        h = h + self.font_h
+
         self:drawString(s, ("#LIGHT_RED#Life : #00ff00#%d/%d"):format(player.life, player.max_life), w, h,
             GameUI:tooltipTitle('Life'):merge{true, "Your health. When this reaches 0, you die."}) h = h + self.font_h
         self:drawString(s, ("#LIGHT_BLUE#Power: #00ff00#%d/%d"):format(player:getPower(), player.max_power), w, h,
             GameUI:tooltipTitle('Power'):merge{true, "Your available qi energy. Many qi abilities require this."}) h = h + self.font_h
-        
-        h = 0
-        w = self.w * 0.25 
-        -- start on second column
-        
+
+        h = h + self.font_h
+
         function statTooltip(short_name)
             return GameUI:tooltipTitle(player.stats_def[short_name].name):merge{true, player.stats_def[short_name].description}
         end
@@ -164,7 +166,29 @@ function _M:drawDialog(kind)
         self:drawString(s, "Constitution : #00ff00# "..player:getCon(), w, h, statTooltip('con')) h = h + self.font_h
         self:drawString(s, "Agility      : #00ff00# "..player:getAgi(), w, h, statTooltip('agi')) h = h + self.font_h
         self:drawString(s, "Mind         : #00ff00# "..player:getMnd(), w, h, statTooltip('mnd')) h = h + self.font_h
-        
+
+        -- Second column: Effects and sustains
+        h = 0
+        w = self.w * 0.25
+
+        s:drawColorStringBlended(self.font, "#GOLD##{bold}#Effects#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
+        for tid, act in pairs(player.sustain_talents) do
+            if act then
+                local t = player:getTalentFromId(tid)
+                self:drawString(s, tstring{color.good, t.name}:toString(), w, h,
+                    GameUI:tooltipTitle(t.name):add(true):merge(player:getTalentFullDescription(t))) h = h + self.font_h
+            end
+        end
+        for eff_id, p in pairs(player.tmp) do
+            local tooltip
+            local e = player.tempeffect_def[eff_id]
+            if e.long_desc then
+                tooltip = GameUI:tooltipTitle(e.desc):add(true, e.long_desc(player, p))
+            end
+            self:drawString(s, GameUI:tempEffectText(player, eff_id):toString(), w, h,
+                tooltip) h = h + self.font_h
+        end
+
     elseif kind=="attack" then
         local COL_WIDTH = 0.15
         w = 0
@@ -197,7 +221,8 @@ function _M:drawDialog(kind)
     elseif kind=="defense" then
         h = 0
         w = 0
-        
+
+        s:drawColorStringBlended(self.font, "#GOLD##{bold}#Physical Defenses#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
         self:drawString(s, "Defense : #00ff00# "..player:combatDefense(), w, h,
             GameUI:tooltipTitle('Defense'):merge{true, "Ability to dodge or block attacks. Against an evenly matched opponent, +1 Defense decreases the chance to hit by roughly 5%."}) h = h + self.font_h
 
@@ -220,19 +245,19 @@ function _M:dump()
 
     w1("  [Qi Dao Zei Character Dump]")
     w1()
-    
+
     w1(("%-32s"):format(makelabel("Name", player.name)))
-    
-    w1(("STR:  %d"):format(player:getStr()))
-    w1(("SKI:  %d"):format(player:getSki()))
-    w1(("CON:  %d"):format(player:getCon()))
-    w1(("AGI:  %d"):format(player:getAgi()))
-    w1(("MND:  %d"):format(player:getMnd()))
+
+    w1(("Str:  %d"):format(player:getStr()))
+    w1(("Ski:  %d"):format(player:getSki()))
+    w1(("Con:  %d"):format(player:getCon()))
+    w1(("Agi:  %d"):format(player:getAgi()))
+    w1(("Mnd:  %d"):format(player:getMnd()))
 
     fff:close()
 
     Dialog:simplePopup("Character dump complete", "File: "..fs.getRealPath(file))
-end 
+end
 
 function _M:drawCombatBlock(s, w, h, desc, combat, mult)
     local player = self.actor
@@ -245,7 +270,7 @@ function _M:drawCombatBlock(s, w, h, desc, combat, mult)
     local dam_min, dam_max = player:combatDamageRange(combat)
     dam_min = math.round(dam_min * mult)
     dam_max = math.round(dam_max * mult)
-    self:drawString(s, "Damage : #00ff00# "..string.describe_range(dam_min, dam_max), w, h,
+    self:drawString(s, "Damage : #00ff00# "..string.describe_range(dam_min, dam_max, true), w, h,
         GameUI:tooltipTitle('Damage'):merge{true, "The damage range of this attack."}) h = h + self.font_h
 
     h = h + self.font_h

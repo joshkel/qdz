@@ -30,6 +30,7 @@ newEffect{
     desc = "Focused Qi",
     type = "physical", -- TODO?
     status = "beneficial",
+    long_desc = function(self, eff) return ("%s's qi aura is focused, causing its attacks to always hit and do maximum damage."):format(self.name:capitalize()) end,
     on_gain = function(self, err) return "#Target# focuses its qi.", "+Qi focus" end, -- FIXME: his / her, not its
     on_lose = function(self, err) return "#Target#'s qi focus dissipates.", "-Qi focus" end,
     activate = function(self, eff)
@@ -61,6 +62,7 @@ newEffect{
     type = "physical",
     status = "detrimental",
     parameters = { power=1 },
+    long_desc = function(self, eff) return ("%s is poisoned, taking %i damage per turn."):format(self.name:capitalize(), eff.power) end,
     on_gain = function(self, err) return "#Target# is poisoned!", "+Poison" end,
     on_lose = function(self, err) return "#Target# recovers from the poison.", "-Poison" end,
     on_timeout = function(self, eff)

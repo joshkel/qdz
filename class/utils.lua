@@ -63,8 +63,14 @@ function util.scoped_change(obj, t, f, ...)
     return result
 end
 
-function string.describe_range(from, to)
-    return from == to and tostring(from) or ("%i-%i"):format(from, to)
+function string.describe_range(from, to, space)
+    if from == to then
+        return tostring(from)
+    elseif space then
+        return("%i - %i"):format(from, to)
+    else
+        return("%i-%i"):format(from, to)
+    end
 end
 
 --- Rounds a number, rounding .5 away from 0.  See http://lua-users.org/wiki/SimpleRound

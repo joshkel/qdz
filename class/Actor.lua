@@ -170,10 +170,7 @@ function _M:tooltip()
         if act then text:add(true, color.text, ' - ', color.good, self:getTalentFromId(tid).name) end
     end
     for eff_id, p in pairs(self.tmp) do
-        local e = self.tempeffect_def[eff_id]
-        local dur = p.dur + 1
-        local this_color = e.status == "detrimental" and color.bad or color.good
-        text:add(true, color.text, ' - ', this_color, e.desc, (" (%i)"):format(dur))
+        text:add(true, color.text, ' - '):merge(GameUI:tempEffectText(self, eff_id))
     end
 
     if self.desc then text:add(true, true, color.text, self.desc, true) end

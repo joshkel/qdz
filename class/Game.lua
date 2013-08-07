@@ -47,6 +47,8 @@ local DebugConsole = require "engine.DebugConsole"
 local FlyingText = require "engine.FlyingText"
 local Tooltip = require "engine.Tooltip"
 
+local MapMenu = require "mod.dialogs.MapMenu"
+
 module(..., package.seeall, class.inherit(engine.GameTurnBased, engine.interface.GameTargeting))
 
 function _M:init()
@@ -428,7 +430,13 @@ function _M:setupCommands()
         LOOK_AROUND = function()
             self.flash:empty(true)
             self.flash(self.flash.GOOD, "Looking around... (direction keys to select interesting things, shift+direction keys to move freely)")
-            local co = coroutine.create(function() self.player:getTarget{type="hit", no_restrict=true, range=2000} end)
+            local co = coroutine.create(function()
+                local x, y = self.player:getTarget{type="hit", no_restrict=true, range=2000}
+                if x and y then
+                    local tmx, tmy = self.level.map:getTileToScreen(x, y)
+                    self:registerDialog(MapMenu.new(tmx, tmy, x, y))
+                end
+            end)
             local ok, err = coroutine.resume(co)
             if not ok and err then print(debug.traceback(co)) error(err) end
         end,
@@ -442,19 +450,33 @@ function _M:setupMouse(reset)
         -- Handle targeting
         if self:targetMouse(button, mx, my, xrel, yrel, event) then return end
 
+        -- Handle right click menu
+        if button == "right" and event == "button" and not xrel and not yrel then
+            self:mouseRightClick(mx, my)
+        end
+
         -- Handle the mouse movement/scrolling
         self.player:mouseHandleDefault(self.key, self.key == self.normal_key, button, mx, my, xrel, yrel, event)
     end)
+
     -- Scroll message log
     self.mouse:registerZone(self.logdisplay.display_x, self.logdisplay.display_y, self.w, self.h, function(button)
         if button == "wheelup" then self.logdisplay:scrollUp(1) end
         if button == "wheeldown" then self.logdisplay:scrollUp(-1) end
     end, {button=true})
+
     -- Use hotkeys with mouse
     self.mouse:registerZone(self.hotkeys_display.display_x, self.hotkeys_display.display_y, self.w, self.h, function(button, mx, my, xrel, yrel, bx, by, event)
         self.hotkeys_display:onMouse(button, mx, my, event == "button", function(text) self.tooltip:displayAtMap(nil, nil, self.w, self.h, tostring(text)) end)
     end)
     self.mouse:setCurrent()
+end
+
+--- Right mouse click on the map
+function _M:mouseRightClick(mx, my, extra)
+	if not self.level then return end
+	local tmx, tmy = self.level.map:getMouseTile(mx, my)
+	self:registerDialog(MapMenu.new(mx, my, tmx, tmy))
 end
 
 -- Quit to main menu
