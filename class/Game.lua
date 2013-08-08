@@ -46,6 +46,7 @@ local LogFlasher = require "engine.LogFlasher"
 local DebugConsole = require "engine.DebugConsole"
 local FlyingText = require "engine.FlyingText"
 local Tooltip = require "engine.Tooltip"
+local GameUI = require "mod.class.ui.GameUI"
 
 local MapMenu = require "mod.dialogs.MapMenu"
 
@@ -64,11 +65,11 @@ end
 function _M:run()
     local player_display_width = 200
     self.flash = LogFlasher.new(player_display_width + 8, 0, self.w, 20, nil, nil, nil, {255,255,255}, {30,30,30})
-    self.logdisplay = LogDisplay.new(0, self.h * 0.8, self.w * 0.5, self.h * 0.2, nil, nil, nil, {255,255,255}, {30,30,30})
-    self.hotkeys_display = HotkeysDisplay.new(nil, self.w * 0.5, self.h * 0.8, self.w * 0.5, self.h * 0.2, {30,30,0})
+    self.logdisplay = LogDisplay.new(0, self.h * 0.8, self.w * 0.5, self.h * 0.2, nil, GameUI.font_name, GameUI.font_size, {255,255,255}, {30,30,30})
+    self.hotkeys_display = HotkeysDisplay.new(nil, self.w * 0.5, self.h * 0.8, self.w * 0.5, self.h * 0.2, {30,30,0}, GameUI.mono_font_name, GameUI.font_size - 2)
     self.npcs_display = ActorsSeenDisplay.new(nil, self.w * 0.5, self.h * 0.8, self.w * 0.5, self.h * 0.2, {30,30,0})
-    self.tooltip = Tooltip.new(nil, nil, {255,255,255}, {30,30,30})
-    self.player_display = PlayerDisplay.new(0, 0, player_display_width, self.h * 0.8, {0,0,0}, "data/font/VeraMono.ttf", 12)
+    self.tooltip = Tooltip.new(GameUI.font_name, GameUI.font_size, {255,255,255}, {30,30,30})
+    self.player_display = PlayerDisplay.new(0, 0, player_display_width, self.h * 0.8, {0,0,0}, GameUI.mono_font_name, GameUI.font_size)
     self.flyers = FlyingText.new()
     self:setFlyingText(self.flyers)
 

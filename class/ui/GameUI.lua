@@ -25,6 +25,11 @@
 
 module(..., package.seeall, class.make)
 
+-- TODO: Customize this any?
+_M.font_name = "/data/font/DroidSans.ttf"
+_M.font_size = 14
+_M.mono_font_name = "/data/font/DroidSansMono.ttf"  -- or "data/font/VeraMono.ttf"?
+
 -- TODO: These color names / descriptions were from an old version of Actor:getTalentFullDescription.
 -- They need to be a bit more consistent / generic / widely applicable.
 -- Note: Since these are designed to be used with tstrings, they're formatted as tstring color codes.

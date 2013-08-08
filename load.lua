@@ -35,6 +35,18 @@ local ActorTemporaryEffects = require "engine.interface.ActorTemporaryEffects"
 local ActorInventory = require "engine.interface.ActorInventory"
 local Birther = require "engine.Birther"
 
+local UIBase = require "engine.ui.Base"
+local GameUI = require "mod.class.ui.GameUI"
+
+-- Customize the UI
+UIBase.font = core.display.newFont(GameUI.font_name, GameUI.font_size)
+UIBase.font_h = UIBase.font:lineSkip()
+UIBase.font_mono = core.display.newFont(GameUI.mono_font_name, GameUI.font_size)
+UIBase.font_mono_w = UIBase.font_mono:size(" ")
+UIBase.font_mono_h = UIBase.font_mono:lineSkip()
+UIBase.font_bold = core.display.newFont("/data/font/DroidSans-Bold.ttf", GameUI.font_size)
+UIBase.font_bold_h = UIBase.font_bold:lineSkip()
+
 -- Useful keybinds
 KeyBind:load("move,hotkeys,inventory,actions,interface,debug")
 

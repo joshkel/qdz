@@ -19,7 +19,6 @@ To do a while later:
 Logo
 More artwork for startup screens?
 Custom skin
-Rework all dialogs
 
 Game mechanics
 Monster ranks??? (E.g., lower hp per con for minions / mooks, higher hp per con for elites)
