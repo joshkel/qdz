@@ -1,8 +1,5 @@
 To do:
-Redraw FOV / light radius when light radius changes
-Clean up qi tracking - isFocused and clearFocus should be Actor (?) methods.  If a single ability spawns multiple entities, then it can allow for multiple absorption - bug or feature?
 Basic game mechanics: Kick, armor, shields
-Tooltips for weapons
 Starting stats
 Saving projectiles doesn't work???
 AI is quite bad - if there's a row of monsters, the second one won't step around the first to double-team you
@@ -10,24 +7,19 @@ Fully implement absorbing abilities
 Better inventory screen (improvements to match my Use Talents screen - wider columns, spaces between slots?)
 Order default hotkeys better
 Random name generator
-Right-click menu
 Critical hits
 Left vs right hand
 Quick switch weapons???
 Not sure that dig speed is working right - monsters may get a free move afterwards, and displayed number of turns is always 1 greater than intended digspeed
 Rename Power to Qi?
 What to do about fractional HP?  It stinks to think you do enough damage to kill a foe and find out you haven't...
+Redraw FOV / light radius when light radius changes
 
 To do a while later:
 Logo
 More artwork for startup screens?
 Custom skin
 Rework all dialogs
-
-To do much later:
-Figure out an email address
-Attribution for artwork
-OGL
 
 Game mechanics
 Monster ranks??? (E.g., lower hp per con for minions / mooks, higher hp per con for elites)

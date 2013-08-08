@@ -1,5 +1,5 @@
 -- Qi Dao Zei
--- Copyright (C) 2013 Castler
+-- Copyright (C) 2013 Josh Kelley
 --
 -- based on
 -- ToME - Tales of Maj'Eyal

@@ -1,5 +1,5 @@
 -- Qi Dao Zei
--- Copyright (C) 2013 Castler
+-- Copyright (C) 2013 Josh Kelley
 --
 -- based on
 -- ToME - Tales of Middle-Earth
@@ -24,6 +24,13 @@
 local Stats = require "engine.interface.ActorStats"
 local Particles = require "engine.Particles"
 local Qi = require "mod.class.interface.Qi"
+
+local function merge_pow_dur(old_eff, new_eff)
+    local old_dam = old_eff.pow * old_eff.dur
+    local new_dam = new_eff.pow * new_eff.dur
+    old_eff.dur = math.ceil((old_eff.dur + new_eff.dur) / 2)
+    old_eff.pow = (old_dam + new_dam) / old_eff.dur
+end
 
 newEffect{
     name = "FOCUSED_QI",
@@ -62,7 +69,7 @@ newEffect{
     type = "physical",
     status = "detrimental",
     parameters = { power=1 },
-    long_desc = function(self, eff) return ("%s is poisoned, taking %i damage per turn."):format(self.name:capitalize(), eff.power) end,
+    long_desc = function(self, eff) return ("%s is poisoned, taking %.1f damage per turn."):format(self.name:capitalize(), eff.power) end,
     on_gain = function(self, err) return "#Target# is poisoned!", "+Poison" end,
     on_lose = function(self, err) return "#Target# recovers from the poison.", "-Poison" end,
     on_timeout = function(self, eff)
@@ -70,5 +77,9 @@ newEffect{
         DamageType:get(DamageType.POISON).projector(eff.src or self, self.x, self.y, DamageType.POISON, eff.power)
         Qi.postCall(eff, saved)
     end,
+    on_merge = function(self, old_eff, new_eff)
+        merge_pow_dam(old_eff, new_eff)
+        return old_eff
+    end
 }
 

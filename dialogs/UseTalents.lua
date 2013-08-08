@@ -1,5 +1,5 @@
 -- Qi Dao Zei
--- Copyright (C) 2013 Castler
+-- Copyright (C) 2013 Josh Kelley
 --
 -- TE4 - T-Engine 4
 -- Copyright (C) 2009, 2010, 2011, 2012, 2013 Nicolas Casalini

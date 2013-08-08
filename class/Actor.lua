@@ -1,5 +1,5 @@
 -- Qi Dao Zei
--- Copyright (C) 2013 Castler
+-- Copyright (C) 2013 Josh Kelley
 --
 -- based on
 -- ToME - Tales of Middle-Earth
@@ -193,8 +193,8 @@ function _M:die(src)
     -- If the killer had focused qi, then try absorbing an ability.
     if src and Qi.isFocused(src) then
         if src:absorbAbility(self) then
-            -- Each qi focus is only good for one absorption, so forcibly
-            -- clear any focused state.
+            -- Each qi focus may only be good for one absorption, so forcibly
+            -- clear any focused state if appropriate.
             Qi.clearFocus(src)
         end
     end

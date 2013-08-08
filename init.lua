@@ -1,5 +1,5 @@
 -- Qi Dao Zei
--- Copyright (C) 2013 Castler
+-- Copyright (C) 2013 Josh Kelley
 --
 -- based on
 -- ToME - Tales of Middle-Earth
@@ -24,7 +24,7 @@
 name = "Qi Dao Zei"
 long_name = "Qi Dao Zei"
 short_name = "qdz"
-author = { "Castler", "castler@example.com" }
+author = { "Castler" }
 homepage = "http://te4.org/modules:qdz"
 version = {0,0,1}
 engine = {1,0,4,"te4"}

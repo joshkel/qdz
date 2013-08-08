@@ -1,5 +1,5 @@
 -- Qi Dao Zei
--- Copyright (C) 2013 Castler
+-- Copyright (C) 2013 Josh Kelley
 --
 -- ToME - Tales of Maj'Eyal
 -- Copyright (C) 2009, 2010, 2011 Nicolas Casalini

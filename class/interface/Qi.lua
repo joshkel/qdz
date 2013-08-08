@@ -1,5 +1,5 @@
 -- Qi Dao Zei
--- Copyright (C) 2013 Castler
+-- Copyright (C) 2013 Josh Kelley
 --
 -- based on
 -- ToME - Tales of Middle-Earth
@@ -57,7 +57,7 @@ function _M.postCall(intermediate, saved)
     if intermediate.src then util.revert_temp_change(intermediate.src, {intermediate=intermediate}, saved) end
 end
 
---- Checks if an entity has focused qi.  There are two ways this could happen:
+--- Checks if an entity or effect has focused qi.  There are two ways this could happen:
 ---  1) Entity has EFF_FOCUSED_QI directly.
 ---  2) Entity initiated some intermediate effect while focused.
 function _M.isFocused(e)
@@ -68,13 +68,22 @@ function _M.isFocused(e)
     end
 end
 
+---Clears qi focus.  This is triggered by successfully absorbing a qi ability.
+---For now, this is *disabled*.  If you can kill several enemies with a single
+---blow, you deserve to absorb several techniques.  If this becomes unbalanced,
+---we can reconsider.
 function _M.clearFocus(e)
-    if e.intermediate then
+    --If this is reenabled, it needs to be more sophisticated.  E.g., if a
+    --single technique triggers multiple effects (projectiles, timed effects,
+    --etc.), each effect currently has its own copy of focus state; all copies
+    --would need to be cleared.
+
+    --[[if e.intermediate then
         _M.clearFocus(e.intermediate)
     elseif e.focused_qi then
         e.focused_qi = false
     elseif e.removeEffect then
         e:removeEffect(e.EFF_FOCUSED_QI)
-    end
+    end]]
 end
 
