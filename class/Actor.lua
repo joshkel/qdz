@@ -28,7 +28,7 @@ require "engine.interface.ActorTemporaryEffects"
 require "engine.interface.ActorLife"
 require "engine.interface.ActorProject"
 require "engine.interface.ActorLevel"
-require "engine.interface.ActorStats"
+require "mod.class.interface.ActorStats"
 require "engine.interface.ActorTalents"
 require "engine.interface.ActorResource"
 require "engine.interface.ActorFOV"
@@ -46,7 +46,7 @@ module(..., package.seeall, class.inherit(
     engine.interface.ActorLife,
     engine.interface.ActorProject,
     engine.interface.ActorLevel,
-    engine.interface.ActorStats,
+    mod.class.interface.ActorStats,
     engine.interface.ActorTalents,
     engine.interface.ActorResource,
     engine.interface.ActorFOV,
@@ -79,7 +79,7 @@ function _M:init(t, no_default)
     engine.interface.ActorProject.init(self, t)
     engine.interface.ActorTalents.init(self, t)
     engine.interface.ActorResource.init(self, t)
-    engine.interface.ActorStats.init(self, t)
+    mod.class.interface.ActorStats.init(self, t)
     engine.interface.ActorLevel.init(self, t)
     engine.interface.ActorFOV.init(self, t)
 end
@@ -450,14 +450,3 @@ function _M:getAbsorbType()
     end
 end
 
---- Gets a human-readable description of getAbsorbType.
--- I'm not sure where this best belongs.
-function _M:getAbsorbTypeDescription()
-    return ({
-        rhand = "right hand",
-        lhand = "left hand",
-        chest = "chest",
-        feet = "feet",
-        head = "head"
-    })[self:getAbsorbType()]
-end

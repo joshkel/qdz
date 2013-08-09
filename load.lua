@@ -26,7 +26,7 @@ require("mod.class.utils")
 
 local KeyBind = require "engine.KeyBind"
 local DamageType = require "engine.DamageType"
-local ActorStats = require "engine.interface.ActorStats"
+local ActorStats = require "mod.class.interface.ActorStats"
 local ActorResource = require "engine.interface.ActorResource"
 local ActorTalents = require "engine.interface.ActorTalents"
 local ActorAI = require "engine.interface.ActorAI"
@@ -63,11 +63,11 @@ ActorTemporaryEffects:loadDefinition("/data/timed_effects.lua")
 ActorResource:defineResource("Power", "power", nil, "power_regen", "Power represent your ability to use special techniques.")
 
 -- Actor stats
-ActorStats:defineStat("Strength",     "str", 10, 1, 100, "Raw physical strength. This affects your melee damage and carrying capacity and is associated with qi of the right hand.")
-ActorStats:defineStat("Skill",        "ski", 10, 1, 100, "Skill indicates your fine motor control and physical and mental dexterity. It affects your accuracy (especially with ranged weapons) and your chance of critical hits. It is associated with qi of the left hand.")
-ActorStats:defineStat("Constitution", "con", 10, 1, 100, "Constitution represents your overall health and endurance. It determines your maximum life and and is associated with the qi of your chest.")
-ActorStats:defineStat("Agility",      "agi", 10, 1, 100, "Agility gives your gross motor skills and overall quickness. It affects your ability to dodge as well as your overall speed. It is associated with the qi of your feet.")
-ActorStats:defineStat("Mind",         "mnd", 10, 1, 100, "Mind covers your intelligence, insight, and strength of will. Numerous special abilities derive their effectiveness from your mind. Mind is associated with the qi of your head.")
+ActorStats:defineStat("Strength",     "str", 10, 1, 100, "Raw physical strength. This affects your melee damage and carrying capacity and is associated with qi of the right hand.", "You feel stronger.", "You feel weaker.")
+ActorStats:defineStat("Skill",        "ski", 10, 1, 100, "Skill indicates your fine motor control and physical and mental dexterity. It affects your accuracy (especially with ranged weapons) and your chance of critical hits. It is associated with qi of the left hand.", "You feel more skillful.", "You feel less skillful.")
+ActorStats:defineStat("Constitution", "con", 10, 1, 100, "Constitution represents your overall health and endurance. It determines your maximum life and and is associated with the qi of your chest.", "You feel tougher.", "You feel more frail.")
+ActorStats:defineStat("Agility",      "agi", 10, 1, 100, "Agility gives your gross motor skills and overall quickness. It affects your ability to dodge as well as your overall speed. It is associated with the qi of your feet.", "You feel quicker.", "You feel more sluggish.")
+ActorStats:defineStat("Mind",         "mnd", 10, 1, 100, "Mind covers your intelligence, insight, and strength of will. Numerous special abilities derive their effectiveness from your mind. Mind is associated with the qi of your head.", "You feel sharper.", "You feel less bright.")
 
 -- Add D20-style stat modifiers.  TODO: Not sure if I'll end up using these...
 for i, s in ipairs(ActorStats.stats_def) do

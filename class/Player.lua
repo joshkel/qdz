@@ -29,10 +29,11 @@ require "engine.interface.PlayerMouse"
 require "engine.interface.PlayerHotkeys"
 local Map = require "engine.Map"
 local Dialog = require "engine.Dialog"
-local ActorTalents = require "engine.interface.ActorTalents"
+local Talents = require "engine.interface.ActorTalents"
 local DeathDialog = require "mod.dialogs.DeathDialog"
-local Astar = require"engine.Astar"
-local DirectPath = require"engine.DirectPath"
+local Astar = require "engine.Astar"
+local DirectPath = require "engine.DirectPath"
+local Qi = require "mod.class.interface.Qi"
 
 --- Defines the player
 -- It is a normal actor, with some redefined methods to handle user interaction.<br/>
@@ -334,20 +335,21 @@ end
 -- Absorbs the qi ability from a slain opponent (given by src)
 function _M:absorbAbility(src)
     -- FIXME: Replace this with the full implementation (limited # of abilities,
-    -- tracking the order learned, update Use Talents screen to match, modify stats, etc.).
-    print(("ABSORB ABILITY: getAbsorbType = %s"):format(self:getAbsorbType() or "nil"))
+    -- tracking the order learned and update Use Talents screen to match (?), etc.).
+    local typ = self:getAbsorbType()
+    print(("ABSORB ABILITY: getAbsorbType = %s"):format(typ or "nil"))
 
-    if not self:getAbsorbType() then return false end
+    if not typ then return false end
 
     if not src.can_absorb then
         game.logSeen(self, ("%s's qi is too weak to absorb."):format(src.name:capitalize()))
         return false
     end
 
-    local t_id = src.can_absorb[self:getAbsorbType()]
+    local t_id = src.can_absorb[typ]
     if not t_id then
         game.logSeen(self, ("You try to absorb %s's qi, but it does nothing when bound to your %s."):format(
-            src.name, self:getAbsorbTypeDescription()))
+            src.name, Qi.slots_def[typ].desc))
         return false
     end
 
@@ -357,11 +359,39 @@ function _M:absorbAbility(src)
         return false
     end
 
-    self:learnTalent(t_id, true)
     t = self:getTalentFromId(t_id)
     game.level.map:particleEmitter(self.x, self.y, 1, "absorb_qi")
     game.log(("You absorb a portion of %s's qi and bind it to your %s. You learn %s!"):format(
-        src.name, self:getAbsorbTypeDescription(), self:getTalentDisplayName(t)))
+        src.name, Qi.slots_def[typ].desc, self:getTalentDisplayName(t)))
+    self:learnTalent(t_id, true)
     return true
+end
+
+-- For the player (only), learning or unlearning qi talents alters stats.
+function _M:changeStatForTalent(t_id, mod)
+    local t = self:getTalentFromId(t_id)
+    util.inspect(t)
+    local t_type = self:getTalentTypeFrom(t.type[1])
+    util.inspect(t_type)
+    if Qi.slots_def[t_type.slot] then
+        util.inspect(Qi.slots_def[t_type.slot])
+        local stat = Qi.slots_def[t_type.slot].stat
+        self:incIncStat(stat, mod)
+        game.log(mod > 0 and self.stats_def[stat].gain_msg or self.stats_def[stat].lose_msg)
+    end
+end
+
+function _M:learnTalent(t_id, force, nb)
+    local ok, err = mod.class.Actor.learnTalent(self, t_id, force, nb)
+    if not ok then return ok, err end
+    self:changeStatForTalent(t_id, 1)
+    return ok
+end
+
+function _M:unlearnTalent(t_id, force, nb)
+    local ok, err = mod.class.Actor.learnTalent(self, t_id, force, nb)
+    if not ok then return ok, err end
+    self:changeStatForTalent(t_id, -1)
+    return ok
 end
 

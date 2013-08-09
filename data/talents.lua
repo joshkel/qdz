@@ -25,11 +25,11 @@ newTalentType{ type="basic/qi", name = "qi", description = "Basic manipulation o
 newTalentType{ type="basic/combat", name = "combat", description = "Basic combat techniques" }
 newTalentType{ type="basic/proficiencies", name = "proficiencies", description = "Proficiencies are various (mostly) mundane skills. Most beings learn these through instinct, training, or practice. As a qi dao zei, you can instead be granted them through the abilities you absorb from your foes."}
 
-newTalentType{ type="qi abilities/right hand", name = "right hand", description = "Qi abilities bound to your right hand. These are typically direct, physical, hand-to-hand attacks." }
-newTalentType{ type="qi abilities/left hand", name = "left hand", description = "Qi abilities bound to your left hand. These are typically indirect, magical, and / or ranged attacks." }
-newTalentType{ type="qi abilities/chest", name = "chest", description = "Qi abilities bound to your chest. Chest abilities provide defense, enhancement, and healing." }
-newTalentType{ type="qi abilities/feet", name = "feet", description = "Qi abilities bound to your feet. These relate to movement and mobility." }
-newTalentType{ type="qi abilities/head", name = "head", description = "Qi abilities bound to your head. These may provide perception or knowledge, let you acquire and enhance allies to assist you in combat, or provide other strange and wonderful effects." }
+newTalentType{ type="qi abilities/right hand", name = "right hand", description = "Qi abilities bound to your right hand. These are typically direct, physical, hand-to-hand attacks.", slot="rhand" }
+newTalentType{ type="qi abilities/left hand", name = "left hand", description = "Qi abilities bound to your left hand. These are typically indirect, magical, and / or ranged attacks.", slot="lhand" }
+newTalentType{ type="qi abilities/chest", name = "chest", description = "Qi abilities bound to your chest. Chest abilities provide defense, enhancement, and healing.", slot="chest" }
+newTalentType{ type="qi abilities/feet", name = "feet", description = "Qi abilities bound to your feet. These relate to movement and mobility.", slot="feet" }
+newTalentType{ type="qi abilities/head", name = "head", description = "Qi abilities bound to your head. These may provide perception or knowledge, let you acquire and enhance allies to assist you in combat, or provide other strange and wonderful effects.", slot="head" }
 
 --- Formats some flavor text plus rules text.
 function flavorText(rules_text, flavor_text)

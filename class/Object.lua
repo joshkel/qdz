@@ -25,7 +25,7 @@ require "engine.class"
 require "engine.Object"
 require "engine.interface.ObjectActivable"
 
-local Stats = require("engine.interface.ActorStats")
+local Stats = require("mod.class.interface.ActorStats")
 local Talents = require("engine.interface.ActorTalents")
 local DamageType = require("engine.DamageType")
 local GameUI = require "mod.class.ui.GameUI"
@@ -60,7 +60,7 @@ function _M:tooltip(x, y)
         local delim = ''
         text:add(true)
         for k, v in pairs(self.wielder) do
-            text:add(color.text, delim, v > 0 and color.good or color.bad, ("%+i"):format(v), ({ lite="light radius" })[k] or Stats[k].name)
+            text:add(color.text, delim, v > 0 and color.good or color.bad, ("%+i "):format(v), ({ lite="light radius" })[k] or Stats[k].name)
             delim = ', '
         end
     end

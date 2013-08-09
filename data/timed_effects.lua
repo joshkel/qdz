@@ -21,7 +21,7 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
-local Stats = require "engine.interface.ActorStats"
+local Stats = require "mod.class.interface.ActorStats"
 local Particles = require "engine.Particles"
 local Qi = require "mod.class.interface.Qi"
 

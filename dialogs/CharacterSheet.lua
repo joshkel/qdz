@@ -28,7 +28,7 @@ local Talents = require "engine.interface.ActorTalents"
 local Tab = require "engine.ui.Tab"
 local SurfaceZone = require "engine.ui.SurfaceZone"
 local Separator = require "engine.ui.Separator"
-local Stats = require "engine.interface.ActorStats"
+local Stats = require "mod.class.interface.ActorStats"
 local Textzone = require "engine.ui.Textzone"
 local GameUI = require "mod.class.ui.GameUI"
 
