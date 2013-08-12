@@ -1,6 +1,5 @@
 To do:
 Basic game mechanics: Kick, armor, shields
-Starting stats
 Saving projectiles doesn't work???
 AI is quite bad - if there's a row of monsters, the second one won't step around the first to double-team you
 Fully implement absorbing abilities
@@ -14,6 +13,9 @@ Not sure that dig speed is working right - monsters may get a free move afterwar
 Rename Power to Qi?
 What to do about fractional HP?  It stinks to think you do enough damage to kill a foe and find out you haven't...
 Redraw FOV / light radius when light radius changes
+Penalties for blind fighting (e.g., throwing a dart outside of light radius)
+Item tooltips for inventory screen
+Cleaner character creation screen
 
 To do a while later:
 Logo

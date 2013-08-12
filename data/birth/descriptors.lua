@@ -49,3 +49,6 @@ newBirthDescriptor{
     }
 }
 
+load("/data/birth/sexes.lua")
+load("/data/birth/backgrounds.lua")
+

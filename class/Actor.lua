@@ -58,6 +58,8 @@ _M.projectile_class = "mod.class.Projectile"
 _M.BASE_UNARMED_DAMAGE = 2
 
 function _M:init(t, no_default)
+    self.incomplete = true
+
     -- Define some basic combat stats
     self.combat_armor = 0
     self.plus_attack = 0
@@ -90,11 +92,15 @@ function _M:resetToFull()
     self.power = self.max_power
 end
 
+---This function is called as the last step in resolving a new Actor.
+---We use it to apply initial stat values.
 function _M:resolveLevel()
     engine.interface.ActorLevel.resolveLevel(self)
+
     self.max_life = self.max_life + self:getCon()
     self.max_power = self.max_power + self:getMnd()
     self:resetToFull()
+    self.incomplete = nil
 end
 
 function _M:act()
@@ -213,19 +219,20 @@ function _M:levelup()
 end
 
 --- Notifies a change of stat value
---- TODO: Also need to change on temporary values and change on negative values??
+--- TODO: Also need to change on temporary values??
 function _M:onStatChange(stat, v)
+    if self.incomplete then return end
+
     if stat == self.STAT_CON then
-        self.max_life = self.max_life + 1
+        self.max_life = self.max_life + 1 * v
     elseif stat == self.STAT_MND then
-        self.max_power = self.max_power + 1
+        self.max_power = self.max_power + 1 * v
     end
 end
 
 function _M:attack(target)
     self:bumpInto(target)
 end
-
 
 --- Called before a talent is used
 -- Check the actor can cast it
@@ -365,6 +372,7 @@ function _M:canSee(actor, def, def_pct)
     if not actor then return false, 0 end
 
     -- Check for stealth. Checks against the target cunning and level
+    -- FIXME: Obviously wrong outside of ToME
     if actor:attr("stealth") and actor ~= self then
         local def = self.level / 2 + self:getCun(25)
         local hit, chance = self:checkHit(def, actor:attr("stealth") + (actor:attr("inc_stealth") or 0), 0, 100)

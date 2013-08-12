@@ -21,32 +21,26 @@
 -- Nicolas Casalini "DarkGod"
 -- darkgod@te4.org
 
-local nb = 0
+-- Player sexes
+newBirthDescriptor{
+    type = "sex",
+    name = "Female",
+    desc =
+    {
+        "You are female.",
+        "There is no in-game difference between male and female.",
+    },
+    copy = { female=true, },
+}
 
-return { generator = function()
-    local sizea = 0.05
-
-	return {
-		trail = 1,
-		life = rng.range(7, 14),
-		size = 3, sizev = 0, sizea = sizea,
-
-		x = rng.range(-engine.Map.tile_w / 3, engine.Map.tile_w / 3), xv = 0, xa = -sizea,
-		y = rng.range(-engine.Map.tile_h / 3, engine.Map.tile_h / 3), yv = 0, ya = -sizea,
-		dir = 0, dirv = 0, dira = 0,
-		vel = 0, velv = 0, vela = 0,
-
-        r = 0, rv = 0, ra = 0,
-        g = 0, gv = 0, ga = 0,
-        b = rng.range(10, 30)/255,  bv = rng.range(0, 10)/100, ba = 0,
-        a = rng.range(70, 255)/255, av = -0.05, aa = 0,
-	}
-end, },
-function(self)
-	if nb < 1 then
-		self.ps:emit(10)
-	end
-	nb = nb + 1
-end,
-40
+newBirthDescriptor{
+    type = "sex",
+    name = "Male",
+    desc =
+    {
+        "You are male.",
+        "There is no in-game difference between male and female.",
+    },
+    copy = { male=true, },
+}
 

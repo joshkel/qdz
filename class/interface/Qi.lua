@@ -58,7 +58,6 @@ function _M.saveSourceInfo(from, to)
         from = from.intermediate
     end
 
-    util.inspect("last_action", from.last_action)
     to.last_action = from.last_action
 
     -- Allow focused_qi state to carry over from previous applications, if relevant.

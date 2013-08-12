@@ -110,7 +110,7 @@ function _M:newGame()
     self:setupDisplayMode()
 
     self.creating_player = true
-    local birth = Birther.new(nil, self.player, {"base"}, function()
+    local birth = Birther.new(nil, self.player, {"base", "sex", "background"}, function()
         self:changeLevel(1, "dungeon")
         print("[PLAYER BIRTH] resolve...")
         self.player:resolve()
@@ -119,6 +119,9 @@ function _M:newGame()
         self.paused = true
         self.creating_player = false
         print("[PLAYER BIRTH] resolved!")
+
+        -- HACK: This forces PlayerDisplay and HotkeysDisplay to update after birth descriptors are finished.
+        self.player.changed = true
     end)
     self:registerDialog(birth)
 end

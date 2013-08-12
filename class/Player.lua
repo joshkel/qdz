@@ -370,11 +370,8 @@ end
 --- For the player (only), learning or unlearning qi talents alters stats.
 function _M:changeStatForTalent(t_id, mod)
     local t = self:getTalentFromId(t_id)
-    util.inspect(t)
     local t_type = self:getTalentTypeFrom(t.type[1])
-    util.inspect(t_type)
     if Qi.slots_def[t_type.slot] then
-        util.inspect(Qi.slots_def[t_type.slot])
         local stat = Qi.slots_def[t_type.slot].stat
         self:incIncStat(stat, mod)
         game.log(mod > 0 and self.stats_def[stat].gain_msg or self.stats_def[stat].lose_msg)
