@@ -434,8 +434,9 @@ local action_absorb_type = {
     attack = "rhand"
 }
 
---- Gets the type of qi ability to be absorbed, based on our last action.
-function _M:getAbsorbType()
+--- Gets the type of qi ability to be absorbed (an index into Qi.slots_def),
+--- based on our last action.
+function _M:getAbsorbSlot()
     local src = self
     while src.intermediate do src = src.intermediate end
 

@@ -120,7 +120,7 @@ newTalent {
             "last %i turns and do %i damage each turn.\n\n"..
             "If this directly hits a creature within the stone, it also "..
             "deals %i damage to the creature.\n\n"..
-            "Damage is based on your main weapon but is increased if you have a digging tool equipped or know Mining."):format(
+            "Damage is based on your main weapon but is increased if you have a digging tool equipped and / or know Mining."):format(
                 self:getTalentRadius(t), t.getDuration(self, t), t.getDamage(self, t), t.getDirectDamage(self, t)),
             "Dog-head men are cunning tricksters and trapsmiths, but one of " ..
             "their simplest methods for discouraging interlopers is to curse " ..

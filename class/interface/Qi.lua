@@ -23,14 +23,11 @@
 
 require "engine.class"
 
-local Stats = require "mod.class.interface.ActorStats"
-
 --- Interface for qi combat
 module(..., package.seeall, class.make)
 
 --- Definitions of qi ability slots.  See also talents.lua, load.lua.
 -- TODO: Terminology's a bit inconsistent - "absorb type," "slot" are mostly synonymous.
--- FIXME: Get this to work properly when referring to actor stats... (i.e., make Stat.STAT... work)?
 _M.slots_def = {
     rhand = {
         desc = "right hand",

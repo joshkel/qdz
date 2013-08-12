@@ -332,12 +332,12 @@ function _M:doTakeoff(inven, item, o)
     self.changed = true
 end
 
--- Absorbs the qi ability from a slain opponent (given by src)
+--- Absorbs the qi ability from a slain opponent (given by src)
 function _M:absorbAbility(src)
     -- FIXME: Replace this with the full implementation (limited # of abilities,
     -- tracking the order learned and update Use Talents screen to match (?), etc.).
-    local typ = self:getAbsorbType()
-    print(("ABSORB ABILITY: getAbsorbType = %s"):format(typ or "nil"))
+    local typ = self:getAbsorbSlot()
+    print(("ABSORB ABILITY: getAbsorbSlot = %s"):format(typ or "nil"))
 
     if not typ then return false end
 
@@ -367,7 +367,7 @@ function _M:absorbAbility(src)
     return true
 end
 
--- For the player (only), learning or unlearning qi talents alters stats.
+--- For the player (only), learning or unlearning qi talents alters stats.
 function _M:changeStatForTalent(t_id, mod)
     local t = self:getTalentFromId(t_id)
     util.inspect(t)
@@ -381,6 +381,7 @@ function _M:changeStatForTalent(t_id, mod)
     end
 end
 
+--- Overload ActorTalents:learnTalent to add changeStatForTalent
 function _M:learnTalent(t_id, force, nb)
     local ok, err = mod.class.Actor.learnTalent(self, t_id, force, nb)
     if not ok then return ok, err end
@@ -388,6 +389,7 @@ function _M:learnTalent(t_id, force, nb)
     return ok
 end
 
+--- Overload ActorTalents:unlearnTalent to add changeStatForTalent
 function _M:unlearnTalent(t_id, force, nb)
     local ok, err = mod.class.Actor.learnTalent(self, t_id, force, nb)
     if not ok then return ok, err end
