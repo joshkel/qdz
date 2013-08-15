@@ -116,12 +116,15 @@ function _M:act()
     -- Compute timed effects
     self:timedEffects()
 
+    -- Handle talents that may have an effect or may need updating each turn
     if not self.dead then
         if self:isTalentActive(self.T_MINING_LIGHT) then
             local t = self:getTalentFromId(self.T_MINING_LIGHT)
             t.do_turn(self, t)
         end
     end
+
+    if self:attr("prone") then self.energy.value = 0 end
 
     -- Still enough energy to act ?
     if self.energy.value < game.energy_to_act then return false end
@@ -397,8 +400,12 @@ function _M:canBe(what)
     if what == "blind" and rng.percent(100 * (self:attr("blind_immune") or 0)) then return false end
     if what == "stun" and rng.percent(100 * (self:attr("stun_immune") or 0)) then return false end
     if what == "fear" and rng.percent(100 * (self:attr("fear_immune") or 0)) then return false end
+
+    -- Note that knockback also covers knockdown.
     if what == "knockback" and rng.percent(100 * (self:attr("knockback_immune") or 0)) then return false end
+
     if what == "instakill" and rng.percent(100 * (self:attr("instakill_immune") or 0)) then return false end
+
     return true
 end
 

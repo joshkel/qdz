@@ -43,6 +43,8 @@ newTalent{
         return best:useObject(self)
     end,
     info = function(self, t)
+        -- TODO: Permit Mining to work without a digger?
+        -- I'm not positive it will be worth a talent slot otherwise.
         local best = t.findBest(self, t)
         local result = "Mining lets you use a pickaxe or similar tool to dig stone and earth.\n\n"
         if best then

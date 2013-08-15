@@ -57,14 +57,15 @@ Mouse: Hover over stat for info
     self.c_desc = SurfaceZone.new{width=self.iw, height=self.ih - self.c_general.h - self.vs.h - self.c_tut.h,alpha=0}
 
     local extra_offset = 5
+    local tab_padding = 2
     -- The wiki and ToME itself add 17 instead of 5 here...  I'm not sure why...
     self.hoffset = extra_offset + self.c_tut.h + self.vs.h + self.c_general.h
 
     self:loadUI{
         {left=0, top=0, ui=self.c_tut},
         {left=15, top=self.c_tut.h, ui=self.c_general},
-        {left=15+self.c_general.w, top=self.c_tut.h, ui=self.c_attack},
-        {left=15+self.c_general.w+self.c_attack.w, top=self.c_tut.h, ui=self.c_defense},
+        {left=15+self.c_general.w+tab_padding, top=self.c_tut.h, ui=self.c_attack},
+        {left=15+self.c_general.w+self.c_attack.w+tab_padding*2, top=self.c_tut.h, ui=self.c_defense},
         {left=0, top=self.c_tut.h + self.c_general.h, ui=self.vs},
 
         {left=0, top=self.c_tut.h + self.c_general.h + extra_offset + self.vs.h, ui=self.c_desc},

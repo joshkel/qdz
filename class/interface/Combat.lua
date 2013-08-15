@@ -171,17 +171,23 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
 end
 
 function _M:getObjectCombat(o, kind)
-    if kind == "unarmed" or kind == "kick" then return self.combat end
+    if kind == "unarmed" then return self.combat end
     if kind == "rhand" then return o.combat end
     if kind == "lhand" then return o.combat end
 
-    -- Bash damage is unarmed damage modified by constitution.
+    -- Bash damage is based on unarmed damage, subtract basic punch damage but modify by constitution.
     -- (The bigger you are, the more it hurts someone when you run into them.)
+    -- TODO: Add damage-on-hit
     if kind == "bash" then return self:combatMod(self:getObjectCombat(nil, "unarmed"), { dam= -self.BASE_UNARMED_DAMAGE + math.round(self:getCon() / 2) }) end
+
+    -- Kick damage is unarmed damage modified by agility.
+    -- TODO: Probably actually want to do str * .5 + agi * .5 + unarmed, or something like that...
+    if kind == "kick" then return self:combatMod(self:getObjectCombat(nil, "unarmed"), { dam= math.round(self:getAgi() / 3) }) end
 
     return nil
 end
 
+-- TODO: round or floor combatAttack and combatDefense, to avoid user-visible floating point and to create breakpoints?
 function _M:combatAttack(combat)
     return self:getSki() / 2 + (self.level or game.level.level) / 2 + (combat.attack or 0) + (self.plus_attack or 0)
 end

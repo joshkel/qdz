@@ -61,6 +61,10 @@ newEffect{
         DamageType:get(DamageType.ACID).projector(eff.src or self, self.x, self.y, DamageType.ACID, eff.power)
         Qi.postCall(eff, eff.src, saved)
     end,
+    on_merge = function(self, old_eff, new_eff)
+        merge_pow_dam(old_eff, new_eff)
+        return old_eff
+    end
 }
 
 newEffect{
@@ -81,5 +85,28 @@ newEffect{
         merge_pow_dam(old_eff, new_eff)
         return old_eff
     end
+}
+
+newEffect{
+    name = "PRONE",
+    desc = "Prone",
+    type = "physical",
+    status = "detrimental",
+    on_gain = function(self, err) return "#Target# is knocked down!", "+Prone" end,
+    on_lose = function(self, err) return "#Target# stands up.", "-Prone" end,
+    on_merge = function(self, old_eff, new_eff)
+        -- Merging has no effect, to prevent repeated knockdowns from stunlocking
+        -- a creature.
+        return old_eff
+    end,
+    activate = function(self, eff)
+        -- TODO: Should prone status grant knockback resistance?
+        eff.tmpid = self:addTemporaryValue("prone", 1)
+        eff.defid = self:addTemporaryValue("plus_defense", -4)
+    end,
+    deactivate = function(self, eff)
+        self:removeTemporaryValue("prone", eff.tmpid)
+        self:removeTemporaryValue("plus_defense", eff.defid)
+    end,
 }
 

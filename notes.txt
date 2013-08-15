@@ -1,5 +1,5 @@
 To do:
-Basic game mechanics: Kick, armor, shields
+Basic game mechanics: armor, shields
 Saving projectiles doesn't work???
 AI is quite bad - if there's a row of monsters, the second one won't step around the first to double-team you
 Fully implement absorbing abilities

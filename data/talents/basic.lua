@@ -76,7 +76,7 @@ newTalent{
             target:setMoveAnim(x, y, 8, 5)
             game.logSeen(target, ("%s is driven back!"):format(target.name:capitalize()))
         else
-            game.logSeen(target, ("%s stands is ground!"):format(target.name:capitalize()))
+            game.logSeen(target, ("%s stands its ground!"):format(target.name:capitalize()))
         end
         return true
     end,
@@ -94,22 +94,27 @@ newTalent{
     cooldown = 6,
     range = 1,
     action = function(self, t)
-        -- FIXME: Some sort of unique effect here, and update the description below
         local tg = {type="hit", range=self:getTalentRange(t)}
         local x, y, target = self:getTarget(tg)
         if not x or not y or not target then return nil end
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
-        -- FIXME: Shouldn't knockback if attack misses
-        target:knockback(self.x, self.y, 2 + self:getSki())
-        target:setMoveAnim(x, y, 8, 5)
-        self:attackTargetWith(target, self:getObjectCombat(nil, "kick"))
+        local combat = self:getObjectCombat(nil, "kick")
+        local speed, hit = self:attackTargetWith(target, combat, DamageType.PHYSICAL)
+        if hit and not target.dead then
+            if not target:canBe("knockback") then
+                game.logSeen(target, ("%s stands its ground!"):format(target.name:capitalize()))
+            elseif self:skillCheck(self:combatAttack(combat), target:combatDefense()) then
+                -- TODO: Replace that skillCheck with some kind of combat maneuver check or saving throw
+                target:setEffect(target.EFF_PRONE, 1, {})
+            end
+        end
         return true
     end,
     info = function(self, t)
-        return [[Kicks an enemy, damaging it and knocking it back.
+        return ([[Kicks an enemy, dealing %s damage and possibly knocking it prone. A prone enemy's turn is delayed and is easier to hit. Damage and knockdown chance are determined by your Strength and Agility.
 
-If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your feet.]]
+If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your feet.]]):format(string.describe_range(self:combatDamageRange(self:getObjectCombat(nil, "kick"))))
     end,
 }
 
