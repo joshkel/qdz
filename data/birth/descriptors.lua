@@ -31,9 +31,9 @@ newBirthDescriptor{
     body = { INVEN = 10, RHAND = 1, LHAND = 1, BODY = 1, FEET = 1, HEAD = 1, LIGHT = 1 },
 
     copy = {
-        max_level = 10,
+        max_level = 30,
         max_life = 10,
-        max_power = 10,
+        max_qi = 10,
 
         resolvers.equip {
             {type="weapon", subtype="staff", name="staff", ego_change=-1000},

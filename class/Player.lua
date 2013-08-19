@@ -176,7 +176,7 @@ function _M:restCheck()
     if spotHostiles(self) then return false, "hostile spotted" end
 
     -- Check resources, make sure they CAN go up, otherwise we will never stop
-    if self:getPower() < self:getMaxPower() and self.power_regen > 0 then return true end
+    if self:getQi() < self:getMaxQi() and self.qi_regen > 0 then return true end
     if self.life < self.max_life and self.life_regen > 0 then return true end
 
     if self.resting.rest_turns then return true end

@@ -60,7 +60,7 @@ ActorTalents:loadDefinition("/data/talents.lua")
 ActorTemporaryEffects:loadDefinition("/data/timed_effects.lua")
 
 -- Actor resources
-ActorResource:defineResource("Power", "power", nil, "power_regen", "Power represent your ability to use special techniques.")
+ActorResource:defineResource("Qi", "qi", nil, "qi_regen", ("Qi (pronounced %schee%s) is the life energy that flows throughout the universe. By channeling qi, beings can perform a variety of techniques and feats."):format(utf8.ldquo, utf8.rdquo))
 
 -- Actor stats
 ActorStats:defineStat("Strength",     "str", 10, 1, 100, "Raw physical strength. This affects your melee damage and carrying capacity and is associated with qi of the right hand.", "You feel stronger.", "You feel weaker.")

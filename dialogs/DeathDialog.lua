@@ -89,7 +89,7 @@ end
 --- Restore resources
 function _M:restoreResources()
 	self.actor.life = self.actor.max_life
-	self.actor.power = self.actor.max_power
+	self.actor.qi = self.actor.max_qi
 
 	self.actor.energy.value = game.energy_to_act
 end

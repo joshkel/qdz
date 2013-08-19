@@ -28,7 +28,7 @@ newTalent{
     type = {"qi abilities/right hand", 1},
     points = 1,
     cooldown = 6,
-    power = 2,
+    qi = 2,
     range = 6,
     action = function(self, t)
         local tg = {type="ball", range=self:getTalentRange(t), radius=1, talent=t}
@@ -60,7 +60,7 @@ newTalent {
     type = {"qi abilities/right hand", 1},
     points = 1,
     cooldown = 6,
-    power = 2,
+    qi = 2,
     range = 1,
     radius = 1,
     getDuration = function(self, t) return 5 end,
@@ -134,7 +134,7 @@ newTalent {
     type = {"qi abilities/left hand", 1},
     points = 1,
     cooldown = 6,
-    power = 2,
+    qi = 2,
     range = 5,
     getCombat = function(self, t) return {dam=1} end, -- TODO: Adjust damage?  Feels maybe high; feels like it should maybe be Skill?
     getPower = function(self, t) return math.round(self:getSki() / 5) end,
@@ -221,7 +221,7 @@ newTalent {
     type = {"qi abilities/feet", 1},
     points = 1,
     cooldown = 6,
-    power = 2,
+    qi = 2,
     range = function(self, t) return self.lite or 0 end,
     target = function(self, t)
          return {type="hit", range=self:getTalentRange(t), nowarning=true, nolock=true, talent=t}
@@ -273,7 +273,7 @@ newTalent {
     type = {"qi abilities/head", 1},
     points = 1,
     mode = "sustained",
-    sustain_power = 3,
+    sustain_qi = 3,
     cooldown = 5,
 
     lite = 1,

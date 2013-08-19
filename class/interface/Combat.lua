@@ -189,11 +189,11 @@ end
 
 -- TODO: round or floor combatAttack and combatDefense, to avoid user-visible floating point and to create breakpoints?
 function _M:combatAttack(combat)
-    return self:getSki() / 2 + (self.level or game.level.level) / 2 + (combat.attack or 0) + (self.plus_attack or 0)
+    return self:getSki() / 2 + self.level / 2 + (combat.attack or 0) + (self.plus_attack or 0)
 end
 
 function _M:combatDefense()
-    return self:getAgi() / 2 + (self.level or game.level.level) / 2 + (self.plus_defense or 0)
+    return self:getAgi() / 2 + self.level / 2 + (self.plus_defense or 0)
 end
 
 function _M:combatDamage(combat)

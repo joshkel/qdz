@@ -79,3 +79,7 @@ function math.round(num)
     else return math.ceil(num-.5) end
 end
 
+utf8 = {
+    ldquo = "\xe2\x80\x9c",
+    rdquo = "\xe2\x80\x9d",
+}

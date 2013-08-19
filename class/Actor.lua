@@ -66,7 +66,7 @@ function _M:init(t, no_default)
     self.plus_defense = 0
 
     -- Default regen
-    t.power_regen = t.power_regen or 0.25
+    t.qi_regen = t.qi_regen or 0.25
     t.life_regen = t.life_regen or 0.25
 
     t.money = 0
@@ -89,7 +89,7 @@ end
 function _M:resetToFull()
     if self.dead then return end
     self.life = self.max_life
-    self.power = self.max_power
+    self.qi = self.max_qi
 end
 
 ---This function is called as the last step in resolving a new Actor.
@@ -98,7 +98,7 @@ function _M:resolveLevel()
     engine.interface.ActorLevel.resolveLevel(self)
 
     self.max_life = self.max_life + self:getCon()
-    self.max_power = self.max_power + self:getMnd()
+    self.max_qi = self.max_qi + self:getMnd()
     self:resetToFull()
     self.incomplete = nil
 end
@@ -214,11 +214,11 @@ end
 function _M:levelup()
     self.max_life = self.max_life + 2
 
-    self:incMaxPower(2)
+    self:incMaxQi(2)
 
-    -- Heal upon new level
+    -- Heal upon new level.  TODO: Keep doing this?
     self.life = self.max_life
-    self.power = self.max_power
+    self.qi = self.max_qi
 end
 
 --- Notifies a change of stat value
@@ -229,7 +229,7 @@ function _M:onStatChange(stat, v)
     if stat == self.STAT_CON then
         self.max_life = self.max_life + 1 * v
     elseif stat == self.STAT_MND then
-        self.max_power = self.max_power + 1 * v
+        self.max_qi = self.max_qi + 1 * v
     end
 end
 
@@ -245,13 +245,13 @@ function _M:preUseTalent(ab, silent, fake)
     if not self:enoughEnergy() then print("fail energy") return false end
 
     if ab.mode == "sustained" then
-        if ab.sustain_power and self.max_power < ab.sustain_power and not self:isTalentActive(ab.id) then
-            game.logPlayer(self, "You do not have enough power to activate %s.", ab.name)
+        if ab.sustain_qi and self.max_qi < ab.sustain_qi and not self:isTalentActive(ab.id) then
+            game.logPlayer(self, "You do not have enough qi to activate %s.", ab.name)
             return false
         end
     else
-        if ab.power and self:getPower() < ab.power then
-            game.logPlayer(self, "You do not have enough power to use %s.", ab.name)
+        if ab.qi and self:getQi() < ab.qi then
+            game.logPlayer(self, "You do not have enough qi to use %s.", ab.name)
             return false
         end
     end
@@ -292,17 +292,17 @@ function _M:postUseTalent(ab, ret)
 
     if ab.mode == "sustained" then
         if not self:isTalentActive(ab.id) then
-            if ab.sustain_power then
-                self.max_power = self.max_power - ab.sustain_power
+            if ab.sustain_qi then
+                self.max_qi = self.max_qi - ab.sustain_qi
             end
         else
-            if ab.sustain_power then
-                self.max_power = self.max_power + ab.sustain_power
+            if ab.sustain_qi then
+                self.max_qi = self.max_qi + ab.sustain_qi
             end
         end
     else
-        if ab.power then
-            self:incPower(-ab.power)
+        if ab.qi then
+            self:incQi(-ab.qi)
         end
     end
 
@@ -312,7 +312,6 @@ function _M:postUseTalent(ab, ret)
 end
 
 --- Return the full description of a talent
--- You may overload it to add more data (like power usage, ...)
 function _M:getTalentFullDescription(t)
     local d = tstring{}
     local color = GameUI.tooltipColor
@@ -324,7 +323,7 @@ function _M:getTalentFullDescription(t)
     end
     d:add(true)
 
-    if t.power or t.sustain_power then d:add(color.caption, "Power cost: ", color.text, ""..(t.power or t.sustain_power), true) end
+    if t.qi or t.sustain_qi then d:add(color.caption, "Qi cost: ", color.text, ""..(t.qi or t.sustain_qi), true) end
 
     if self:getTalentRange(t) > 1 then d:add(color.caption, "Range: ", color.text, ""..self:getTalentRange(t), true)
     elseif t.range then d:add(color.caption, "Range: ", color.text, "melee", true)

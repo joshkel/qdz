@@ -45,7 +45,7 @@ _M.tooltipColor = {
 
     -- Resources
     health = { "color", "LIGHT_RED" },
-    power = { "color", "LIGHT_BLUE" },
+    qi = { "color", "LIGHT_BLUE" },
 
     -- Good stuff: sustained talents, beneficial timed effects, etc.
     good = { "color", "LIGHT_GREEN" },
