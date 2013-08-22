@@ -140,7 +140,7 @@ newTalent{
         return true
     end,
     info = function(self, t)
-        -- TODO: It'd be nice to describe which exactly it is, based on current equipment
+        -- TODO: It'd be nice to describe which exactly it is, based on current equipment.  Also need damage numbers.
         return [[A quick, unexpected attack with your off-hand weapon, or a quick shield jab, or a quick unarmed strike with your left hand, as appropriate.
 
 Although weaker than a normal attack, this can be performed twice as quickly and has +2 to Attack.]]

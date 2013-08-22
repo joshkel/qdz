@@ -205,9 +205,17 @@ function _M:combatDamage(combat)
     end
 end
 
-function _M:combatDamageRange(combat)
+function _M:combatDamageRange(combat, mult)
     local bonus = math.round(self:getStr() / 2)
-    return (combat.min_dam or 1) + bonus, combat.dam + bonus
+    local min, max = (combat.min_dam or 1) + bonus, combat.dam + bonus
+    return math.round(min * (mult or 1)), math.round(max * (mult or 1))
+end
+
+-- Determines the damage for a talent
+-- TODO: This will need tweaking during development; for now, I'm going to try
+-- scaling by level, since it won't get equipment bonuses like weapons.
+function _M:talentDamage(stat, pow, mult)
+    return math.round((stat / 2 + self.level / 2 + pow) * (mult or 1))
 end
 
 function _M:getOffHandMult(combat, mult)

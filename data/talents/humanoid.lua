@@ -136,8 +136,8 @@ newTalent {
     cooldown = 6,
     qi = 2,
     range = 5,
-    getCombat = function(self, t) return {dam=1} end, -- TODO: Adjust damage?  Feels maybe high; feels like it should maybe be Skill?
-    getPower = function(self, t) return math.round(self:getSki() / 5) end,
+    getCombat = function(self, t) return {dam=3} end,
+    getPower = function(self, t) return self:talentDamage(self:getSki(), 1, 0.3) end,
     getDuration = function(self, t) return 3 end,
     target = function(self, t)
          return {type="bolt", range=self:getTalentRange(t), talent=t, display={display='*', color=colors.GREEN}}
@@ -151,19 +151,21 @@ newTalent {
         self:projectile(tg, x, y, function(tx, ty, tg, self, tmp)
             local target = game.level.map(tx, ty, game.level.map.ACTOR)
             if not target then return end
-            self:attackTargetWith(target, t.getCombat(self, t), DamageType.PHYSICAL_POISON,
-                { power=t.getPower(self, t), duration=t.getDuration(self, t) })
+            local combat = t.getCombat(self, t)
+            self:attackTargetWith(target, combat, DamageType.PHYSICAL_POISON,
+                { power=t.getPower(self, t), duration=t.getDuration(self, t) }, self:getOffHandMult(combat))
         end)
 
         return true
     end,
     info = function(self, t)
+        local combat = t.getCombat(self, t)
         local rules_text = ("Hurls a poisoned dart with range %i, doing %s damage immediately and %i per turn (based on your Skill) for %i turns."):format(
-            self:getTalentRange(t), string.describe_range(self:combatDamageRange(t.getCombat(self, t))),
+            self:getTalentRange(t), string.describe_range(self:combatDamageRange(combat, self:getOffHandMult(combat))),
             t.getPower(self, t), t.getDuration(self, t))
         if self == game.player then
             return flavorText(rules_text, 
-                "Dog-head often employ poisoned darts in their ambushes.  You can "..
+                "Dog-head often employ poisoned darts in their ambushes. You can "..
                 "learn to achieve a similar effect by forming your qi into "..
                 "short-lived darts of force.")
         else
@@ -310,8 +312,8 @@ newTalent {
     end,
 
     info = function(self, t)
-        return flavorText(("Adds %i to your light radius and boosts your morale, adding %.1f to Attack (based on your light radius)."):format(t.lite, t.getAttack(self, t)),
-            "Although the dog-head can see in the dark, they often conjure "..
+        return flavorText(("Adds %i to your light radius and boosts your morale, adding half your light radius to your Attack."):format(t.lite),
+            "Although the dog-head have limited darkvision, they often conjure "..
             "small fires for their mining helmets. The light makes working "..
             "underground easier and helps bolster their morale if their traps "..
             "and ambushes fail and they're forced to engage in direct combat.")
