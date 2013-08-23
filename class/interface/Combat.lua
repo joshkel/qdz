@@ -157,7 +157,7 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     end
 
     local dam = self:combatDamage(combat) * mult
-    dam = dam - rng.range(0, target.combat_armor)
+    dam = dam - target:combatArmor()
     dam = math.max(0, math.round(dam))
 
     if damargs then
@@ -187,13 +187,12 @@ function _M:getObjectCombat(o, kind)
     return nil
 end
 
--- TODO: round or floor combatAttack and combatDefense, to avoid user-visible floating point and to create breakpoints?
 function _M:combatAttack(combat)
-    return self:getSki() / 2 + self.level / 2 + (combat.attack or 0) + (self.plus_attack or 0)
+    return math.floor(self:getSki() / 2 + self.level / 2) + (combat.attack or 0) + (self.combat_atk or 0)
 end
 
 function _M:combatDefense()
-    return self:getAgi() / 2 + self.level / 2 + (self.plus_defense or 0)
+    return math.floor(self:getAgi() / 2 + self.level / 2) + (self.combat_def or 0)
 end
 
 function _M:combatDamage(combat)
@@ -209,6 +208,10 @@ function _M:combatDamageRange(combat, mult)
     local bonus = math.round(self:getStr() / 2)
     local min, max = (combat.min_dam or 1) + bonus, combat.dam + bonus
     return math.round(min * (mult or 1)), math.round(max * (mult or 1))
+end
+
+function _M:combatArmor()
+    return rng.range(0, self.combat_armor or 0)
 end
 
 -- Determines the damage for a talent

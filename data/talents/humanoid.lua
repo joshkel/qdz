@@ -293,8 +293,8 @@ newTalent {
     do_turn = function(self, t)
         local p = self:isTalentActive(t.id)
         if p.prev_lite ~= self.lite then
-            if p.attackid then self:removeTemporaryValue("plus_attack", p.attackid) end
-            p.attackid = self:addTemporaryValue("plus_attack", t.getAttack(self, t))
+            if p.attackid then self:removeTemporaryValue("combat_atk", p.attackid) end
+            p.attackid = self:addTemporaryValue("combat_atk", t.getAttack(self, t))
         end
     end,
     activate = function(self, t)
@@ -306,7 +306,7 @@ newTalent {
         }
     end,
     deactivate = function(self, t, p)
-        if p.attackid then self:removeTemporaryValue("plus_attack", p.attackid) end
+        if p.attackid then self:removeTemporaryValue("combat_atk", p.attackid) end
         self:removeTemporaryValue("lite", p.liteid)
         return true
     end,

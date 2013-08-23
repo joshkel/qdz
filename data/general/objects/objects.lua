@@ -31,4 +31,5 @@ loadIfNot("/data/general/objects/consumables.lua")
 loadIfNot("/data/general/objects/weapons.lua")
 loadIfNot("/data/general/objects/diggers.lua")
 loadIfNot("/data/general/objects/lights.lua")
+loadIfNot("/data/general/objects/armor.lua")
 

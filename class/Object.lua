@@ -47,6 +47,8 @@ end
 function _M:tooltip(x, y)
     local color = GameUI.tooltipColor
     local text = GameUI:tooltipTitle(self:getDisplayString(), self.name)
+    local wielder = self.wielder or {}
+    local combat = self.combat or {}
 
     text:add(true, color.caption, 'Type: ', color.text)
     if self.type == self.subtype then
@@ -55,20 +57,36 @@ function _M:tooltip(x, y)
         text:add(self.type, ' (', self.subtype, ')')
     end
 
-    -- General item statistics
+    -- Combat statistics
+    local add=function(caption, value)
+        if value then
+            text:add(true, color.caption, caption, ': ', color.text)
+            if type(value) == 'table' then
+                text:merge(value)
+            else
+                text:add(tostring(value))
+            end
+        end
+    end
+    add('Attack', wielder.combat_atk)
+    add('Damage', combat.dam)
+    add('Defense', wielder.combat_def)
+    add('Armor', wielder.combat_armor)
+
+    -- Modifiers
     if self.wielder then
-        local delim = ''
-        text:add(true)
+        local delim = true
         for k, v in pairs(self.wielder) do
-            text:add(color.text, delim, v > 0 and color.good or color.bad, ("%+i "):format(v), ({ lite="light radius" })[k] or Stats[k].name)
-            delim = ', '
+            local caption = ({ lite="light radius" })[k]
+            if not caption and Stats[k] then caption = Stats[k].name end
+            if caption then
+                text:add(color.text, delim, v > 0 and color.good or color.bad, ("%+i "):format(v), caption)
+                delim = ', '
+            end
         end
     end
 
-    -- Weapon statistics
-    if self.combat then text:add(true, color.caption, 'Damage: ', color.text, tostring(self.combat.dam)) end
-
-    -- Requirements
+    -- Requirements.  TODO: Highlight requirements not met in red (?)
     if self.require and type(self.require) == "table" and self.require.stat then
         local delim = ''
         text:add(true, color.caption, 'Requires: ', color.text)
