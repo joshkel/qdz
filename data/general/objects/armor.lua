@@ -45,7 +45,6 @@ newEntity{ base = "BASE_LIGHT_ARMOR",
 
 newEntity{ base = "BASE_LIGHT_ARMOR",
     name = "leather armor",
-    color=colors.LIGHT_SLATE,
     level_range = {1, 10},
     require = { stat = { str=10 }, },
     cost = 10,

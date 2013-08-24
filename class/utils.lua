@@ -73,6 +73,19 @@ function string.describe_range(from, to, space)
     end
 end
 
+string.vowels = { a=true, e=true, i=true, o=true, u=true }
+
+--- Simplistic pluralization function.  Special cases will be added as needed.
+function string.pluralize(s, n)
+    if n == 1 then
+        return s
+    elseif string.vowels[s:sub(-1)] then
+        return s .. "es"
+    else
+        return s .. "s"
+    end
+end
+
 --- Rounds a number, rounding .5 away from 0.  See http://lua-users.org/wiki/SimpleRound
 function math.round(num) 
     if num >= 0 then return math.floor(num+.5) 

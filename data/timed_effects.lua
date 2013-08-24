@@ -26,10 +26,10 @@ local Particles = require "engine.Particles"
 local Qi = require "mod.class.interface.Qi"
 
 local function merge_pow_dur(old_eff, new_eff)
-    local old_dam = old_eff.pow * old_eff.dur
-    local new_dam = new_eff.pow * new_eff.dur
+    local old_dam = old_eff.power * old_eff.dur
+    local new_dam = new_eff.power * new_eff.dur
     old_eff.dur = math.ceil((old_eff.dur + new_eff.dur) / 2)
-    old_eff.pow = (old_dam + new_dam) / old_eff.dur
+    old_eff.power = (old_dam + new_dam) / old_eff.dur
 end
 
 newEffect{
@@ -107,6 +107,40 @@ newEffect{
     deactivate = function(self, eff)
         self:removeTemporaryValue("prone", eff.tmpid)
         self:removeTemporaryValue("plus_defense", eff.defid)
+    end,
+}
+
+newEffect{
+    name = "CHARGED",
+    desc = "Charged",
+    type = "physical",
+    status = "beneficial",
+
+    -- This effect never times out.  Its "duration" shows the amount of charge.
+    decrease = 0,
+
+    long_desc = function(self, eff) return ("%s has amassed %i %s of electrical charge, which will be discharged on its next attack."):format(self.name:capitalize(), eff.power, string.pluralize("point", math.floor(eff.power))) end, -- FIXME: his / her, not its, here and in on_gain
+
+    -- This can be gained and lost on every attack, which is noisy.
+    -- Try this as a compromise for now.
+    --on_gain = function(self, err) return "#Target# begins to charge electricity.", "+Charged" end,
+    on_lose = function(self, err) return "#Target#'s electrical charge dissipates.", "-Charged" end,
+
+    activate = function(self, eff)
+        --FIXME: Particles
+        --eff.particle = self:addParticles(Particles.new("focused_qi", 1))
+    end,
+    deactivate = function(self, eff)
+        --self:removeParticles(eff.particle)
+    end,
+    on_merge = function(self, old_eff, new_eff)
+        old_eff.power = old_eff.power + new_eff.power
+        return old_eff
+    end,
+
+    add_power = function(self, eff, amount, max_power)
+        eff.power = math.min(eff.power + amount, max_power)
+        eff.dur = math.max(1, math.floor(eff.power) - 1)
     end,
 }
 

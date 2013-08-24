@@ -40,7 +40,7 @@ newEntity{
 
 newEntity{ base = "BASE_NPC_KOBOLD",
     name = "dog-head man", color=colors.GREEN,
-    level_range = {1, 4}, exp_worth = 1,
+    level_range = {1, 6}, exp_worth = 1,
     rarity = 4,
     max_life = resolvers.rngavg(5,9),
     max_qi = resolvers.rngavg(4,6),

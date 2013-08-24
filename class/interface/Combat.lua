@@ -157,7 +157,7 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     end
 
     local dam = self:combatDamage(combat) * mult
-    dam = dam - target:combatArmor()
+    dam = dam - target:combatArmor() -- TODO? As implemented, this armor ignores damtype - should it?
     dam = math.max(0, math.round(dam))
 
     if damargs then
@@ -167,6 +167,28 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     end
 
     DamageType:get(damtype).projector(self, target.x, target.y, damtype, damargs)
+
+    -- Melee project.  FIXME: But this is called for Poisoned Dart too.
+    if not target.dead and combat and combat.melee_project then for typ, dam in pairs(combat.melee_project) do
+        if dam > 0 then
+            DamageType:get(typ).projector(self, target.x, target.y, typ, dam)
+        end
+    end end
+    if not target.dead then for typ, dam in pairs(self.melee_project) do
+        if dam > 0 then
+            DamageType:get(typ).projector(self, target.x, target.y, typ, dam)
+        end
+    end end
+
+    -- Special case: Charged / Capacitive Appendage
+    if self:hasEffect(self.EFF_CHARGED) then
+        local eff = self:hasEffect(self.EFF_CHARGED)
+        if not target.dead and math.floor(eff.power) > 0 then
+            DamageType:get(DamageType.LIGHTNING).projector(self, target.x, target.y, DamageType.LIGHTNING, eff.power)
+        end
+        self:removeEffect(self.EFF_CHARGED)
+    end
+
     return 1, true
 end
 

@@ -280,14 +280,7 @@ newTalent {
 
     lite = 1,
     getAttack = function(self, t)
-        local lite = self.lite / 2
-
-        -- Hack: Let the tooltip display what this would do it if were active.
-        if not self:isTalentActive(t.id) then
-            lite = lite + t.lite
-        end
-
-        return self.lite / 2
+        return math.floor(self.lite / 2)
     end,
 
     do_turn = function(self, t)
@@ -295,6 +288,7 @@ newTalent {
         if p.prev_lite ~= self.lite then
             if p.attackid then self:removeTemporaryValue("combat_atk", p.attackid) end
             p.attackid = self:addTemporaryValue("combat_atk", t.getAttack(self, t))
+            p.prev_lite = self.lite
         end
     end,
     activate = function(self, t)

@@ -70,8 +70,12 @@ end
 function _M:tempEffectText(actor, eff_id)
     local color = self.tooltipColor 
     local e = actor.tempeffect_def[eff_id]
-    local dur = actor:hasEffect(eff_id).dur + 1
     local this_color = e.status == "detrimental" and color.bad or color.good
-    return tstring{this_color, e.desc, (" (%i)"):format(dur)}
+    local text = tstring{this_color, e.desc}
+    if e.decrease ~= 0 then
+        local dur = actor:hasEffect(eff_id).dur + 1
+        text:merge((" (%i)"):format(dur))
+    end
+    return text
 end
 

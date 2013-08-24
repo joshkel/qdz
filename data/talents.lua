@@ -43,4 +43,5 @@ end
 load("/data/talents/basic.lua")
 load("/data/talents/proficiencies.lua")
 load("/data/talents/humanoid.lua")
+load("/data/talents/insect.lua")
 

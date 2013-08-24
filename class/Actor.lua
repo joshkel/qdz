@@ -62,14 +62,16 @@ function _M:init(t, no_default)
 
     -- Define some basic combat stats
     self.combat_armor = 0
-    self.plus_attack = 0
-    self.plus_defense = 0
+    self.combat_atk = 0
+    self.combat_def = 0
 
     -- Default regen
     t.qi_regen = t.qi_regen or 0.25
     t.life_regen = t.life_regen or 0.25
 
     t.money = 0
+
+    t.melee_project = t.melee_project or {}
 
     -- Default melee barehanded damage
     self.combat = { dam=_M.BASE_UNARMED_DAMAGE }
@@ -120,6 +122,10 @@ function _M:act()
     if not self.dead then
         if self:isTalentActive(self.T_MINING_LIGHT) then
             local t = self:getTalentFromId(self.T_MINING_LIGHT)
+            t.do_turn(self, t)
+        end
+        if self:isTalentActive(self.T_CAPACITIVE_APPENDAGE) then
+            local t = self:getTalentFromId(self.T_CAPACITIVE_APPENDAGE)
             t.do_turn(self, t)
         end
     end

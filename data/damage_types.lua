@@ -72,6 +72,10 @@ newDamageType{
 }
 
 newDamageType{
+    name = "lighting", type = "LIGHTNING", text_color = "#LIGHT_BLUE#"
+}
+
+newDamageType{
     name = "dig", type = "DIG",
     projector = function(src, x, y, typ, dam)
         local feat = game.level.map(x, y, Map.TERRAIN)
