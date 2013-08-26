@@ -21,6 +21,7 @@
 require "engine.class"
 require "engine.Projectile"
 local Qi = require "mod.class.interface.Qi"
+local GameUI = require "mod.class.ui.GameUI"
 
 module(..., package.seeall, class.inherit(engine.Projectile))
 
@@ -82,12 +83,13 @@ function _M:move(x, y, force)
 end
 
 function _M:tooltip(x, y)
-    local tstr = tstring{"Projectile: ", self.name}
+    local color = GameUI.tooltipColor
+    local text = GameUI:tooltipTitle('Projectile: '..self.name)
 
     if config.settings.cheat then
-        tstr:add(true, "UID: ", tostring(self.uid))
+        text:add(true, color.caption, "UID: ", color.text, tostring(self.uid))
     end
 
-    return tstr
+    return text
 end
 

@@ -23,6 +23,7 @@
 
 local nb = 0
 
+-- This particle effect creates a sort of qi wake around a qi-focused projectile.
 return { generator = function()
     -- Determine angle of movement for the projectile
     local move_a

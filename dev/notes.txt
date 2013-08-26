@@ -1,8 +1,9 @@
 To do:
-Grid bugs are probably too dangerous (6 damage per hit!)
+Are Grid Bugs too dangerous? (6 damage per hit!)
 attackTargetWith needs to distinguish between melee and missile
-
+Poison Ore Strike should permit absorbing
 Basic game mechanics: shields
+Give creatures talents - e.g., Grid Bugs could use Capacitive Appendage instead of flat melee_project
 Saving projectiles doesn't work???
 AI is quite bad - if there's a row of monsters, the second one won't step around the first to double-team you
 Fully implement absorbing abilities

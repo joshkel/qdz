@@ -46,8 +46,8 @@ newEntity{
     combat_armor = 0,
 
     can_absorb = {
-        rhand = Talents.T_CAPACITIVE_APPENDAGE
-        --lhand = Talents.X,
+        rhand = Talents.T_CAPACITIVE_APPENDAGE,
+        lhand = Talents.T_CHARGED_BOLT,
         --chest = Talents.X,
         --feet = Talents.X,
         --head = Talents.X,

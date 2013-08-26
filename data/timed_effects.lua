@@ -116,7 +116,6 @@ newEffect{
     type = "physical",
     status = "beneficial",
 
-    -- This effect never times out.  Its "duration" shows the amount of charge.
     decrease = 0,
 
     long_desc = function(self, eff) return ("%s has amassed %i %s of electrical charge, which will be discharged on its next attack."):format(self.name:capitalize(), eff.power, string.pluralize("point", math.floor(eff.power))) end, -- FIXME: his / her, not its, here and in on_gain
@@ -127,11 +126,10 @@ newEffect{
     on_lose = function(self, err) return "#Target#'s electrical charge dissipates.", "-Charged" end,
 
     activate = function(self, eff)
-        --FIXME: Particles
-        --eff.particle = self:addParticles(Particles.new("focused_qi", 1))
+        eff.particle = self:addParticles(Particles.new("charged", 1, {power = eff.power}))
     end,
     deactivate = function(self, eff)
-        --self:removeParticles(eff.particle)
+        self:removeParticles(eff.particle)
     end,
     on_merge = function(self, old_eff, new_eff)
         old_eff.power = old_eff.power + new_eff.power
@@ -139,8 +137,12 @@ newEffect{
     end,
 
     add_power = function(self, eff, amount, max_power)
-        eff.power = math.min(eff.power + amount, max_power)
-        eff.dur = math.max(1, math.floor(eff.power) - 1)
+        if eff.power < max_power then
+            eff.power = math.min(eff.power + amount, max_power)
+
+            self:removeParticles(eff.particle)
+            eff.particle = self:addParticles(Particles.new("charged", 1, {power = eff.power}))
+        end
     end,
 }
 
