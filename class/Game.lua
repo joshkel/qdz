@@ -1,4 +1,4 @@
--- Qi Dao Zei
+-- Qi Daozei
 -- Copyright (C) 2013 Josh Kelley
 --
 -- based on
@@ -83,7 +83,7 @@ function _M:run()
         end
     end
 
-    self.log(self.flash.GOOD, "Welcome to #00FF00#Qi Dao Zei!")
+    self.log(self.flash.GOOD, "Welcome to #00FF00#Qi Daozei!")
 
     -- Setup inputs
     self:setupCommands()

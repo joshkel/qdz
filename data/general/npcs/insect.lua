@@ -1,4 +1,4 @@
--- Qi Dao Zei
+-- Qi Daozei
 -- Copyright (C) 2013 Josh Kelley
 --
 -- based on

@@ -1,4 +1,4 @@
--- Qi Dao Zei
+-- Qi Daozei
 -- Copyright (C) 2013 Josh Kelley
 --
 -- ToME - Tales of Maj'Eyal

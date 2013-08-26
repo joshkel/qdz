@@ -1,4 +1,4 @@
--- Qi Dao Zei
+-- Qi Daozei
 -- Copyright (C) 2013 Josh Kelley
 --
 -- based on
@@ -23,7 +23,7 @@
 
 newTalentType{ type="basic/qi", name = "qi", description = "Basic manipulation of your qi (life energy)" }
 newTalentType{ type="basic/combat", name = "combat", description = "Basic combat techniques" }
-newTalentType{ type="basic/proficiencies", name = "proficiencies", description = "Proficiencies are various (mostly) mundane skills. Most beings learn these through instinct, training, or practice. As a qi dao zei, you can instead be granted them through the abilities you absorb from your foes."}
+newTalentType{ type="basic/proficiencies", name = "proficiencies", description = "Proficiencies are various (mostly) mundane skills. Most beings learn these through instinct, training, or practice. As a qi daozei, you can instead be granted them through the abilities you absorb from your foes."}
 
 newTalentType{ type="qi abilities/right hand", name = "right hand", description = "Qi abilities bound to your right hand. These are typically direct, physical, hand-to-hand attacks.", slot="rhand" }
 newTalentType{ type="qi abilities/left hand", name = "left hand", description = "Qi abilities bound to your left hand. These are typically indirect, magical, and / or ranged attacks.", slot="lhand" }

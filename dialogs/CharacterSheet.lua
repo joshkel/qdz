@@ -1,4 +1,4 @@
--- Qi Dao Zei
+-- Qi Daozei
 -- Copyright (C) 2013 Josh Kelley
 --
 -- based on
@@ -247,7 +247,7 @@ function _M:dump()
     --prepare label and value
     local makelabel = function(s,r) while s:len() < labelwidth do s = s.." " end return ("%s: %s"):format(s, r) end
 
-    w1("  [Qi Dao Zei Character Dump]")
+    w1("  [Qi Daozei Character Dump]")
     w1()
 
     w1(("%-32s"):format(makelabel("Name", player.name)))
