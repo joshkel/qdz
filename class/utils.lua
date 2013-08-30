@@ -86,6 +86,16 @@ function string.pluralize(s, n)
     end
 end
 
+--- From http://lua-users.org/wiki/StringRecipes
+function string.startsWith(s, start)
+    return string.sub(s, 1, string.len(start)) == start
+end
+
+--- From http://lua-users.org/wiki/StringRecipes
+function string.endsWith(s, ending)
+    return ending == '' or string.sub(s, -string.len(ending)) == ending
+end
+
 --- Rounds a number, rounding .5 away from 0.  See http://lua-users.org/wiki/SimpleRound
 function math.round(num) 
     if num >= 0 then return math.floor(num+.5) 

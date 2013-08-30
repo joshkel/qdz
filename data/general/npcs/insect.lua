@@ -50,7 +50,7 @@ newEntity{
         lhand = Talents.T_CHARGED_BOLT,
         --chest = Talents.X,
         --feet = Talents.X,
-        --head = Talents.X,
+        head = Talents.T_ELECTROLUMINESCENCE,
     }
 }
 

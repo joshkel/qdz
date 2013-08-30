@@ -70,14 +70,16 @@ newTalent {
     base_spread = 3,
     spread_divisor = 4,
 
-    getTotalDamage = function(self, t) return self:talentDamage(self:getMnd(), 1, 1) end,
+    getTotalDamage = function(self, t) return self:talentDamage(self:getMnd(), 1) end,
 
     getDetails = function(self, t)
         -- Returns full details: damage per bolt, number of bolts, damage for last bolt
         local dam = t.getTotalDamage(self, t)
-        local last_dam = dam % t.damage_per_bolt
-        if last_dam == 0 then last_dam = t.damage_per_bolt end
-        return t.damage_per_bolt, math.floor(dam / t.damage_per_bolt), last_dam
+        if dam % t.damage_per_bolt == 0 then
+            return t.damage_per_bolt, dam / t.damage_per_bolt, t.damage_per_bolt
+        else
+            return t.damage_per_bolt, math.ceil(dam / t.damage_per_bolt), dam % t.damage_per_bolt
+        end
     end,
     radius = function(self, t)
         local _, count, _ = t.getDetails(self, t)
@@ -90,8 +92,6 @@ newTalent {
     singleTarget = function(self, t)
          return {type="bolt", range=self:getTalentRange(t), talent=t, selffire=false, display={particle="charged_bolt"}}
     end,
-
-    -- FIXME: Spread calculations are too naive; it's currently better to target far off, to minimize the effects of spread close by
 
     action = function(self, t)
         local tg = self:getTalentTarget(t)
@@ -115,10 +115,38 @@ newTalent {
     info = function(self, t)
         local dam, count = t.getDetails(self, t)
         if count == 1 then
-            return ("Conjures 1 bolt of charged electricity, which travels slowly and somewhat erratically to the target location. Each bolt averages %i damage. The number of bolts conjured depends on your Mind."):format(count, dam)
+            return ("Conjures 1 bolt of charged electricity, which travels slowly and somewhat erratically to somewhere in the target area. Each bolt averages %i damage. The number of bolts conjured depends on your Mind."):format(dam)
         else
-            return ("Conjures %i bolts of charged electricity, each of which travels slowly and somewhat erratically to the target location. Each bolt averages %i damage. The number of bolts conjured depends on your Mind."):format(count, dam)
+            return ("Conjures %i bolts of charged electricity, each of which travels slowly and somewhat erratically to somewhere in the target area. Each bolt averages %i damage. The number of bolts conjured depends on your Mind."):format(count, dam)
         end
+    end,
+}
+
+newTalent {
+    name = "Electroluminescence",
+    type = {"qi abilities/head", 1},
+    points = 1,
+    mode = "sustained",
+    sustain_qi = 6,
+    cooldown = 5,
+
+    lite = 2,
+
+    activate = function(self, t)
+        local liteid = self:addTemporaryValue("lite", t.lite)
+        if self.doFOV then self:doFOV() end
+        return {
+            liteid = liteid
+        }
+    end,
+    deactivate = function(self, t, p)
+        self:removeTemporaryValue("lite", p.liteid)
+        if self.doFOV then self:doFOV() end
+        return true
+    end,
+
+    info = function(self, t)
+        return ("Causes you to glow with electrical energy, adding %i to your light radius."):format(t.lite)
     end,
 }
 

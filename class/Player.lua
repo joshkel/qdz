@@ -359,7 +359,7 @@ function _M:absorbAbility(src)
         return false
     end
 
-    t = self:getTalentFromId(t_id)
+    local t = self:getTalentFromId(t_id)
     game.level.map:particleEmitter(self.x, self.y, 1, "absorb_qi")
     game.log(("You absorb a portion of %s's qi and bind it to your %s. You learn %s!"):format(
         src.name, Qi.slots_def[typ].desc, self:getTalentDisplayName(t)))

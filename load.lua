@@ -49,6 +49,13 @@ UIBase.font_bold_h = UIBase.font_bold:lineSkip()
 
 -- Useful keybinds
 KeyBind:load("move,hotkeys,inventory,actions,interface,debug")
+KeyBind:defineAction{
+    default = { "sym:_d:true:false:false:false" },
+    type = "DEBUG_MENU",
+    group = "debug",
+    name = "Show Debug Menu",
+    only_on_cheat = true,
+}
 
 -- Damage types
 DamageType:loadDefinition("/data/damage_types.lua")

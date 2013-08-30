@@ -292,7 +292,6 @@ newTalent {
         end
     end,
     activate = function(self, t)
-        -- TODO: Use talentTemporyValue here to be a bit simpler?
         local liteid = self:addTemporaryValue("lite", t.lite)
         if self.doFOV then self:doFOV() end
         return {

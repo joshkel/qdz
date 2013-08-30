@@ -43,7 +43,6 @@ local HotkeysDisplay = require "engine.HotkeysDisplay"
 local ActorsSeenDisplay = require "engine.ActorsSeenDisplay"
 local LogDisplay = require "engine.LogDisplay"
 local LogFlasher = require "engine.LogFlasher"
-local DebugConsole = require "engine.DebugConsole"
 local FlyingText = require "engine.FlyingText"
 local Tooltip = require "engine.Tooltip"
 local GameUI = require "mod.class.ui.GameUI"
@@ -411,7 +410,14 @@ function _M:setupCommands()
         -- Lua console
         LUA_CONSOLE = function()
             if config.settings.cheat then
-                self:registerDialog(DebugConsole.new())
+                self:registerDialog(require("engine.DebugConsole").new())
+            end
+        end,
+
+        -- Debug menu
+        DEBUG_MENU = function()
+            if config.settings.cheat then
+                self:registerDialog(require("mod.dialogs.DebugMenu").new())
             end
         end,
 
