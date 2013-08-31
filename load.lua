@@ -74,7 +74,7 @@ ActorStats:defineStat("Strength",     "str", 10, 1, 100, "Raw physical strength.
 ActorStats:defineStat("Skill",        "ski", 10, 1, 100, "Skill indicates your fine motor control and physical and mental dexterity. It affects your accuracy. It is associated with qi of the left hand.", "You feel more skillful.", "You feel less skillful.")
 ActorStats:defineStat("Constitution", "con", 10, 1, 100, "Constitution represents your overall health and endurance. It determines your maximum life and and is associated with the qi of your chest.", "You feel tougher.", "You feel more frail.")
 ActorStats:defineStat("Agility",      "agi", 10, 1, 100, "Agility gives your overall balance and quickness. It affects your ability to dodge. It is associated with the qi of your feet.", "You feel quicker.", "You feel more sluggish.")
-ActorStats:defineStat("Mind",         "mnd", 10, 1, 100, "Mind covers your intelligence, insight, and strength of will. Numerous special abilities derive their effectiveness from your mind. Mind is associated with the qi of your head.", "You feel wiser.", "You feel less wise.")
+ActorStats:defineStat("Mind",         "mnd", 10, 1, 100, "Mind covers your intelligence, insight, and strength of will. Numerous special techniques derive their effectiveness from your mind. Mind is associated with the qi of your head.", "You feel wiser.", "You feel less wise.")
 
 -- Add D20-style stat modifiers.  TODO: Not sure if I'll end up using these...
 for i, s in ipairs(ActorStats.stats_def) do

@@ -62,7 +62,7 @@ function _M:use(item)
     local id = item.id
     
     if player:knowTalent(id) then
-        game.log("You already know this talent.")
+        game.log("You already know this technique.")
     else
         local t = Talents:getTalentFromId(id)
         game.log(("You learn %s."):format(t.name))
@@ -74,7 +74,7 @@ function _M:generateList()
     local list = {}
 
     for id, t in pairs(Talents.talents_def) do
-        if t.type[1]:startsWith("qi abilities/") then
+        if t.type[1]:startsWith("qi techniques/") then
             list[#list+1] = {name=t.name, id=id}
         end
     end

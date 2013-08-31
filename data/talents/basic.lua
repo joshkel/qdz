@@ -45,9 +45,9 @@ newTalent{
     info = function(self, t)
         return [[Focuses your qi into a visibly glowing aura around you. Qi focus only lasts for one turn, but while focused, your attacks are guaranteed to hit and do maximum damage.
 
-If you deal a killing blow to an opponent while focused, you may absorb a portion of the opponent's qi, granting you a new ability or experience.
+If you deal a killing blow to an opponent while focused, you may absorb a portion of the opponent's qi, granting you a new technique or experience.
 
-The type of ability absorbed depends on how you deal the killing blow: whether a right hand (or two handed) weapon, left hand (or ranged) weapon, bash, kick, or qi ability.]]
+The type of technique absorbed depends on how you deal the killing blow: whether a right hand (or two handed) weapon, left hand (or ranged) weapon, bash, kick, or qi technique.]]
     end
 }
 

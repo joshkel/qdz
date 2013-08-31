@@ -23,7 +23,7 @@
 
 newTalent {
     name = "Capacitive Appendage",
-    type = {"qi abilities/right hand", 1},
+    type = {"qi techniques/right hand", 1},
     points = 1,
     mode = "sustained",
     sustain_qi = 5,
@@ -59,7 +59,7 @@ newTalent {
 -- Sorceress to a turn-based roguelike.
 newTalent {
     name = "Charged Bolt",
-    type = {"qi abilities/left hand", 1},
+    type = {"qi techniques/left hand", 1},
     points = 1,
     cooldown = 2,
     qi = 2,
@@ -124,7 +124,7 @@ newTalent {
 
 newTalent {
     name = "Electroluminescence",
-    type = {"qi abilities/head", 1},
+    type = {"qi techniques/head", 1},
     points = 1,
     mode = "sustained",
     sustain_qi = 6,

@@ -205,9 +205,9 @@ function _M:die(src)
         src:gainExp(self:worthExp(src))
     end
 
-    -- If the killer had focused qi, then try absorbing an ability.
+    -- If the killer had focused qi, then try absorbing a technique.
     if src and Qi.isFocused(src) then
-        if src:absorbAbility(self) then
+        if src:absorbTechnique(self) then
             -- Each qi focus may only be good for one absorption, so forcibly
             -- clear any focused state if appropriate.
             Qi.clearFocus(src)
@@ -414,6 +414,13 @@ function _M:canBe(what)
     return true
 end
 
+function _M:resetTalentCooldowns()
+    for k, v in pairs(self.talents_cd) do
+        self.talents_cd[k] = nil
+    end
+    self.changed = true
+end
+
 function _M:getMaxEncumbrance()
     -- FIXME: Different math here
 	return math.floor(40 + self:getStr() * 1.8 + (self.max_encumber or 0))
@@ -439,9 +446,9 @@ function _M:incMoney(v)
     self.changed = true
 end
 
---- Attempts to absorb a qi ability.
--- Only Player can absorb abilities, so for most actors, this does nothing.
-function _M:absorbAbility()
+--- Attempts to absorb a qi technique.
+-- Only Player can absorb techniques, so for most actors, this does nothing.
+function _M:absorbTechnique()
     return false
 end
 
@@ -454,7 +461,7 @@ local action_absorb_type = {
     attack = "rhand"
 }
 
---- Gets the type of qi ability to be absorbed (an index into Qi.slots_def),
+--- Gets the type of qi technique to be absorbed (an index into Qi.slots_def),
 --- based on our last action.
 function _M:getAbsorbSlot()
     local src = self

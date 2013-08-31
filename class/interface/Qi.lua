@@ -24,9 +24,22 @@
 require "engine.class"
 
 --- Interface for qi combat
+--
+-- Basic design:
+-- * If the player kills a creature while the player's qi is focused, then
+--   the player may absorb a technique.
+-- * Anything that the player causes while qi is focused - projectiles,
+--   temporary effects, etc. - need to remember if they were created while
+--   qi was focused, so that they can properly trigger an absorb.
+-- * The result is (potentially) a chain of "intermediate" attributes referring
+--   back to the player and a series of "focused_qi" attributes indicating
+--   whether the player was focused when each effect / entity was created.
+-- * Each intermediate effect / entity can temporarily apply its focused state
+--   back to the player by using Qi.call or Qi.preCall / Qi.postCall when
+--   doing anything that might kill a creature.
 module(..., package.seeall, class.make)
 
---- Definitions of qi ability slots.  See also talents.lua, load.lua.
+--- Definitions of qi technique slots.  See also talents.lua, load.lua.
 -- TODO: Terminology's a bit inconsistent - "absorb type," "slot" are mostly synonymous.
 _M.slots_def = {
     rhand = {
@@ -92,7 +105,7 @@ function _M.isFocused(e)
     end
 end
 
----Clears qi focus.  This is triggered by successfully absorbing a qi ability.
+---Clears qi focus.  This is triggered by successfully absorbing a qi technique.
 ---For now, this is *disabled*.  If you can kill several enemies with a single
 ---blow, you deserve to absorb several techniques.  If this becomes unbalanced,
 ---we can reconsider.

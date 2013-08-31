@@ -332,12 +332,12 @@ function _M:doTakeoff(inven, item, o)
     self.changed = true
 end
 
---- Absorbs the qi ability from a slain opponent (given by src)
-function _M:absorbAbility(src)
-    -- FIXME: Replace this with the full implementation (limited # of abilities,
+--- Absorbs the qi technique from a slain opponent (given by src)
+function _M:absorbTechnique(src)
+    -- FIXME: Replace this with the full implementation (limited # of techniques,
     -- tracking the order learned and update Use Talents screen to match (?), etc.).
     local typ = self:getAbsorbSlot()
-    print(("ABSORB ABILITY: getAbsorbSlot = %s"):format(typ or "nil"))
+    print(("ABSORB TECHNIQUE: getAbsorbSlot = %s"):format(typ or "nil"))
 
     if not typ then return false end
 

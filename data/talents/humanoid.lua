@@ -25,7 +25,7 @@ local Map = require("engine.Map")
 
 newTalent{
     name = "Acid Spray",
-    type = {"qi abilities/right hand", 1},
+    type = {"qi techniques/right hand", 1},
     points = 1,
     cooldown = 6,
     qi = 2,
@@ -57,7 +57,7 @@ substance from such ores and named it cobalt rex. In 1780, scientists showed
 that this was in fact a new element, which they named cobalt."]]
 newTalent {
     name = "Poison Ore Strike",
-    type = {"qi abilities/right hand", 1},
+    type = {"qi techniques/right hand", 1},
     points = 1,
     cooldown = 6,
     qi = 2,
@@ -131,7 +131,7 @@ newTalent {
 
 newTalent {
     name = "Poisoned Dart",
-    type = {"qi abilities/left hand", 1},
+    type = {"qi techniques/left hand", 1},
     points = 1,
     cooldown = 6,
     qi = 2,
@@ -177,7 +177,7 @@ newTalent {
 newTalent {
     name = "Dog-Head Mining",
     short_name = "DOG_HEAD_MINING",
-    type = {"qi abilities/chest", 1},
+    type = {"qi techniques/chest", 1},
     points = 1,
     mode = "passive",
     on_learn = function(self, t)
@@ -220,7 +220,7 @@ newTalent {
 -- fiery stripe or appearing as round lights.
 newTalent {
     name = "Dancing Lights",
-    type = {"qi abilities/feet", 1},
+    type = {"qi techniques/feet", 1},
     points = 1,
     cooldown = 6,
     qi = 2,
@@ -272,7 +272,7 @@ newTalent {
 
 newTalent {
     name = "Mining Light",
-    type = {"qi abilities/head", 1},
+    type = {"qi techniques/head", 1},
     points = 1,
     mode = "sustained",
     sustain_qi = 3,
