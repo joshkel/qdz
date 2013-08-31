@@ -33,8 +33,11 @@ end
 -- The basic stuff used to damage a grid
 setDefaultProjector(function(src, x, y, type, dam, extra)
     local target = game.level.map(x, y, Map.ACTOR)
+    extra = extra or {}
     if target then
-        if not extra or not extra.silent then
+        if extra.msg then
+            game.logSeen(target, getDamageFlash(src, target), extra.msg(src, target, DamageType:get(type)))
+        elseif not extra.silent then
             game.logSeen(target, getDamageFlash(src, target), "%s hits %s for %s%i %s damage#LAST#.", src.name:capitalize(), target.name, DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
         end
 
@@ -55,6 +58,15 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     return 0
 end)
 
+-- Special case: A damage type that wraps another damage type (indicated by
+-- dam.type and dam.dam) while handling intermediate qi state (see Qi.call).
+newDamageType{
+    name = "qi call", type = "QI_CALL",
+    projector = function(src, x, y, typ, dam)
+        return Qi.call(dam, DamageType:get(dam.type).projector, src, x, y, dam.type, dam.dam)
+    end
+}
+
 newDamageType{
     name = "physical", type = "PHYSICAL",
 }
@@ -68,7 +80,16 @@ newDamageType{
 }
 
 newDamageType{
-    name = "poison gas", type = "POISON_GAS", text_color = "#GREEN#"
+    name = "poison gas", type = "POISON_GAS", text_color = "#GREEN#",
+    projector = function(src, x, y, typ, dam)
+        -- For now, treat poison gas as poison.  A later version may add
+        -- special handling for non-breathing creatures.
+        return DamageType:get(DamageType.POISON).projector(src, x, y, DamageType.POISON, dam, {
+            msg=function(src, target, dam_type)
+                return ("%s takes %s%i %s damage#LAST# from the gas."):format(target.name:capitalize(), dam_type.text_color or "#aaaaaa#", dam, dam_type.name)
+            end
+        })
+    end
 }
 
 newDamageType{

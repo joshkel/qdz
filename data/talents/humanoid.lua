@@ -22,6 +22,7 @@
 -- darkgod@te4.org
 
 local Map = require("engine.Map")
+local Qi = require("mod.class.interface.Qi")
 
 newTalent{
     name = "Acid Spray",
@@ -60,7 +61,7 @@ newTalent {
     type = {"qi techniques/right hand", 1},
     points = 1,
     cooldown = 6,
-    qi = 2,
+    qi = 10,
     range = 1,
     radius = 1,
     getDuration = function(self, t) return 5 end,
@@ -102,10 +103,9 @@ newTalent {
             local target = game.level.map(px, py, Map.ACTOR)
             if target and self:reactionToward(target) >= 0 then return end
 
-            -- TODO: Let this trigger absorb qi also??
             game.level.map:addEffect(self,
                 px, py, t.getDuration(self, t),
-                DamageType.POISON_GAS, t.getDamage(self, t),
+                DamageType.QI_CALL, Qi.saveSourceInfo(self, { type=DamageType.POISON_GAS, dam=t.getDamage(self, t) }),
                 0,        -- radius 0 for individual clouds
                 5, nil,   -- dir (5 for ball effect), angle
                 engine.Entity.new{alpha=100, display='', color_br=30, color_bg=180, color_bb=60})

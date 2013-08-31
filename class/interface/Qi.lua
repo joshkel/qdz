@@ -77,6 +77,15 @@ function _M.saveSourceInfo(from, to)
     if from.focused_qi or (from.hasEffect and from:hasEffect(from.EFF_FOCUSED_QI)) then
         to.focused_qi = true
     end
+
+    -- T-Engine's convention seems to be to set src itself, but just in case it
+    -- doesn't, we'll do this.  This is needed for "to" tables that we make up
+    -- ourselves, as for DamageType.QI_CALL.
+    if not to.src then
+        to.src = from
+    end
+
+    return to
 end
 
 --- Calls the given function, correctly applying any intermediate qi state
