@@ -22,9 +22,9 @@
 -- darkgod@te4.org
 
 require "engine.class"
+require "mod.class.Actor"
 local ActorAI = require "engine.interface.ActorAI"
 local Faction = require "engine.Faction"
-require "mod.class.Actor"
 local GameUI = require "mod.class.ui.GameUI"
 
 module(..., package.seeall, class.inherit(mod.class.Actor, engine.interface.ActorAI))
@@ -72,3 +72,7 @@ function _M:tooltip()
     return text
 end
 
+function _M:aiCanPass(x, y)
+    if self:attr("forbid_diagonals") and self.x ~= x and self.y ~= y then return false end
+    return ActorAI.aiCanPass(self, x, y)
+end

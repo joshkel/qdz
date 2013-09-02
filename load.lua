@@ -27,6 +27,7 @@ require("mod.class.utils")
 
 -- Load monkey patches for core T-Engine code
 require("mod.class.patch.Astar")
+require("mod.class.patch.DirectPath")
 
 local KeyBind = require "engine.KeyBind"
 local DamageType = require "engine.DamageType"

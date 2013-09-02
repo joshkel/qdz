@@ -135,6 +135,7 @@ newTalent {
     activate = function(self, t)
         local ret = {}
         self:talentTemporaryValue(ret, "movement_speed", t.movement_speed_bonus)
+        self:talentTemporaryValue(ret, "forbid_diagonals", 1)
         return ret
     end,
     deactivate = function(self, t, p)

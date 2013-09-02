@@ -30,7 +30,7 @@ local Astar=require("engine.Astar")
 -- duplicating its entire functionality to replace a couple of lines.
 local old_astar_calc = Astar.calc
 Astar.calc = function(self, sx, sy, tx, ty, use_has_seen, heuristic, add_check, forbid_diagonals)
-    if use_has_seen and self.actor:isTalentActive(self.actor.T_GEOMAGNETIC_ORIENTATION) then
+    if use_has_seen and self.actor:attr("forbid_diagonals") then
         forbid_diagonals = true
     end
     print(("Astar.calc monkey patch called: forbid_diagonals=%s"):format(tostring(forbid_diagonals)))

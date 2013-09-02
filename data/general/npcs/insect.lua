@@ -45,6 +45,8 @@ newEntity{
     },
     combat_armor = 0,
 
+    forbid_diagonals = 1,
+
     can_absorb = {
         rhand = Talents.T_CAPACITIVE_APPENDAGE,
         lhand = Talents.T_CHARGED_BOLT,

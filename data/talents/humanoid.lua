@@ -147,7 +147,7 @@ newTalent {
         local x, y, target = self:getTarget(tg)
         if not x or not y then return nil end
 
-        -- TODO: Should probably debuff instead of just damage over time
+        -- TODO: Debuff instead of just damage over time?
         self:projectile(tg, x, y, function(tx, ty, tg, self, tmp)
             local target = game.level.map(tx, ty, game.level.map.ACTOR)
             if not target then return end
@@ -204,6 +204,7 @@ newTalent {
         game.level.times_dug_stone = (game.level.times_dug_stone or 0) + 1
         if game.level.times_dug_stone <= t.count then
             if rng.percent(t.chance) then
+                -- TODO: Make this more interesting.  (ADOM-style magic gems, perhaps?  Ore to upgrade weapons?)
                 local item = game.zone:makeEntityByName(game.level, "object", "MONEY_SMALL")
                 if not item then return end
                 game.level.map:addObject(x, y, item)
