@@ -169,9 +169,15 @@ function _M:drawDialog(kind)
         self:drawString(s, "Agility      : #00ff00# "..player:getAgi(), w, h, statTooltip('agi')) h = h + self.font_h
         self:drawString(s, "Mind         : #00ff00# "..player:getMnd(), w, h, statTooltip('mnd')) h = h + self.font_h
 
-        -- Second column: Effects and sustains
+        -- Second column: Speed
         h = 0
         w = self.w * 0.25
+        s:drawColorStringBlended(self.font, "#GOLD##{bold}#Speed#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
+        self:drawString(s, ("Movement : #00ff00# %3i%%"):format(player.movement_speed * 100), w, h) h = h + self.font_h
+
+        -- Third column: Effects and sustains
+        h = 0
+        w = self.w * 0.5
 
         s:drawColorStringBlended(self.font, "#GOLD##{bold}#Effects#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
         for tid, act in pairs(player.sustain_talents) do

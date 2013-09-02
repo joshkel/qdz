@@ -65,6 +65,10 @@ function _M:skillChanceOfSuccess(skill, difficulty)
     return 50 + 50 * math.tanh((skill - difficulty) / (2 * 5))
 end
 
+function _M:movementSpeed()
+    return 1 / self.movement_speed
+end
+
 --- Modifies the given combat table by mod, returning the modified combat table.
 function _M:combatMod(combat, mod)
     local result = table.clone(combat)
@@ -94,6 +98,7 @@ function _M:bumpInto(target)
             game.level.map(self.x, self.y, Map.ACTOR, target)
             game.level.map(target.x, target.y, Map.ACTOR, self)
             self.x, self.y, target.x, target.y = target.x, target.y, self.x, self.y
+            speed = self:movementSpeed()
         end
     end
 

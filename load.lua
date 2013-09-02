@@ -22,7 +22,11 @@
 -- darkgod@te4.org
 
 -- This file loads the game module, and loads data
+
 require("mod.class.utils")
+
+-- Load monkey patches for core T-Engine code
+require("mod.class.patch.Astar")
 
 local KeyBind = require "engine.KeyBind"
 local DamageType = require "engine.DamageType"

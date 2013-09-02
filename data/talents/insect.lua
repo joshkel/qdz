@@ -123,6 +123,33 @@ newTalent {
 }
 
 newTalent {
+    name = "Geomagnetic Orientation",
+    type = {"qi techniques/feet", 1},
+    points = 1,
+    mode = "sustained",
+    sustain_qi = 1,
+    cooldown = 5,
+
+    movement_speed_bonus = 0.15,
+
+    activate = function(self, t)
+        local ret = {}
+        self:talentTemporaryValue(ret, "movement_speed", t.movement_speed_bonus)
+        return ret
+    end,
+    deactivate = function(self, t, p)
+        return true
+    end,
+
+    info = function(self, t)
+        return flavorText(("Increases your movement speed by %i%% but "..
+            "prevents you from moving or attacking diagonally."):format(t.movement_speed_bonus * 100),
+            "Grid bugs' alien electrical nature means that they can only move in this world by orienting themselves as a compass does. "..
+            "They move in a strange zig-zag fashion, all straight lines and right angles, as a result of this.")
+    end,
+}
+
+newTalent {
     name = "Electroluminescence",
     type = {"qi techniques/head", 1},
     points = 1,

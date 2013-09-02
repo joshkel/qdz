@@ -60,10 +60,11 @@ _M.BASE_UNARMED_DAMAGE = 2
 function _M:init(t, no_default)
     self.incomplete = true
 
-    -- Define some basic combat stats
+    -- Define some basic stats
     self.combat_armor = 0
     self.combat_atk = 0
     self.combat_def = 0
+    self.movement_speed = 1
 
     -- Default regen
     t.qi_regen = t.qi_regen or 0.25
@@ -142,8 +143,18 @@ function _M:move(x, y, force)
     local moved = false
     local ox, oy = self.x, self.y
     if force or self:enoughEnergy() then
+
+        if not force and self:isTalentActive(self.T_GEOMAGNETIC_ORIENTATION) then
+            if x ~= ox and y ~= oy then
+                game.logPlayer(self, "Your mind rebels at the thought of moving misaligned from the earth's magnetic field.")
+                return false
+            end
+        end
+
         moved = engine.Actor.move(self, x, y, force)
-        if not force and moved and (self.x ~= ox or self.y ~= oy) and not self.did_energy then self:useEnergy() end
+        if not force and moved and (self.x ~= ox or self.y ~= oy) and not self.did_energy then
+            self:useEnergy(game.energy_to_act * self:movementSpeed())
+        end
     end
     self.did_energy = nil
     return moved

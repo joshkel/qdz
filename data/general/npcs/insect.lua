@@ -49,7 +49,7 @@ newEntity{
         rhand = Talents.T_CAPACITIVE_APPENDAGE,
         lhand = Talents.T_CHARGED_BOLT,
         --chest = Talents.X,
-        --feet = Talents.X,
+        feet = Talents.T_GEOMAGNETIC_ORIENTATION,
         head = Talents.T_ELECTROLUMINESCENCE,
     }
 }
