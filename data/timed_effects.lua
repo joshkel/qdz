@@ -118,10 +118,11 @@ newEffect{
 
     decrease = 0,
 
-    long_desc = function(self, eff) return ("%s has amassed %i %s of electrical charge, which will be discharged on its next attack."):format(self.name:capitalize(), eff.power, string.pluralize("point", math.floor(eff.power))) end, -- FIXME: his / her, not its, here and in on_gain
+    long_desc = function(self, eff) return ("%s has amassed %i %s of electrical charge, which will be discharged on its next attack."):format(self.name:capitalize(), eff.power, string.pluralize("point", math.floor(eff.power))) end, -- FIXME: his / her, not its
 
     -- This can be gained and lost on every attack, which is noisy.
     -- Try this as a compromise for now.
+    -- Note that reenabling on_gain would affect Electrostatic Capture.
     --on_gain = function(self, err) return "#Target# begins to charge electricity.", "+Charged" end,
     on_lose = function(self, err) return "#Target#'s electrical charge dissipates.", "-Charged" end,
 
@@ -137,6 +138,7 @@ newEffect{
     end,
 
     add_power = function(self, eff, amount, max_power)
+        max_power = max_power or math.huge
         if eff.power < max_power then
             eff.power = math.min(eff.power + amount, max_power)
 

@@ -69,7 +69,15 @@ function _M:movementSpeed()
     return 1 / self.movement_speed
 end
 
---- Modifies the given combat table by mod, returning the modified combat table.
+--- Gets resistances for the given damage type. Resistances are a tuple
+--- giving a flat amount to subtract then a multiple for the remainder.
+function _M:combatResist(type)
+    if not self.resists[type] then return 0, 1 end
+    return self.resists[type], math.pow(0.9, self.resists[type])
+end
+
+--- Modifies the given combat table by mod (another table), returning the modified
+--- combat table.
 function _M:combatMod(combat, mod)
     local result = table.clone(combat)
     for k, v in pairs(mod) do

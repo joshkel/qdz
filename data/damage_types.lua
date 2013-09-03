@@ -33,29 +33,55 @@ end
 -- The basic stuff used to damage a grid
 setDefaultProjector(function(src, x, y, type, dam, extra)
     local target = game.level.map(x, y, Map.ACTOR)
-    extra = extra or {}
-    if target then
-        if extra.msg then
-            game.logSeen(target, getDamageFlash(src, target), extra.msg(src, target, DamageType:get(type)))
-        elseif not extra.silent then
-            game.logSeen(target, getDamageFlash(src, target), "%s hits %s for %s%i %s damage#LAST#.", src.name:capitalize(), target.name, DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
-        end
+    if not target then return nil end
 
-        local sx, sy = game.level.map:getTileToScreen(x, y)
-        if target:takeHit(dam, src) then
-            if src == game.player or target == game.player then
-                game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, "Kill!", {255,0,255})
-            end
-        else
-            if src == game.player then
-                game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, tostring(-math.ceil(dam)), {0,255,0})
-            elseif target == game.player then
-                game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, tostring(-math.ceil(dam)), {255,0,0})
-            end
+    local init_dam = dam
+
+    -- Apply resistances.
+    if target.resists then
+        local sub, mult = target:combatResist(type)
+        dam = math.round((dam - sub) * mult)
+        if dam ~= init_dam then
+            print(("%s resistance reduced %i damage to %i"):format(DamageType:get(type).name, init_dam, dam))
         end
-        return dam
     end
-    return 0
+
+    -- Display log message.
+    extra = extra or {}
+    if extra.msg then
+        game.logSeen(target, getDamageFlash(src, target), extra.msg(src, target, DamageType:get(type)))
+    elseif not extra.silent then
+        game.logSeen(target, getDamageFlash(src, target), "%s hits %s for %s%i %s damage#LAST#.", src.name:capitalize(), target.name, DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
+    end
+
+    -- Apply damage.  Check for kill.  Display flyer message.
+    local sx, sy = game.level.map:getTileToScreen(x, y)
+    if target:takeHit(dam, src) then
+        if src == game.player or target == game.player then
+            game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, "Kill!", {255,0,255})
+        end
+    else
+        if src == game.player then
+            game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, tostring(-math.ceil(dam)), {0,255,0})
+        elseif target == game.player then
+            game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, tostring(-math.ceil(dam)), {255,0,0})
+        end
+    end
+
+    -- Handle talent: Electrostatic Capture
+    if not target.dead and type == DamageType.LIGHTNING and init_dam > 0 and target:knowTalent(target.T_ELECTROSTATIC_CAPTURE) then
+        -- TODO: Better formula needed here?  (E.g., should we recompute the 
+        -- effects of t.resist_lightning_bonus levels of resistance on init_dam?)
+        local charge_power = math.ceil(init_dam / 10)
+        local eff = target:hasEffect(target.EFF_CHARGED)
+        if not eff then
+            target:setEffect(target.EFF_CHARGED, 1, { power=charge_power })
+        else
+            target.tempeffect_def[target.EFF_CHARGED].add_power(target, eff, charge_power)
+        end
+    end
+
+    return dam
 end)
 
 -- Special case: A damage type that wraps another damage type (indicated by

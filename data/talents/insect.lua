@@ -122,6 +122,24 @@ newTalent {
     end,
 }
 
+-- Better name needed?  Absorptive Capacitor?  Energy Harvesting?  Defensive Capacitor?
+newTalent {
+    name = "Electrostatic Capture",
+    type = {"qi techniques/chest", 1},
+    points = 1,
+    mode = "passive",
+
+    resist_lightning_bonus = 2,
+
+    on_learn = function(self, t) self.resists[DamageType.LIGHTNING] = (self.resists[DamageType.LIGHTNING] or 0) + t.resist_lightning_bonus end,
+    on_unlearn = function(self, t) self.resists[DamageType.LIGHTNING] = (self.resists[DamageType.LIGHTNING] or 0) - t.resist_lightning_bonus end,
+
+    info = function(self, t)
+        return flavorText(("Grants %i %s of lightning resistance. Additionally, whenever you take lightning damage, a portion of the damage you take is converted into an energy charge that's added as bonus lightning damage to your next successful melee attack."):format(t.resist_lightning_bonus, string.pluralize("level", t.resist_lightning_bonus)),
+            "Grid bugs' control over electricity permits them to capture a portion of any lightning directed at them and store it for later use.")
+    end,
+}
+
 newTalent {
     name = "Geomagnetic Orientation",
     type = {"qi techniques/feet", 1},

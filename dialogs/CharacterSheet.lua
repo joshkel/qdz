@@ -31,6 +31,7 @@ local Separator = require "engine.ui.Separator"
 local Stats = require "mod.class.interface.ActorStats"
 local Textzone = require "engine.ui.Textzone"
 local GameUI = require "mod.class.ui.GameUI"
+local DamageType = require "engine.DamageType"
 
 module(..., package.seeall, class.inherit(Dialog))
 
@@ -141,6 +142,7 @@ function _M:drawDialog(kind)
 
     local h = 0
     local w = 0
+    local is_none
 
     if kind == "general" then
         -- First column: Primary stats
@@ -227,6 +229,7 @@ function _M:drawDialog(kind)
         self:drawCombatBlock(s, w, h, "Unarmed", player:getObjectCombat(nil, "unarmed"))
 
     elseif kind=="defense" then
+        -- First column: Basic / physical defenses
         h = 0
         w = 0
 
@@ -235,6 +238,25 @@ function _M:drawDialog(kind)
             GameUI:tooltipTitle('Defense'):merge{true, "Ability to dodge or block attacks. Against an evenly matched opponent, +1 Defense decreases the chance to hit by roughly 5%."}) h = h + self.font_h
         self:drawString(s, "Armor   : #00ff00# "..player.combat_armor, w, h,
             GameUI:tooltipTitle('Armor'):merge{true, "Armor reduces damage from every physical attack by a random amount up to the given value."}) h = h + self.font_h
+
+        -- Second column: Resistances
+        h = 0
+        w = self.w * 0.25
+        s:drawColorStringBlended(self.font, "#GOLD##{bold}#Resistances#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
+        is_none = true
+        for k, v in pairs(player.resists) do
+            if v ~= 0 then
+                is_none = false
+                local type = DamageType:get(k)
+                local sub, mult = player:combatResist(k)
+                local pct = 100 - (mult * 100)
+                self:drawString(s, ("%s%-10s#LAST#: #00ff00# %2i / %3i%%"):format(type.text_color or "", type.name:capitalize(), sub, mult), w, h,
+                    GameUI:tooltipTitle(("%s Resistance"):format(type.name:capitalize())):merge{true, ("%i %s of %s resistance, meaning that %i is subtracted from all incoming %s damage, then the remainder is reduced by %i%%."):format(v, string.pluralize("level", v), type.name, sub, type.name, pct)}) h = h + self.font_h
+            end
+        end
+        if is_none then
+            self:drawString(s, "None", w, h) h = h + self.font_h
+        end
 
     end
 
