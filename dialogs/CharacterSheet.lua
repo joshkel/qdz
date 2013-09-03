@@ -154,7 +154,6 @@ function _M:drawDialog(kind)
 
         h = h + self.font_h
 
-        -- TODO: Replace tooltips with what load.lua defines
         self:drawString(s, ("#LIGHT_RED#Life : #00ff00#%d/%d"):format(player.life, player.max_life), w, h,
             GameUI:tooltipTitle('Life'):merge{true, "Your health. When this reaches 0, you die."}) h = h + self.font_h
         self:drawString(s, ("#LIGHT_BLUE#Qi   : #00ff00#%d/%d"):format(player:getQi(), player.max_qi), w, h,

@@ -86,6 +86,13 @@ function string.pluralize(s, n)
     end
 end
 
+function string.his(t)
+    if t.male then return "his"
+    elseif t.female then return "her"
+    else return "its"
+    end
+end
+
 --- From http://lua-users.org/wiki/StringRecipes
 function string.startsWith(s, start)
     return string.sub(s, 1, string.len(start)) == start

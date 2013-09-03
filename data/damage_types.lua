@@ -154,8 +154,8 @@ newDamageType{
             game.logAnySeen({{x=old_x, y=old_y}, target}, getDamageFlash(src, target), "%s is knocked back and takes %s%i %s damage#LAST#!",
                 target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color or "#aaaaaa#", dam.dam, DamageType:get(DamageType.PHYSICAL).name)
         else
-            game.logSeen(target, getDamageFlash(src, target), "%s takes %s%i %s damage#LAST# but stands its ground!",
-                target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color or "#aaaaaa#", dam.dam, DamageType:get(DamageType.PHYSICAL).name)
+            game.logSeen(target, getDamageFlash(src, target), "%s takes %s%i %s damage#LAST# but stands %s ground!",
+                target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color or "#aaaaaa#", dam.dam, DamageType:get(DamageType.PHYSICAL).name, string.his(target))
         end
  
         return DamageType:get(DamageType.PHYSICAL).projector(src, target.x, target.y, DamageType.PHYSICAL, dam.dam, {silent=true} )

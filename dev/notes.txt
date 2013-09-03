@@ -1,5 +1,6 @@
 To do:
 attackTargetWith needs to distinguish between melee and missile
+Inventory screen needs tooltips
 Basic game mechanics: shields
 Give creatures talents - e.g., Grid Bugs could use Capacitive Appendage instead of flat melee_project; Grid Bugs should resist lightning
 Saving projectiles doesn't work???

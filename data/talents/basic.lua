@@ -77,7 +77,7 @@ newTalent{
                 target:setMoveAnim(x, y, 8, 5)
                 game.logSeen(target, ("%s is driven back!"):format(target.name:capitalize()))
             else
-                game.logSeen(target, ("%s stands its ground!"):format(target.name:capitalize()))
+                game.logSeen(target, ("%s stands %s ground!"):format(target.name:capitalize(), string.his(target)))
             end
         end
         return true

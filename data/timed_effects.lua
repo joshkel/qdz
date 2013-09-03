@@ -37,8 +37,8 @@ newEffect{
     desc = "Focused Qi",
     type = "physical", -- TODO?
     status = "beneficial",
-    long_desc = function(self, eff) return ("%s's qi aura is focused, causing its attacks to always hit and do maximum damage."):format(self.name:capitalize()) end,
-    on_gain = function(self, err) return "#Target# focuses its qi.", "+Qi focus" end, -- FIXME: his / her, not its
+    long_desc = function(self, eff) return ("%s's qi aura is focused, causing %s attacks to always hit and do maximum damage."):format(self.name:capitalize(), string.his(self)) end,
+    on_gain = function(self, err) return ("#Target# focuses %s qi."):format(string.his(self)), "+Qi focus" end,
     on_lose = function(self, err) return "#Target#'s qi focus dissipates.", "-Qi focus" end,
     activate = function(self, eff)
         eff.particle = self:addParticles(Particles.new("focused_qi", 1))
@@ -118,11 +118,11 @@ newEffect{
 
     decrease = 0,
 
-    long_desc = function(self, eff) return ("%s has amassed %i %s of electrical charge, which will be discharged on its next attack."):format(self.name:capitalize(), eff.power, string.pluralize("point", math.floor(eff.power))) end, -- FIXME: his / her, not its
+    long_desc = function(self, eff) return ("%s has amassed %i %s of electrical charge, which will be discharged on %s next attack."):format(self.name:capitalize(), eff.power, string.pluralize("point", math.floor(eff.power)), string.his(self)) end,
 
     -- This can be gained and lost on every attack, which is noisy.
     -- Try this as a compromise for now.
-    -- Note that reenabling on_gain would affect Electrostatic Capture.
+    -- Note that on_gain's current message would be inaccurate for Electrostatic Capture.
     --on_gain = function(self, err) return "#Target# begins to charge electricity.", "+Charged" end,
     on_lose = function(self, err) return "#Target#'s electrical charge dissipates.", "-Charged" end,
 

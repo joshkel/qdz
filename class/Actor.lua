@@ -392,14 +392,13 @@ function _M:canSee(actor, def, def_pct)
     if not actor then return false, 0 end
 
     -- Check for stealth. Checks against the target cunning and level
-    -- FIXME: Obviously wrong outside of ToME
-    if actor:attr("stealth") and actor ~= self then
+    --[[if actor:attr("stealth") and actor ~= self then
         local def = self.level / 2 + self:getCun(25)
         local hit, chance = self:checkHit(def, actor:attr("stealth") + (actor:attr("inc_stealth") or 0), 0, 100)
         if not hit then
             return false, chance
         end
-    end
+    end]]
 
     if def ~= nil then
         return def, def_pct
