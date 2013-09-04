@@ -24,7 +24,7 @@
 return {
     name = "Old ruins",
     level_range = {1, 1},
-    max_level = 10,
+    max_level = 3,
     decay = {300, 800},
     width = 50, height = 50,
     persistent = "zone",
@@ -43,7 +43,7 @@ return {
         actor = {
             class = "engine.generator.actor.Random",
             nb_npc = {20, 30},
---			guardian = "SHADE_OF_ANGMAR", -- The guardian is set in the static map
+            guardian = "LEAST_MINION",
         },
         object = {
             class = "engine.generator.object.Random",

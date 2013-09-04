@@ -46,6 +46,10 @@ newEntity{ base = "BASE_NPC_KOBOLD",
     max_qi = resolvers.rngavg(4,6),
     combat = { dam=5 },
 
+    resolvers.talents{
+        [Talents.T_POISONED_DART]={base=1},
+    },
+
     can_absorb = {
         rhand = Talents.T_POISON_ORE_STRIKE,
         lhand = Talents.T_POISONED_DART,      -- or Poisoned Arrow?  Trap Rune?

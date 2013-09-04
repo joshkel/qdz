@@ -207,7 +207,7 @@ function _M:drawDialog(kind)
             for i, o in ipairs(player:getInven(player.INVEN_RHAND)) do
                 local combat = player:getObjectCombat(o, "rhand")
                 if combat then
-                    h = self:drawCombatBlock(s, w, h, "Right Hand: "..o.name:capitalize(), combat)
+                    h = self:drawCombatBlock(s, w, h, o.name:capitalize(), "Right Hand", combat)
                 end
             end
         end
@@ -218,14 +218,14 @@ function _M:drawDialog(kind)
             for i, o in ipairs(player:getInven(player.INVEN_LHAND)) do
                 local combat = player:getObjectCombat(o, "lhand")
                 if combat then
-                    h = self:drawCombatBlock(s, w, h, "Left Hand: "..o.name:capitalize(), combat, player:getOffHandMult(combat))
+                    h = self:drawCombatBlock(s, w, h, o.name:capitalize(), "Left Hand", combat, player:getOffHandMult(combat))
                 end
             end
         end
         if h ~= 0 then w = w + self.w * COL_WIDTH end
 
         h = 0
-        self:drawCombatBlock(s, w, h, "Unarmed", player:getObjectCombat(nil, "unarmed"))
+        self:drawCombatBlock(s, w, h, "Unarmed", "", player:getObjectCombat(nil, "unarmed"))
 
     elseif kind=="defense" then
         -- First column: Basic / physical defenses
@@ -290,11 +290,12 @@ function _M:dump()
     Dialog:simplePopup("Character dump complete", "File: "..fs.getRealPath(file))
 end
 
-function _M:drawCombatBlock(s, w, h, desc, combat, mult)
+function _M:drawCombatBlock(s, w, h, desc1, desc2, combat, mult)
     local player = self.actor
     mult = mult or 1
 
-    self:drawString(s, "#GOLD##{bold}#"..desc.."#{normal}##LAST#", w, h) h = h + self.font_h
+    self:drawString(s, "#GOLD##{bold}#"..desc1.."#{normal}##LAST#", w, h) h = h + self.font_h
+    self:drawString(s, "#GOLD#"..desc2.."#LAST#", w, h) h = h + self.font_h
     self:drawString(s, "Attack : #00ff00# "..player:combatAttack(combat), w, h,
         GameUI:tooltipTitle('Attack'):merge{true, "Accuracy in combat. Against an evenly matched opponent, +1 Attack increases the chance to hit by roughly 5%."}) h = h + self.font_h
 

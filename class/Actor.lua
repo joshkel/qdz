@@ -176,6 +176,7 @@ function _M:tooltip()
 
     local text = GameUI:tooltipTitle(self:getDisplayString(), self.name)
 
+    text:add(true, color.caption, 'Type: ', color.text, tostring(self.type))
     text:add(true, color.caption, 'Level: ', color.text, tostring(self.level))
     text:add(true, color.caption, 'Life: ', color.health, ("%d (%d%%)"):format(self.life, self.life * 100 / self.max_life))
 
@@ -264,12 +265,12 @@ function _M:preUseTalent(ab, silent, fake)
 
     if ab.mode == "sustained" then
         if ab.sustain_qi and self.max_qi < ab.sustain_qi and not self:isTalentActive(ab.id) then
-            game.logPlayer(self, "You do not have enough qi to activate %s.", ab.name)
+            if not silent then game.logPlayer(self, "You do not have enough qi to activate %s.", ab.name) end
             return false
         end
     else
         if ab.qi and self:getQi() < ab.qi then
-            game.logPlayer(self, "You do not have enough qi to use %s.", ab.name)
+            if not silent then game.logPlayer(self, "You do not have enough qi to use %s.", ab.name) end
             return false
         end
     end

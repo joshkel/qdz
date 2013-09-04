@@ -23,3 +23,22 @@
 
 load("/data/general/npcs/kobold.lua")
 load("/data/general/npcs/insect.lua")
+
+newEntity{
+    define_as = "LEAST_MINION",
+    name = "Least Minion", unique=true,
+    type = "infernal", subtype = "minion",
+    display = "u", color=colors.RED,
+    desc = [[Although shorter than a human, this creature's muscles, horns and claws make it seem twice as massive. Such creatures act as the dumb muscle of the underworld; although one of the weakest of the infernals, it is still stronger than most mortals. It must have been quickly summoned by Imperial warlocks and bound here to block your escape.]],
+    ai = "dumb_talented_simple", ai_state = { talent_in=3, },
+    max_life = 60,
+    max_qi = 40,
+    combat = { dam=12 },
+    stats = { str=18, ski=16, con=18, agi=16, mnd=8 },
+    combat_armor = 4,
+
+    on_die = function(self, who)
+        require("engine.ui.Dialog"):simpleLongPopup("Victory", [[You breathe a sigh of relief as the infernal collapses to the ground and dissolves in a cloud of foul-smelling negative qi. You've earned a brief respite from the Imperial pursuit, but you stlil have many miles to go.]], 600)
+    end
+}
+

@@ -125,7 +125,7 @@ newTalent{
     short_name = "OFF_HAND_ATTACK",
     type = {"basic/combat", 1},
     points = 1,
-    cooldown = 6,
+    cooldown = 3,
     range = 1,
     speed = 2.0,
     action = function(self, t)
@@ -143,7 +143,7 @@ newTalent{
         -- TODO: It'd be nice to describe which exactly it is, based on current equipment.  Also need damage numbers.
         return [[A quick, unexpected attack with your off-hand weapon, or a quick shield jab, or a quick unarmed strike with your left hand, as appropriate.
 
-Although weaker than a normal attack, this can be performed twice as quickly and has +2 to Attack.]]
+This is weaker than a normal attack (dealing off-hand damage or half of regular unarmed damage) but can be performed twice as quickly and has +2 to Attack.]]
     end,
 }
 
