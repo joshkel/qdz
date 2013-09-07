@@ -59,10 +59,10 @@ _M.tooltipColor = {
 ---@param title
 function _M:tooltipTitle(display_string, title)
     if title then
-        return tstring{display_string, {"color","GOLD"}, {"font", "bold"}, title:capitalize(), {"font", "normal"}, {"color", "LAST"}}
+        return tstring{display_string, {"color", "GOLD"}, {"font", "bold"}, title:capitalize(), {"font", "normal"}, {"color", "LAST"}}
     else
         title = display_string
-        return tstring{{"color","GOLD"}, {"font", "bold"}, title:capitalize(), {"font", "normal"}, {"color", "LAST"}}
+        return tstring{{"color", "GOLD"}, {"font", "bold"}, title:capitalize(), {"font", "normal"}, {"color", "LAST"}}
     end
 end
 
@@ -76,6 +76,7 @@ function _M:tempEffectText(actor, eff_id)
         local dur = actor:hasEffect(eff_id).dur + 1
         text:merge((" (%i)"):format(dur))
     end
+    text:merge{{"color", "LAST"}}
     return text
 end
 

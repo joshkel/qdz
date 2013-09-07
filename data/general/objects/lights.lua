@@ -26,7 +26,7 @@ newEntity{
     slot = "LIGHT",
     type = "light", subtype="light",
     display = "~",
-    encumber = 2,
+    encumber = 3,
     desc = [[A light source]],
 }
 

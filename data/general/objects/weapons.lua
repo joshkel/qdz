@@ -28,7 +28,7 @@ newEntity{
     slot_forbid = "LHAND",
     type = "weapon", subtype="staff",
     display = "\\", color=colors.UMBER,
-    encumber = 3,
+    encumber = 4,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
     name = "a generic halberd",
@@ -52,7 +52,7 @@ newEntity{
     slot_forbid = "LHAND",
     type = "weapon", subtype="polearm",
     display = "/", color=colors.SLATE,
-    encumber = 3,
+    encumber = 12,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
     name = "a generic halberd",
@@ -76,7 +76,7 @@ newEntity{
     slot = "RHAND",
     type = "weapon", subtype="saber",
     display = "|", color=colors.SLATE,
-    encumber = 3,
+    encumber = 4,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
     name = "a generic saber",
@@ -99,7 +99,7 @@ newEntity{
     slot = "RHAND",
     type = "weapon", subtype="sword",
     display = "|", color=colors.SLATE,
-    encumber = 3,
+    encumber = 4,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
     name = "a generic sword",
@@ -118,13 +118,13 @@ newEntity{ base = "BASE_SABER",
 }
 
 -- Chinese daggers are known as bi shou, although there appears to be little
--- to distinguish them from other daggers.
+-- to distinguish them from daggers of other regions.
 newEntity{
     define_as = "BASE_DAGGER",
     slot = "RHAND", offslot = "LHAND",
     type = "weapon", subtype="dagger",
     display = "|", color=colors.SLATE,
-    encumber = 3,
+    encumber = 1,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
     name = "a generic dagger",

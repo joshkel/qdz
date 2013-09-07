@@ -27,7 +27,7 @@ newEntity{
     slot = "RHAND",
     type = "tool", subtype="digger",
     display = "\\", color=colors.SLATE,
-    encumber = 3,
+    encumber = 8,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
     name = "a generic digging implement",

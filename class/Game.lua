@@ -257,10 +257,10 @@ function _M:display(nb_keyframe)
     end
     if self.player then self.player.changed = false end
 
-    -- Tooltip is displayed over all else
-    self:targetDisplayTooltip(self.w, self.h)
-
     engine.GameTurnBased.display(self, nb_keyframe)
+
+    -- Tooltip is displayed over all else, even dialogs
+    self:targetDisplayTooltip(self.w, self.h)
 end
 
 --- Setup the keybinds
@@ -529,3 +529,8 @@ function _M:saveGame()
     savefile_pipe:push(self.save_name, "game", self)
     self.log("Saving game...")
 end
+
+function _M:onUnregisterDialog()
+    if game.tooltip then game.tooltip:erase() end
+end
+
