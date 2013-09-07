@@ -53,7 +53,6 @@ end
 return { engine=core.particles.ENGINE_LINES, generator = function()
     if #points == 0 then make_points() end
     local p = table.remove(points, 1)
-    print(("%i, %i"):format(p.x, p.y))
 	
     return {
         trail = p.trail,

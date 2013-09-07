@@ -1,13 +1,9 @@
 To do:
 attackTargetWith needs to distinguish between melee and missile
-Inventory screen needs tooltips
 Basic game mechanics: shields
 Give creatures talents - e.g., Grid Bugs could use Capacitive Appendage instead of flat melee_project; Grid Bugs should resist lightning
-Saving projectiles doesn't work???
-AI is quite bad - if there's a row of monsters, the second one won't step around the first to double-team you
+AI is quite bad - if there's a row of monsters, the second one won't step around the first to double-team you.  One monster will throw a dart at another's back.
 Fully implement absorbing abilities
-Better inventory screen (improvements to match my Use Talents screen - wider columns, spaces between slots?)
-Order default hotkeys better
 Random name generator
 Critical hits
 Left vs right hand
@@ -28,7 +24,4 @@ Custom skin
 Game mechanics
 Monster ranks??? (E.g., lower hp per con for minions / mooks, higher hp per con for elites)
 Melee accuracy - based on str, ski, or a combination?  (E.g., average for most weapons, str for power weapons, ski for finesse weapons)  Kick should be based on agi; what about bash?
-
-HP: base + 2 per level + con * 2
-Power: base + 2 per level + mnd * 2
 

@@ -44,11 +44,13 @@ function _M:makeProject(src, display, def, do_move, do_act, do_stop)
 
     -- Hack: Turn the engine.projectile into a mod.class.Projectile
     -- This is a workaround for http://forums.te4.org/viewtopic.php?f=45&t=38519
-    -- TODO: It somehow breaks saving games...
-    p.__CLASSNAME = _M.name
+    p.__CLASSNAME = "mod.class.Projectile"
     setmetatable(p, {__index=_M})
 
     Qi.saveSourceInfo(src, p)
+
+    -- Hack: As of 1.0.4, tg.talent.name overrides tg.name.  We don't want that.
+    p.name = def.tg.name or p.name
 
     return p
 end
@@ -57,7 +59,7 @@ function _M:makeHoming(src, display, def, target, count, on_move, on_hit)
     local p = engine.Projectile.makeHoming(self, src, display, def, target, count, on_move, on_hit)
 
     -- Hack: Turn the engine.projectile into a mod.class.Projectile.  See makeProject.
-    p.__CLASSNAME = _M.name
+    p.__CLASSNAME = "mod.class.Projectile"
     setmetatable(p, {__index=_M})
 
     Qi.saveSourceInfo(src, p)

@@ -75,14 +75,12 @@ function _M:sortHotkeysByTalent()
             n = n + 1
         end
     end
-    util.inspect(talent_order)
 
     -- Sort talent hotkeys by definition order, using a selection sort.
     for i = 1, 12 * self.nb_hotkey_pages do
         if self.hotkey[i] and self.hotkey[i][1] == "talent" then
             local min_at, min_value = i, talent_order[self.hotkey[i][2]]
             for j = i + 1, 12 * self.nb_hotkey_pages do
-                util.inspect(self.hotkey[j])
                 if self.hotkey[j] and self.hotkey[j][1] == "talent" and talent_order[self.hotkey[j][2]] < min_value then
                     min_at, min_value = j, talent_order[self.hotkey[j][2]]
                 end
