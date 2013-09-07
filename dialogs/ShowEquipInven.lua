@@ -27,6 +27,7 @@ local ListColumns = require "engine.ui.ListColumns"
 local Textzone = require "engine.ui.Textzone"
 local TextzoneList = require "engine.ui.TextzoneList"
 local Separator = require "engine.ui.Separator"
+local GameUI = require "mod.class.ui.GameUI"
 
 module(..., package.seeall, class.inherit(Dialog))
 
@@ -52,7 +53,7 @@ function _M:init(title, actor, filter, action, on_select)
 --    self.c_desc = TextzoneList.new{width=self.iw, height=self.max_h*self.font_h, no_color_bleed=true}
 
     self.c_inven = ListColumns.new{width=math.floor(self.iw / 2 - 10), height=self.ih - self.max_h*self.font_h - 10, sortable=true, scrollbar=true, columns={
-        {name="", width={26,"fixed"}, display_prop="char", sort="id"},
+        {name="", width={GameUI.one_letter,"fixed"}, display_prop="char", sort="id"},
         {name="", width={24,"fixed"}, display_prop="object", sort="sortname", direct_draw=function(item, x, y) if item.object then item.object:toScreen(nil, x+4, y, 16, 16) end end},
         {name="Inventory", width=72, display_prop="name", sort="sortname"},
         {name="Category", width=20, display_prop="cat", sort="cat"},
@@ -60,7 +61,7 @@ function _M:init(title, actor, filter, action, on_select)
     }, list={}, fct=function(item, sel, button, event) self:use(item, button, event) end, select=function(item, sel) self:select(item) end, on_drag=function(item) if self.on_drag then self.on_drag(item) end end}
 
     self.c_equip = ListColumns.new{width=math.floor(self.iw / 2 - 10), height=self.ih - self.max_h*self.font_h - 10, scrollbar=true, columns={
-        {name="", width={26,"fixed"}, display_prop="char"},
+        {name="", width={GameUI.one_letter,"fixed"}, display_prop="char"},
         {name="", width={8+16,"fixed"}, display_prop="object", direct_draw=function(item, x, y) if item.object then item.object:toScreen(nil, x+4, y, 16, 16) end end},
         {name="Equipment", width=72, display_prop="name"},
         {name="Category", width=20, display_prop="cat"},

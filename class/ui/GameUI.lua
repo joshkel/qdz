@@ -54,6 +54,9 @@ _M.tooltipColor = {
     bad = { "color", "LIGHT_RED" }
 }
 
+-- Approximate width to use for a single letter column in a ListColumns instance
+_M.one_letter = 26
+
 ---Generates a tstring giving the title for a tooltip.  Static function.
 ---@param display_string Optional display string
 ---@param title
