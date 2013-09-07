@@ -139,6 +139,7 @@ newTalent {
     getCombat = function(self, t) return {dam=3} end,
     getPower = function(self, t) return self:talentDamage(self:getSki(), 1, 0.3) end,
     getDuration = function(self, t) return 3 end,
+    message = function(self, t) return "@Source@ throws a poisoned dart." end,
     target = function(self, t)
          return {type="bolt", range=self:getTalentRange(t), talent=t, display={display='*', color=colors.GREEN}}
     end,

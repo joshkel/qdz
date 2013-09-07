@@ -52,6 +52,33 @@ The type of technique absorbed depends on how you deal the killing blow: whether
 }
 
 newTalent{
+    name = "Off-Hand Attack",
+    short_name = "OFF_HAND_ATTACK",
+    type = {"basic/combat", 1},
+    points = 1,
+    cooldown = 3,
+    range = 1,
+    speed = 2.0,
+    action = function(self, t)
+        -- TODO: This will need to be reworked if we ever permit the main weapon to be wielded in the left hand
+        local tg = {type="hit", range=self:getTalentRange(t)}
+        local x, y, target = self:getTarget(tg)
+        if not x or not y or not target then return nil end
+        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
+
+        local combat = self:getInvenCombat(self.INVEN_LHAND, true)
+        self:attackTargetWith(target, self:combatMod(combat, {attack=2}), nil, nil, self:getOffHandMult(combat))
+        return true
+    end,
+    info = function(self, t)
+        -- TODO: It'd be nice to describe which exactly it is, based on current equipment.  Also need damage numbers.
+        return [[A quick, unexpected attack with your off-hand weapon, or a quick shield jab, or a quick unarmed strike with your left hand, as appropriate.
+
+This is weaker than a normal attack (dealing off-hand damage or half of regular unarmed damage) but can be performed twice as quickly and has +2 to Attack.]]
+    end,
+}
+
+newTalent{
     -- TODO: Make it use a shield if you have one?
     name = "Bash",
     type = {"basic/combat", 1},
@@ -117,33 +144,6 @@ newTalent{
         return ([[Kicks an enemy, dealing %s damage and possibly knocking it prone. A prone enemy's turn is delayed and is easier to hit. Damage and knockdown chance are determined by your Strength and Agility.
 
 If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your feet.]]):format(string.describe_range(self:combatDamageRange(self:getObjectCombat(nil, "kick"))))
-    end,
-}
-
-newTalent{
-    name = "Off-Hand Attack",
-    short_name = "OFF_HAND_ATTACK",
-    type = {"basic/combat", 1},
-    points = 1,
-    cooldown = 3,
-    range = 1,
-    speed = 2.0,
-    action = function(self, t)
-        -- TODO: This will need to be reworked if we ever permit the main weapon to be wielded in the left hand
-        local tg = {type="hit", range=self:getTalentRange(t)}
-        local x, y, target = self:getTarget(tg)
-        if not x or not y or not target then return nil end
-        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
-
-        local combat = self:getInvenCombat(self.INVEN_LHAND, true)
-        self:attackTargetWith(target, self:combatMod(combat, {attack=2}), nil, nil, self:getOffHandMult(combat))
-        return true
-    end,
-    info = function(self, t)
-        -- TODO: It'd be nice to describe which exactly it is, based on current equipment.  Also need damage numbers.
-        return [[A quick, unexpected attack with your off-hand weapon, or a quick shield jab, or a quick unarmed strike with your left hand, as appropriate.
-
-This is weaker than a normal attack (dealing off-hand damage or half of regular unarmed damage) but can be performed twice as quickly and has +2 to Attack.]]
     end,
 }
 

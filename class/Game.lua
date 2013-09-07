@@ -119,6 +119,9 @@ function _M:newGame()
         self.creating_player = false
         print("[PLAYER BIRTH] resolved!")
 
+        self.player:sortHotkeysByTalent()
+        self.player:sortHotkeys()
+
         -- HACK: This forces PlayerDisplay and HotkeysDisplay to update after birth descriptors are finished.
         self.player.changed = true
     end)
