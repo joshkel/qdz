@@ -53,7 +53,7 @@ newEffect{
     desc = "Burning from acid",
     type = "physical",
     status = "detrimental",
-    parameters = { power=1 },
+    parameters = { power=1, damage_message_passive=true },
     on_gain = function(self, err) return "#Target# is covered in acid!", "+Acid" end,
     on_lose = function(self, err) return "#Target# is free from the acid.", "-Acid" end,
     on_timeout = function(self, eff)
@@ -72,7 +72,7 @@ newEffect{
     desc = "Poisoned",
     type = "physical",
     status = "detrimental",
-    parameters = { power=1 },
+    parameters = { power=1, damage_message_passive=true },
     long_desc = function(self, eff) return ("%s is poisoned, taking %.1f damage per turn."):format(self.name:capitalize(), eff.power) end,
     on_gain = function(self, err) return "#Target# is poisoned!", "+Poison" end,
     on_lose = function(self, err) return "#Target# recovers from the poison.", "-Poison" end,

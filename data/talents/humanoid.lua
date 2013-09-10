@@ -141,7 +141,7 @@ newTalent {
     getDuration = function(self, t) return 3 end,
     message = function(self, t) return "@Source@ throws a poisoned dart." end,
     target = function(self, t)
-         return {type="bolt", range=self:getTalentRange(t), talent=t, display={display='*', color=colors.GREEN}}
+         return {type="bolt", range=self:getTalentRange(t), talent=t, display={display='*', color=colors.GREEN}, name="poisoned dart"}
     end,
     action = function(self, t)
         local tg = self:getTalentTarget(t)

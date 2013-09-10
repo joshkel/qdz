@@ -27,6 +27,7 @@ module(..., package.seeall, class.inherit(engine.Projectile))
 
 function _M:init(t, no_default)
     engine.Projectile.init(self, t, no_default)
+    self.damage_message_use_name = true
 end
 
 function _M:maybeAddQiParticles(src, def, display)
@@ -46,6 +47,7 @@ function _M:makeProject(src, display, def, do_move, do_act, do_stop)
     -- This is a workaround for http://forums.te4.org/viewtopic.php?f=45&t=38519
     p.__CLASSNAME = "mod.class.Projectile"
     setmetatable(p, {__index=_M})
+    p.damage_message_use_name = true
 
     Qi.saveSourceInfo(src, p)
 
@@ -61,6 +63,7 @@ function _M:makeHoming(src, display, def, target, count, on_move, on_hit)
     -- Hack: Turn the engine.projectile into a mod.class.Projectile.  See makeProject.
     p.__CLASSNAME = "mod.class.Projectile"
     setmetatable(p, {__index=_M})
+    p.damage_message_use_name = true
 
     Qi.saveSourceInfo(src, p)
 
@@ -86,7 +89,7 @@ end
 
 function _M:tooltip(x, y)
     local color = GameUI.tooltipColor
-    local text = GameUI:tooltipTitle('Projectile: '..self.name)
+    local text = GameUI:tooltipTitle('Projectile: '..self.name:capitalize())
 
     if config.settings.cheat then
         text:add(true, color.caption, "UID: ", color.text, tostring(self.uid))

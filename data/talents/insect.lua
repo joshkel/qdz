@@ -90,7 +90,7 @@ newTalent {
          return {type="ball", range=self:getTalentRange(t), radius=self:getTalentRadius(t), talent=t, stop_block=true}
     end,
     singleTarget = function(self, t)
-         return {type="bolt", range=self:getTalentRange(t), talent=t, selffire=false, display={particle="charged_bolt"}}
+         return {type="bolt", range=self:getTalentRange(t), talent=t, selffire=false, display={particle="charged_bolt"}, name="charged bolt"}
     end,
 
     action = function(self, t)

@@ -37,6 +37,9 @@ require "engine.class"
 -- * Each intermediate effect / entity can temporarily apply its focused state
 --   back to the player by using Qi.call or Qi.preCall / Qi.postCall when
 --   doing anything that might kill a creature.
+--
+-- Tracking intermediate effects is also useful for displaying more detailed
+-- messages in damage_types.lua.  See that file for more details.
 module(..., package.seeall, class.make)
 
 --- Definitions of qi technique slots.  See also talents.lua, load.lua.
@@ -64,12 +67,18 @@ _M.slots_def = {
     },
 }
 
+--- Gets the currently active intermediate effect for the given entity.
+function _M.getIntermediate(e)
+    while e.intermediate do
+        e = e.intermediate
+    end
+    return e
+end
+
 --- Static function that saves a source's qi state to an intermediate effect
 --- so that the intermediate effect can properly trigger absorb.
 function _M.saveSourceInfo(from, to)
-    while from.intermediate do
-        from = from.intermediate
-    end
+    from = _M.getIntermediate(from)
 
     to.last_action = from.last_action
 
