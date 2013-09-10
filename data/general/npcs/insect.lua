@@ -47,6 +47,10 @@ newEntity{
 
     forbid_diagonals = 1,
 
+    resolvers.talents{
+        [Talents.T_ELECTROSTATIC_CAPTURE]={base=1},
+    },
+
     can_absorb = {
         rhand = Talents.T_CAPACITIVE_APPENDAGE,
         lhand = Talents.T_CHARGED_BOLT,

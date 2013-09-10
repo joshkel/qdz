@@ -1,7 +1,6 @@
 To do:
 attackTargetWith needs to distinguish between melee and missile
 Basic game mechanics: shields
-Give creatures talents - e.g., Grid Bugs could use Capacitive Appendage instead of flat melee_project; Grid Bugs should resist lightning
 AI is quite bad - if there's a row of monsters, the second one won't step around the first to double-team you.  One monster will throw a dart at another's back.
 Fully implement absorbing abilities
 Random name generator

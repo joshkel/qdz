@@ -163,6 +163,7 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
 
     local atk = self:combatAttack(combat)
     local def = target:combatDefense()
+    local is_melee = not combat or combat.type ~= "thrown"
 
     if not self:skillCheck(atk, def) and not Qi.isFocused(self) then
         game.logSeen(target, game.flash.NEUTRAL, "%s misses %s.", self.name:capitalize(), target.name)
@@ -181,20 +182,22 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
 
     DamageType:get(damtype).projector(self, target.x, target.y, damtype, damargs)
 
-    -- Melee project.  FIXME: But this is called for Poisoned Dart too.
-    if not target.dead and combat and combat.melee_project then for typ, dam in pairs(combat.melee_project) do
-        if dam > 0 then
-            DamageType:get(typ).projector(self, target.x, target.y, typ, dam)
-        end
-    end end
-    if not target.dead then for typ, dam in pairs(self.melee_project) do
-        if dam > 0 then
-            DamageType:get(typ).projector(self, target.x, target.y, typ, dam)
-        end
-    end end
+    -- Melee project
+    if is_melee then
+        if not target.dead and combat and combat.melee_project then for typ, dam in pairs(combat.melee_project) do
+            if dam > 0 then
+                DamageType:get(typ).projector(self, target.x, target.y, typ, dam)
+            end
+        end end
+        if not target.dead then for typ, dam in pairs(self.melee_project) do
+            if dam > 0 then
+                DamageType:get(typ).projector(self, target.x, target.y, typ, dam)
+            end
+        end end
+    end
 
     -- Special case: Charged / Capacitive Appendage
-    if self:hasEffect(self.EFF_CHARGED) then
+    if is_melee and self:hasEffect(self.EFF_CHARGED) then
         local eff = self:hasEffect(self.EFF_CHARGED)
         if not target.dead and math.floor(eff.power) > 0 then
             DamageType:get(DamageType.LIGHTNING).projector(self, target.x, target.y, DamageType.LIGHTNING, eff.power)

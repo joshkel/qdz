@@ -60,7 +60,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
 
         local message
         if intermediate ~= src and intermediate.damage_message_passive then
-            message = ("%s takes %s%i %s damage#LAST#."):format(target.name, DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
+            message = ("%s takes %s%i %s damage#LAST#."):format(target.name:capitalize(), DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
         else
             message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target.name, DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
         end
@@ -134,6 +134,18 @@ newDamageType{
 
 newDamageType{
     name = "lighting", type = "LIGHTNING", text_color = "#LIGHT_BLUE#"
+}
+
+newDamageType{
+    name = "negative qi", type = "NEGATIVE_QI", text_color = "#LIGHT_DARK#",
+    projector = function(src, x, y, typ, dam)
+        local realdam = DamageType.defaultProjector(src, x, y, typ, dam)
+        local target = game.level.map(x, y, Map.ACTOR)
+        if target then
+            target:incQi(-math.min(realdam, target:getQi()))
+        end
+        return realdam
+    end
 }
 
 newDamageType{

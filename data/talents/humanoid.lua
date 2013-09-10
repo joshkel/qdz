@@ -136,7 +136,7 @@ newTalent {
     cooldown = 6,
     qi = 2,
     range = 5,
-    getCombat = function(self, t) return {dam=3} end,
+    getCombat = function(self, t) return {dam=3, type="thrown"} end,
     getPower = function(self, t) return self:talentDamage(self:getSki(), 1, 0.3) end,
     getDuration = function(self, t) return 3 end,
     message = function(self, t) return "@Source@ throws a poisoned dart." end,
