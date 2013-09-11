@@ -50,15 +50,19 @@ function _M:init(title, actor, order, at_end, quickbirth, w, h)
     self.descriptors = {}
     self.descriptors_by_type = {}
 
+    self.c_step_desc = Textzone.new{width=self.iw - 10, height=1, auto_height=true, no_color_bleed=true, text=[[
+Choose your character.
+]]}
+
     self.c_tut = Textzone.new{width=math.floor(self.iw / 2 - 10), height=1, auto_height=true, no_color_bleed=true, text=[[
 Keyboard: #00FF00#up key/down key#FFFFFF# to select an option; #00FF00#Enter#FFFFFF# to accept; #00FF00#Backspace#FFFFFF# to go back.
 Mouse: #00FF00#Left click#FFFFFF# to accept; #00FF00#right click#FFFFFF# to go back.
 ]]}
 
     self.c_random = Button.new{text="Random", width=math.floor(self.iw / 2 - 40), fct=function() self:randomSelect() end}
-    self.c_desc = Textzone.new{width=math.floor(self.iw / 2 - 10), height=self.ih - self.c_tut.h - 20, scrollbar=true, no_color_bleed=true, text=""}
+    self.c_desc = Textzone.new{width=math.floor(self.iw / 2 - 10), height=self.ih - self.c_step_desc.h - self.c_tut.h - 20, scrollbar=true, no_color_bleed=true, text=""}
 
-    self.c_list = ListColumns.new{width=math.floor(self.iw / 2 - 10), height=self.ih - 10 - self.c_random.h, scrollbar=true, all_clicks=true, columns={
+    self.c_list = ListColumns.new{width=math.floor(self.iw / 2 - 10), height=self.ih - self.c_step_desc.h - 10 - self.c_random.h, scrollbar=true, all_clicks=true, columns={
         {name="", width={GameUI.one_letter,"fixed"}, display_prop="char"},
         {name="", width=100, display_prop="display_name"},
     }, list={}, fct=function(item, sel, button, event)
@@ -72,19 +76,23 @@ Mouse: #00FF00#Left click#FFFFFF# to accept; #00FF00#right click#FFFFFF# to go b
     self.sel = 1
 
     self:loadUI{
-        {left=0, top=0, ui=self.c_list},
+        {left=0, top=self.c_step_desc.h, ui=self.c_list},
 
-        {right=0, top=self.c_tut.h + 20, ui=self.c_desc},
-        {right=0, top=0, ui=self.c_tut},
+        -- This needs to be at 2 for compatibility with the base Birther class
+        {right=0, top=self.c_step_desc.h, ui=self.c_desc}, 
+        {right=0, bottom=0, ui=self.c_tut},
 
         {left=0, bottom=0, ui=self.c_random},
-        {hcenter=0, top=5, ui=Separator.new{dir="horizontal", size=self.ih - 10}},
+        {hcenter=0, top=self.c_step_desc.h, ui=Separator.new{dir="horizontal", size=self.ih - 10}},
+
+        {left=0, top=0, ui=self.c_step_desc},
     }
     self:setFocus(self.c_list)
     self:setupUI()
 
     self.key:addCommands{
         _BACKSPACE = function() self:prev() end,
+        _ESCAPE = function() self:prev() end,
         __TEXTINPUT = function(c)
             if self.list and self.list.chars[c] then
                 self.c_list.sel = self.list.chars[c]
@@ -95,3 +103,10 @@ Mouse: #00FF00#Left click#FFFFFF# to accept; #00FF00#right click#FFFFFF# to go b
     }
 end
 
+function _M:selectType(type)
+    engine.Birther.selectType(self, type)
+    if self.step_names.detail[type] then
+        self.c_step_desc.text = self.step_names.detail[type]
+        self.c_step_desc:generate()
+    end
+end

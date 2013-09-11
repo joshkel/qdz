@@ -25,10 +25,8 @@
 newBirthDescriptor{
     type = "sex",
     name = "Female",
-    desc =
-    {
-        "You are female.",
-        "There is no in-game difference between male and female.",
+    desc = {
+        "You are female."
     },
     copy = { female=true, },
 }
@@ -36,10 +34,8 @@ newBirthDescriptor{
 newBirthDescriptor{
     type = "sex",
     name = "Male",
-    desc =
-    {
-        "You are male.",
-        "There is no in-game difference between male and female.",
+    desc = {
+        "You are male."
     },
     copy = { male=true, },
 }

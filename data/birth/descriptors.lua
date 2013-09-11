@@ -49,6 +49,15 @@ newBirthDescriptor{
     }
 }
 
+setStepNames{
+    sex = "Sex",
+    background = "Background",
+    detail = {
+        sex = "Choose your sex. There is no in-game difference between male and female.",
+        background = "Choose your background. Your background determines your starting stats."
+    }
+}
+
 load("/data/birth/sexes.lua")
 load("/data/birth/backgrounds.lua")
 
