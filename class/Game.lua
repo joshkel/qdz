@@ -30,7 +30,7 @@ local DamageType = require "engine.DamageType"
 local Zone = require "engine.Zone"
 local Map = require "engine.Map"
 local Level = require "engine.Level"
-local Birther = require "engine.Birther"
+local Birther = require "mod.dialogs.Birther"
 local Dialog = require "mod.class.ui.Dialog"
 
 local Grid = require "mod.class.Grid"

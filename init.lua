@@ -31,9 +31,10 @@ engine = {1,0,4,"te4"}
 description = [[
 An Oriental-themed fantasy roguelike. Fight creatures from folklore and legend and absorb their qi to gain new abilities while fleeing the sinister minions of the Empire and its warlocks.
 
-You are a qi daozei - a “qi rogue” - born with the ability to absorb others' life energy. Your kind is feared and persecuted by the Empire, so for years you've hidden your gifts and tried to live a normal life among the citizenry. Now you've been discovered and must fight your way through caverns and wilderness to escape to safety, knowing that the magics and minions of the Empire are quickly closing in...
+Qi (pronounced “chee”) is the life energy that flows through all beings and throughout the universe. You are a qi daozei - a “qi rogue” - born with the ability to absorb others' life energy. Your kind is feared and persecuted by the Empire, so for years you've hidden your gifts and tried to live a normal life among the citizenry. Now you've been discovered and must fight your way through caverns and wilderness to escape to safety, knowing that the magics and minions of the Empire are quickly closing in...
 ]]
 starter = "mod.load"
+--no_get_name = true
 
 allow_userchat = true
 -- FIXME: show_funfacts = true, load_tips = {}
@@ -41,3 +42,4 @@ allow_userchat = true
 background_name = {
     "peach_festival" -- https://en.wikipedia.org/wiki/File:Freer_019.jpg
 }
+
