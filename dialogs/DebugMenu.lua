@@ -60,14 +60,14 @@ function _M:use(item)
     local act = item.action
 
     if act == "reset_cooldowns" then game.player:resetTalentCooldowns() end
-    if act == "absorb_qi" then game:registerDialog(require("mod.dialogs.DebugLearnTechnique").new()) end
+    if act == "learn_technique" then game:registerDialog(require("mod.dialogs.DebugLearnTechnique").new()) end
 end
 
 function _M:generateList()
     local list = {}
 
     list[#list+1] = {name="Reset Cooldowns", action="reset_cooldowns"}
-    list[#list+1] = {name="Learn Qi Technique", action="absorb_qi"}
+    list[#list+1] = {name="Learn Qi Technique", action="learn_technique"}
 
     self.max = 0
     self.maxh = 0

@@ -31,7 +31,7 @@ module(..., package.seeall, class.inherit(engine.ui.Dialog))
 function _M:init()
     self:generateList()
 
-    local name = "Debug Menu - Absorb Qi"
+    local name = "Debug Menu - Learn Technique"
     local w = self.font_bold:size(name)
     engine.ui.Dialog.init(self, name, 1, 100)
 
@@ -74,7 +74,7 @@ function _M:generateList()
     local list = {}
 
     for id, t in pairs(Talents.talents_def) do
-        if t.type[1]:startsWith("qi techniques/") then
+        if t.type[1]:startsWith("qi techniques/") or t.type[1]:startsWith("infernal qi/") then
             list[#list+1] = {name=t.name, id=id}
         end
     end

@@ -31,6 +31,8 @@ newTalentType{ type="qi techniques/chest", name = "chest", description = "Qi tec
 newTalentType{ type="qi techniques/feet", name = "feet", description = "Qi techniques bound to your feet. These relate to movement and mobility.", slot="feet" }
 newTalentType{ type="qi techniques/head", name = "head", description = "Qi techniques bound to your head. These may provide perception or knowledge, let you acquire and enhance allies to assist you in combat, or provide other strange and wonderful effects.", slot="head" }
 
+newTalentType{ type="infernal qi/power", name = "power", description = "Infernal qi may offer a shortcut to power, but at a cost." }
+
 --- Formats some flavor text plus rules text.
 function flavorText(rules_text, flavor_text)
     if flavor_text then
@@ -44,4 +46,5 @@ load("/data/talents/basic.lua")
 load("/data/talents/proficiencies.lua")
 load("/data/talents/humanoid.lua")
 load("/data/talents/insect.lua")
+load("/data/talents/infernal.lua")
 

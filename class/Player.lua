@@ -373,7 +373,7 @@ function _M:absorbTechnique(src)
         return false
     end
 
-    local t_id = src.can_absorb[typ]
+    local t_id = src.can_absorb[typ] or src.can_absorb["any"]
     if not t_id then
         game.logSeen(self, ("You try to absorb %s's qi, but it does nothing when bound to your %s."):format(
             src.name, Qi.slots_def[typ].desc))
@@ -388,8 +388,10 @@ function _M:absorbTechnique(src)
 
     local t = self:getTalentFromId(t_id)
     game.level.map:particleEmitter(self.x, self.y, 1, "absorb_qi")
-    game.log(("You absorb a portion of %s's qi and bind it to your %s. You learn %s!"):format(
-        src.name, Qi.slots_def[typ].desc, self:getTalentDisplayName(t)))
+    if not t.silent_absorb then
+        game.log(("You absorb a portion of %s's qi and bind it to your %s. You learn %s!"):format(
+            src.name, Qi.slots_def[typ].desc, self:getTalentDisplayName(t)))
+    end
     self:learnTalent(t_id, true)
     return true
 end
@@ -414,8 +416,8 @@ function _M:learnTalent(t_id, force, nb)
 end
 
 --- Overload ActorTalents:unlearnTalent to add changeStatForTalent
-function _M:unlearnTalent(t_id, force, nb)
-    local ok, err = mod.class.Actor.learnTalent(self, t_id, force, nb)
+function _M:unlearnTalent(t_id, nb)
+    local ok, err = mod.class.Actor.unlearnTalent(self, t_id, nb)
     if not ok then return ok, err end
     self:changeStatForTalent(t_id, -1)
     return ok

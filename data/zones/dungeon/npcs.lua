@@ -24,6 +24,8 @@
 load("/data/general/npcs/kobold.lua")
 load("/data/general/npcs/insect.lua")
 
+local Talents = require("engine.interface.ActorTalents")
+
 newEntity{
     define_as = "LEAST_MINION",
     name = "Least Minion", unique=true,
@@ -42,6 +44,10 @@ newEntity{
     },
     stats = { str=18, ski=16, con=18, agi=16, mnd=8 },
     combat_armor = 4,
+
+    can_absorb = {
+        any = Talents.T_INFERNAL_POWER
+    },
 
     on_die = function(self, who)
         require("engine.ui.Dialog"):simpleLongPopup("Victory", [[You breathe a sigh of relief as the infernal collapses to the ground and dissolves in a cloud of foul-smelling negative qi. You've earned a brief respite from the Imperial pursuit, but you stlil have many miles to go.]], 600)
