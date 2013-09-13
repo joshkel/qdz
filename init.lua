@@ -17,14 +17,11 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
---
--- Nicolas Casalini "DarkGod"
--- darkgod@te4.org
 
 name = "Qi Daozei"
 long_name = "Qi Daozei"
 short_name = "qdz"
-author = { "Castler" }
+author = { "Castler", "joshkel@gmail.com" }
 homepage = "http://te4.org/modules:qdz"
 version = {0,0,1}
 engine = {1,0,4,"te4"}

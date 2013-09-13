@@ -17,9 +17,6 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
---
--- Nicolas Casalini "DarkGod"
--- darkgod@te4.org
 
 newTalentType{ type="basic/qi", name = "qi", description = "Basic manipulation of your qi (life energy)" }
 newTalentType{ type="basic/combat", name = "combat", description = "Basic combat techniques" }
