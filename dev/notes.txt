@@ -1,7 +1,10 @@
 To do:
 Basic game mechanics: shields
+Check two-weapon combat - apparently killing a monster with the first swing doesn't stop you from trying a second swing
 AI is quite bad - if there's a row of monsters, the second one won't step around the first to double-team you.  One monster will throw a dart at another's back.
 Fully implement absorbing abilities
+Character sheet should show level, XP, money (somewhere...)
+Flasher needs to not go off the edge of the screen
 Random name generator
 Critical hits
 Left vs right hand
@@ -10,7 +13,7 @@ Not sure that dig speed is working right - monsters may get a free move afterwar
 What to do about fractional HP?  It stinks to think you do enough damage to kill a foe and find out you haven't...
 Redraw FOV / light radius when light radius changes
 Penalties for blind fighting (e.g., throwing a dart outside of light radius)
-Inventory - encumbrance; better inventory limits
+Inventory - encumbrance (doesn't seem to work); better inventory limits
 
 To do a while later:
 Logo
