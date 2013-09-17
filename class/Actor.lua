@@ -140,7 +140,8 @@ end
 function _M:move(x, y, force)
     local moved = false
     local ox, oy = self.x, self.y
-    if force or self:enoughEnergy() then
+    local move_energy = game.energy_to_act * self:movementSpeed()
+    if force or self:enoughEnergy(move_energy) then
 
         if not force and self:isTalentActive(self.T_GEOMAGNETIC_ORIENTATION) then
             if x ~= ox and y ~= oy then

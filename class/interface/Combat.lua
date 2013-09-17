@@ -83,18 +83,20 @@ function _M:combatMod(combat, mod)
     return result
 end
 
---- Checks what to do with the target
--- Talk? Attack? Displace?
+--- Checks what to do with the target.
+--- Talk? Attack? Displace?
+---
+--- NOTE that this may be called by AI functions and so on (while checking
+--- "block_move"), so be careful what it does.
 function _M:bumpInto(target)
-    local speed
-
     local reaction = self:reactionToward(target)
     if reaction < 0 then
         -- FIXME: Need more detail (lhand versus rhand)
         self.last_action = 'attack'
-        speed = self:attackTarget(target)
+        local speed = self:attackTarget(target)
         self.last_action = nil
         if not speed then return end
+        self:useEnergy(game.energy_to_act * speed)
     elseif reaction >= 0 then
         if self.move_others then
             -- Displace
@@ -103,11 +105,10 @@ function _M:bumpInto(target)
             game.level.map(self.x, self.y, Map.ACTOR, target)
             game.level.map(target.x, target.y, Map.ACTOR, self)
             self.x, self.y, target.x, target.y = target.x, target.y, self.x, self.y
-            speed = self:movementSpeed()
+            self:useEnergy(game.energy_to_act * self:movementSpeed())
+            self.did_use_energy = true
         end
     end
-
-    self:useEnergy(game.energy_to_act * (speed or 1))
 end
 
 --- Makes the death happen!
@@ -121,7 +122,7 @@ function _M:attackTarget(target)
         if self:getInven(self.INVEN_RHAND) then
             for i, o in ipairs(self:getInven(self.INVEN_RHAND)) do
                 local combat = self:getObjectCombat(o, "rhand")
-                if combat then
+                if combat and not target.dead then
                     local s, h = self:attackTargetWith(target, combat)
                     speed = math.max(speed or 0, s)
                     hit = hit or h
@@ -131,7 +132,7 @@ function _M:attackTarget(target)
         if self:getInven(self.INVEN_LHAND) then
             for i, o in ipairs(self:getInven(self.INVEN_LHAND)) do
                 local combat = self:getObjectCombat(o, "lhand")
-                if combat then
+                if combat and not target.dead then
                     local s, h = self:attackTargetWith(target, combat, nil, nil, self:getOffHandMult(combat))
                     speed = math.max(speed or 0, s)
                     hit = hit or h
@@ -142,7 +143,7 @@ function _M:attackTarget(target)
 
     if not speed then
         local combat = self:getObjectCombat(o, "unarmed")
-        if combat then
+        if combat and not target.dead then
             local s, h = self:attackTargetWith(target, combat)
             speed = math.max(speed or 0, s)
             hit = hit or h

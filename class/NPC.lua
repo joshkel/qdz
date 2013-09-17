@@ -21,7 +21,6 @@
 require "engine.class"
 require "mod.class.Actor"
 local ActorAI = require "engine.interface.ActorAI"
-local Faction = require "engine.Faction"
 local GameUI = require "mod.class.ui.GameUI"
 
 module(..., package.seeall, class.inherit(mod.class.Actor, engine.interface.ActorAI))
