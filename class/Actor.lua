@@ -362,7 +362,7 @@ function _M:getTalentFullDescription(t)
 end
 
 --- As engine.interface.ActorTalents.talentCallbackOn, but over *all* talents,
---- not just current sustaints.
+--- not just current sustains.
 function _M:talentCallbackAllOn(on, ...)
     for tid, _ in pairs(self.talents) do
         local t = self:getTalentFromId(tid)

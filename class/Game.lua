@@ -336,10 +336,13 @@ function _M:setupCommands()
         -- Actions
         CHANGE_LEVEL = function()
             local e = self.level.map(self.player.x, self.player.y, Map.TERRAIN)
-            if self.player:enoughEnergy() and e.change_level then
-                self:changeLevel(e.change_zone and e.change_level or self.level.level + e.change_level, e.change_zone)
-            else
+            if not self.player:enoughEnergy() then return end
+            if not e.change_level then
                 self.log("There is no way out of this level here.")
+            elseif not e.change_zone and e.change_level < 0 then
+                self.log("The Empire's agents and minions are surely in pursuit. Backtracking would be suicide.")
+            else
+                self:changeLevel(e.change_zone and e.change_level or self.level.level + e.change_level, e.change_zone)
             end
         end,
 

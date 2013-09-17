@@ -41,7 +41,9 @@ end
 
 load("/data/talents/basic.lua")
 load("/data/talents/proficiencies.lua")
+
+load("/data/talents/bat.lua")
 load("/data/talents/humanoid.lua")
-load("/data/talents/insect.lua")
 load("/data/talents/infernal.lua")
+load("/data/talents/insect.lua")
 

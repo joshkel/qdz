@@ -24,7 +24,6 @@ return {
     max_level = 3,
     decay = {300, 800},
     width = 50, height = 50,
-    persistent = "zone",
     generator =  {
         map = {
             class = "engine.generator.map.Roomer",
