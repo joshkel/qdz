@@ -383,6 +383,20 @@ function _M:worthExp(target)
     return self.level * mult * self.exp_worth
 end
 
+--- Gets the total experience that this Actor has acquired.
+function _M:totalExp()
+    return self:totalExpChart(self.level - 1) + self.exp
+end
+
+--- Gets the total experience required to attain the given level.
+function _M:totalExpChart(level)
+    local result = 0
+    for i = 1, level do
+        result = result + self:getExpChart(level)
+    end
+    return result
+end
+
 --- Can the actor see the target actor
 -- This does not check LOS or such, only the actual ability to see it.<br/>
 -- Check for telepathy, invisibility, stealth, ...

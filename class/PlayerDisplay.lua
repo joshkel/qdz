@@ -37,7 +37,7 @@ function _M:resize(x, y, w, h)
     self.w, self.h = w, h
     self.font_h = self.font:lineSkip()
     self.font_w = self.font:size(" ")
-    self.bars_x = self.font_w * 9
+    self.bars_x = self.font_w * 6
     self.bars_w = self.w - self.bars_x - 5
     self.surface = core.display.newSurface(w, h)
     self.surface_line = core.display.newSurface(w, self.font_h)
@@ -93,10 +93,24 @@ function _M:display()
 
     local h = 6
     local x = 2
-    
+
     self.font:setStyle("bold")
     self:makeTexture(("%s#{normal}#"):format(player.name), 0, h, colors.GOLD.r, colors.GOLD.g, colors.GOLD.b, self.w) h = h + self.font_h
     self.font:setStyle("normal")
+
+    h = h + self.font_h
+
+    self:makeTexture(("Lvl: #GOLD#%2d"):format(player.level), x, h, 255, 255, 255) h = h + self.font_h
+    local exp = player.level == player.actors_max_level and 100 or player.exp / player:getExpChart(player.level + 1) * 100
+    self:makeTextureBar("Exp:", "%d%%", exp, 100, nil, x, h, 255, 255, 255, { r=0, g=100, b=0 }, { r=0, g=50, b=0 }) h = h + self.font_h
+
+    h = h + self.font_h
+
+    self:makeTextureBar("#LIGHT_RED#Life:", nil, player.life, player.max_life, player.life_regen * util.bound((player.healing_factor or 1), 0, 2.5), x, h, 255, 255, 255, colors.DARK_RED, colors.VERY_DARK_RED) h = h + self.font_h
+
+    self:makeTextureBar("#LIGHT_BLUE#Qi:", nil, player:getQi(), player.max_qi, player.qi_regen, x, h, 255, 255, 255, colors.DARK_BLUE, {r=colors.DARK_BLUE.r/2, g=colors.DARK_BLUE.g/2, b=colors.DARK_BLUE.b/2}) h = h + self.font_h
+
+    h = h + self.font_h
 
     for i, v in ipairs({
             { "Str", player:getStr() },
@@ -107,12 +121,6 @@ function _M:display()
         self:makeTexture(("%s: #00ff00#%3d"):format(unpack(v)), x, h, 255, 255, 255)
         h = h + self.font_h
     end
-
-    h = h + self.font_h
-
-    self:makeTextureBar("#LIGHT_RED#Life:", nil, player.life, player.max_life, player.life_regen * util.bound((player.healing_factor or 1), 0, 2.5), x, h, 255, 255, 255, colors.DARK_RED, colors.VERY_DARK_RED) h = h + self.font_h
-
-    self:makeTextureBar("#LIGHT_BLUE#Qi:", nil, player:getQi(), player.max_qi, player.qi_regen, x, h, 255, 255, 255, colors.DARK_BLUE, {r=colors.DARK_BLUE.r/2, g=colors.DARK_BLUE.g/2, b=colors.DARK_BLUE.b/2}) h = h + self.font_h
 
     if savefile_pipe.saving then
         h = h + self.font_h

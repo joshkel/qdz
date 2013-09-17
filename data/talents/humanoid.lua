@@ -24,7 +24,6 @@ local Qi = require("mod.class.interface.Qi")
 newTalent{
     name = "Acid Spray",
     type = {"qi techniques/right hand", 1},
-    points = 1,
     cooldown = 6,
     qi = 2,
     range = 6,
@@ -56,7 +55,6 @@ that this was in fact a new element, which they named cobalt."]]
 newTalent {
     name = "Poison Ore Strike",
     type = {"qi techniques/right hand", 1},
-    points = 1,
     cooldown = 6,
     qi = 10,
     range = 1,
@@ -129,7 +127,6 @@ newTalent {
 newTalent {
     name = "Poisoned Dart",
     type = {"qi techniques/left hand", 1},
-    points = 1,
     cooldown = 6,
     qi = 2,
     range = 5,
@@ -176,7 +173,6 @@ newTalent {
     name = "Dog-Head Mining",
     short_name = "DOG_HEAD_MINING",
     type = {"qi techniques/chest", 1},
-    points = 1,
     mode = "passive",
     on_learn = function(self, t)
         self:learnTalent(Talents.T_MINING, true)
@@ -220,7 +216,6 @@ newTalent {
 newTalent {
     name = "Dancing Lights",
     type = {"qi techniques/feet", 1},
-    points = 1,
     cooldown = 6,
     qi = 2,
     range = function(self, t) return self.lite or 0 end,
@@ -272,7 +267,6 @@ newTalent {
 newTalent {
     name = "Mining Light",
     type = {"qi techniques/head", 1},
-    points = 1,
     mode = "sustained",
     sustain_qi = 3,
     cooldown = 5,

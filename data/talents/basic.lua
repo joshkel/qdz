@@ -21,7 +21,6 @@
 newTalent{
     name = "Focus Qi",
     type = {"basic/qi", 1},
-    points = 1,
     cooldown = 50,
     no_energy = true,
     action = function(self, t)
@@ -52,7 +51,6 @@ newTalent{
     name = "Off-Hand Attack",
     short_name = "OFF_HAND_ATTACK",
     type = {"basic/combat", 1},
-    points = 1,
     cooldown = 3,
     range = 1,
     speed = 2.0,
@@ -79,7 +77,6 @@ newTalent{
     -- TODO: Make it use a shield if you have one?
     name = "Bash",
     type = {"basic/combat", 1},
-    points = 1,
     cooldown = 6,
     range = 1,
     getDistance = function(self, t)
@@ -116,7 +113,6 @@ If this kills an enemy while your qi is focused, you may absorb a portion of the
 newTalent{
     name = "Kick",
     type = {"basic/combat", 1},
-    points = 1,
     cooldown = 6,
     range = 1,
     action = function(self, t)

@@ -21,7 +21,6 @@
 newTalent {
     name = "Capacitive Appendage",
     type = {"qi techniques/right hand", 1},
-    points = 1,
     mode = "sustained",
     sustain_qi = 5,
     cooldown = 5,
@@ -57,7 +56,6 @@ newTalent {
 newTalent {
     name = "Charged Bolt",
     type = {"qi techniques/left hand", 1},
-    points = 1,
     cooldown = 2,
     qi = 2,
     range = 10,
@@ -123,7 +121,6 @@ newTalent {
 newTalent {
     name = "Electrostatic Capture",
     type = {"qi techniques/chest", 1},
-    points = 1,
     mode = "passive",
 
     resist_lightning_bonus = 2,
@@ -140,7 +137,6 @@ newTalent {
 newTalent {
     name = "Geomagnetic Orientation",
     type = {"qi techniques/feet", 1},
-    points = 1,
     mode = "sustained",
     sustain_qi = 1,
     cooldown = 5,
@@ -168,7 +164,6 @@ newTalent {
 newTalent {
     name = "Electroluminescence",
     type = {"qi techniques/head", 1},
-    points = 1,
     mode = "sustained",
     sustain_qi = 6,
     cooldown = 5,

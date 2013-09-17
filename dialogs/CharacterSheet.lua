@@ -142,7 +142,7 @@ function _M:drawDialog(kind)
     local is_none
 
     if kind == "general" then
-        -- First column: Primary stats
+        -- First column: General info
         h = 0
         w = 0
         local name = player.name or "Unnamed"
@@ -157,7 +157,24 @@ function _M:drawDialog(kind)
             GameUI:tooltipTitle('Qi'):merge{true, player.resources_def[player.RS_QI].description}) h = h + self.font_h
 
         h = h + self.font_h
+        self:drawString(s,     ("#GOLD#Level#LAST#         : %i"):format(player.level), w, h,
+            GameUI:tooltipTitle('Level'):merge{true, "Overall experience level."}) h = h + self.font_h
+        if player == game.player then
+            self:drawString(s, ("Experience    : %i"):format(player:totalExp()), w, h,
+                GameUI:tooltipTitle('Experience'):merge{true, "Experience gained so far. Experience is generally gained from killing monsters."}) h = h + self.font_h
+            self:drawString(s, ("To next level : %i"):format(player:totalExpChart(player.level + 1)), w, h,
+                GameUI:tooltipTitle('To Next Level'):merge{true, "Experience needed to reach the next level."}) h = h + self.font_h
 
+            h = h + self.font_h
+
+            self:drawString(s, tstring{'Money', '         : ', {"color", GameUI.money_color}, tostring(player.money), {'color', 'LAST'}}:toString(), w, h,
+                GameUI:tooltipTitle('Money'):merge{true, GameUI.money_desc}) h = h + self.font_h
+        end
+
+        -- Second column: Attributes
+        h = 0
+        w = self.w * 0.25
+        s:drawColorStringBlended(self.font, "#GOLD##{bold}#Attributes#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
         function statTooltip(short_name)
             return GameUI:tooltipTitle(player.stats_def[short_name].name):merge{true, player.stats_def[short_name].description}
         end
@@ -167,15 +184,15 @@ function _M:drawDialog(kind)
         self:drawString(s, "Agility      : #00ff00# "..player:getAgi(), w, h, statTooltip('agi')) h = h + self.font_h
         self:drawString(s, "Mind         : #00ff00# "..player:getMnd(), w, h, statTooltip('mnd')) h = h + self.font_h
 
-        -- Second column: Speed
+        -- Third column: Speed
         h = 0
-        w = self.w * 0.25
+        w = self.w * 0.5
         s:drawColorStringBlended(self.font, "#GOLD##{bold}#Speed#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
         self:drawString(s, ("Movement : #00ff00# %3i%%"):format(player.movement_speed * 100), w, h) h = h + self.font_h
 
-        -- Third column: Effects and sustains
+        -- Fourth column: Effects and sustains
         h = 0
-        w = self.w * 0.5
+        w = self.w * 0.75
 
         s:drawColorStringBlended(self.font, "#GOLD##{bold}#Effects#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
         for tid, act in pairs(player.sustain_talents) do

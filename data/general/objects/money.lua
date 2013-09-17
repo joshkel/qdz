@@ -18,14 +18,16 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+local GameUI = require("mod.class.ui.GameUI")
+
 newEntity{
     define_as = "BASE_MONEY",
     type = "money", subtype="money",
-    display = "$", color=colors.YELLOW,
+    display = "$", color=colors[GameUI.money_color],
     encumber = 0,
     rarity = 5,
     identified = true,
-    desc = [[Money, either in Imperial coins or easily tradable precious metals. Unfortunately, since you're on the run and far from civilization, it's unlikely that you'll be able to use it any time soon.]],
+    desc = GameUI.money_desc,
     on_prepickup = function(self, who, id)
         who:incMoney(self.money_value)
         game.logPlayer(who, "You pick up %i gold pieces.", self.money_value)
@@ -42,7 +44,7 @@ newEntity{ base = "BASE_MONEY", define_as = "MONEY_SMALL",
     add_name = " (#MONEY#)",
     level_range = {1, 50},
     resolvers.generic(function(e)
-        e.money_value = rng.avg(4, 10)
+        e.money_value = math.round(rng.avg(4, 10))
     end)
 }
 
@@ -53,7 +55,7 @@ newEntity{ base = "BASE_MONEY", define_as = "MONEY_BIG",
     color=colors.GOLD,
     rarity = 15,
     resolvers.generic(function(e)
-        e.money_value = rng.avg(15, 35)
+        e.money_value = math.round(rng.avg(15, 35))
     end)
 }
 

@@ -51,7 +51,7 @@ newEntity{
     can_absorb = {
         rhand = Talents.T_CAPACITIVE_APPENDAGE,
         lhand = Talents.T_CHARGED_BOLT,
-        chest = Talents.T_ELECTROSTATIC_CAPTURE,
+        chest = Talents.T_ELECTROSTATIC_CAPTURE, -- Or conduct electricity to nearby foes?  Or gain a speed boost?
         feet = Talents.T_GEOMAGNETIC_ORIENTATION,
         head = Talents.T_ELECTROLUMINESCENCE,
     }

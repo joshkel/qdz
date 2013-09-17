@@ -1,9 +1,9 @@
 To do:
+Why do I get an "offline" error message, even after uploading?
 Basic game mechanics: shields
 Check two-weapon combat - apparently killing a monster with the first swing doesn't stop you from trying a second swing
 AI is quite bad - if there's a row of monsters, the second one won't step around the first to double-team you.  One monster will throw a dart at another's back.
 Fully implement absorbing abilities
-Character sheet should show level, XP, money (somewhere...)
 Flasher needs to not go off the edge of the screen
 Random name generator
 Critical hits
