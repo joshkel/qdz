@@ -342,6 +342,7 @@ function _M:setupCommands()
             elseif not e.change_zone and e.change_level < 0 then
                 self.log("The Empire's agents and minions are surely in pursuit. Backtracking would be suicide.")
             else
+                self.player:talentCallbackAllOn("on_pre_change_level")
                 self:changeLevel(e.change_zone and e.change_level or self.level.level + e.change_level, e.change_zone)
             end
         end,

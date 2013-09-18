@@ -141,6 +141,11 @@ newTalent {
     sustain_qi = 1,
     cooldown = 5,
 
+    -- For this to be a worthwhile choice, the movement speed bonus to compared
+    -- to how often the player expects to move diagonally should make sense.
+    -- Does it?
+    --
+    -- 0.15 equals 1 out of every 6.67 moves.
     movement_speed_bonus = 0.15,
 
     activate = function(self, t)

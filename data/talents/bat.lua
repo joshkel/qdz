@@ -20,17 +20,19 @@
 
 --[[newTalent{
     name = "First Blessing: Virtue",
+    short_name = "BLESSING_VIRTUE",
     type = {"qi techniques/right hand", 1},
 }]]
 
 --[[newTalent{
     name = "Second Blessing: Wealth",
+    short_name = "BLESSING_WEALTH",
     type = {"qi techniques/left hand", 1},
 }]]
 
 newTalent{
     name = "Third Blessing: Health",
-    short_name = 'THIRD_BLESSING_HEALTH',
+    short_name = "BLESSING_HEALTH",
     type = {"qi techniques/chest", 1},
     cooldown = 12,
     qi = 3,
@@ -64,12 +66,43 @@ newTalent{
     end
 }
 
---[[newTalent{
+newTalent{
     name = "Fourth Blessing: Longevity",
+    short_name = "BLESSING_LONGEVITY",
     type = {"qi techniques/feet", 1},
-}]]
+    mode = "passive",
+
+    on_pre_change_level = function(self, t)
+        -- TODO: Tweak experience values.
+        --
+        -- If an average dungeon level has 20-30 monsters, and if we say that
+        -- the goal of Longevity is to make it easier to dive / speedrun and
+        -- skip monsters, then should we grant experience equal to maybe
+        -- 1/4 of those? Or should we adjust it based on player level compared
+        -- to target level, to make it useful for skipping monsters while
+        -- discouraging over-levelling?
+        --
+        -- This math should be very roughly equal to 5 monsters, at least
+        -- until we start messing with experience values.
+        --
+        -- Also note that this relies on our disallowing going back to previous
+        -- levels.  If we allowed that, we'd have to track visited levels, to
+        -- avoid grinding for XP.
+        local target_level = game.level.level + math.average(game.level.data.level_range)
+        local exp_bonus = target_level * 5
+        print(("Blessing: Longevity: %i bonus experience"):format(exp_bonus))
+        self:gainExp(target_level)
+    end,
+
+    info = function(self, t)
+        return flavorText("Grants an experience bonus whenever you travel from one dungeon or wilderness area to the next.",
+            "Longevity brings wisdom, as long as you have an opportunity to reflect on what you've seen and where you've been.")
+    end
+}
+
 --[[newTalent{
     name = "Fifth Blessing: Natural Death",
+    short_name = "BLESSING_NATURAL_DEATH",
     type = {"qi techniques/mind", 1},
 }]]
 

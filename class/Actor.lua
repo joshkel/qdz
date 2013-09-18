@@ -386,14 +386,14 @@ end
 
 --- Gets the total experience that this Actor has acquired.
 function _M:totalExp()
-    return self:totalExpChart(self.level - 1) + self.exp
+    return self:totalExpChart(self.level) + self.exp
 end
 
 --- Gets the total experience required to attain the given level.
 function _M:totalExpChart(level)
     local result = 0
-    for i = 1, level do
-        result = result + self:getExpChart(level)
+    for i = 2, level do
+        result = result + self:getExpChart(i)
     end
     return result
 end

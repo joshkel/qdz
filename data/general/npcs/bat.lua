@@ -49,11 +49,11 @@ newEntity{ base = "BASE_NPC_BAT",
     },]]
 
     can_absorb = {
-        --rhand = Talents.T_FIRST_BLESSING_VIRTUE,
-        --lhand = Talents.T_SECOND_BLESSING_WEALTH,
-        chest = Talents.T_THIRD_BLESSING_HEALTH,
-        --feet = Talents.T_FOURTH_BLESSING_LONGEVITY,
-        --head = Talents.T_FIFTH_BLESSING_NATURAL_DEATH,
+        --rhand = Talents.T_BLESSING_VIRTUE,
+        --lhand = Talents.T_BLESSING_WEALTH,
+        chest = Talents.T_BLESSING_HEALTH,
+        feet = Talents.T_BLESSING_LONGEVITY,
+        --head = Talents.T_BLESSING_NATURAL_DEATH,
     },
 }
 

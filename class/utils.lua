@@ -109,6 +109,20 @@ function math.round(num)
     else return math.ceil(num-.5) end
 end
 
+--- Sums the values in t
+function math.sum(t)
+    local sum = 0
+    for i, v in ipairs(t) do
+        sum = sum + v
+    end
+    return sum
+end
+
+--- Averages the values in t
+function math.average(t)
+    return math.sum(t) / #t
+end
+
 utf8 = {
     ldquo = "\xe2\x80\x9c",
     rdquo = "\xe2\x80\x9d",
