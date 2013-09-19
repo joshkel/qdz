@@ -45,10 +45,76 @@ newTalent{
         local best = t.findBest(self, t)
         local result = "Mining lets you use a pickaxe or similar tool to dig stone and earth.\n\n"
         if best then
-            result = result .. ("Digging with your %s takes %d turns (based on your proficiency level and best mining tool available)."):format(best.name, best.getEffectiveDigSpeed(self))
+            result = result .. ("Digging with your %s takes %d turns (based on your Mining proficiency, Constitution, and best mining tool available)."):format(best.name, best:getEffectiveDigSpeed(self))
         else
             result = result .. "You currently have no mining tools."
         end
         return result
     end,
 }
+
+newTalent{
+    name = "Pickpocket",
+    type = {"basic/proficiencies", 1},
+    points = 5,
+    cooldown = 6,
+    no_npc_use = true,  -- TODO: Actually, pickpocket NPCs would be cool, but implementation would have to change.
+    range = 1,
+
+    chanceOfSuccess = function(self, t)
+        return self:talentPercentage(t, 20, self:getSki())
+    end,
+
+    action = function(self, t)
+        local tg = {type="hit", range=self:getTalentRange(t)}
+        local x, y, target = self:getTarget(tg)
+        if not x or not y or not target then return nil end
+        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
+
+        if target.type ~= "humanoid" then
+            game.logPlayer(self, ("%s has no pockets."):format(target.name:capitalize()))
+            return false
+        end
+
+        -- Sample opposed skill check.  This would need to be standardized,
+        -- and I'm not sure how to keep proficiency level relevant without
+        -- it being a treadmill.
+        --local success = self:skillCheck(self.level / 2 + self:getSki() / 2 + self:getTalentLevel(t), target.level / 2 + target:getMnd() / 2)
+
+        -- Flat percentage check
+        local success = rng.percent(t.chanceOfSuccess(self, t))
+
+        if not success then
+            game.logSeen(self, ("%s tries to pick %s's pockets but fails."):format(
+                self.name:capitalize(), target.name))
+        elseif target.pickpocketed then
+            game.logSeen(self, ("%s tries to pick %s's pockets, but %s has already been robbed."):format(
+                self.name:capitalize(), target.name, target.name, target.name))
+        else
+            local o = game.zone:makeEntity(game.level, "object", {special=function(e) return e.encumber <= 1 and not e.unique end}, nil, true)
+            if o then
+                if o.type == "money" then
+                    local money_value = o:getMoneyValue(self)
+                    self:incMoney(money_value)
+                    game.logSeen(self, ("%s picks %s's pockets and steals %i gold pieces."):format(
+                        self.name:capitalize(), target.name, math.floor(money_value)))
+                else
+                    self:addObject(self.INVEN_INVEN, o)
+                    game.logSeen(self, ("%s picks %s's pockets and steals %s."):format(
+                        self.name:capitalize(), target.name, o.name:a()))
+                end
+            else
+                game.logSeen(self, ("%s picks %s's pockets but finds nothing of value."):format(
+                    self.name:capitalize(), target.name))
+            end
+            target.pickpocketed = true
+        end
+
+        return true
+    end,
+
+    info = function(self, t)
+        return ("Attempts to steal a small item from a nearby enemy. Only humanoid enemies can be robbed. The chance of success is %i%% (based on your Pickpocket proficiency and Skill)."):format(t.chanceOfSuccess(self, t))
+    end,
+}
+

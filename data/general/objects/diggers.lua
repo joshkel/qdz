@@ -18,6 +18,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+-- TODO: Tooltip should show how long it takes to dig (especially if you don't have Mining)
 
 newEntity{
     define_as = "BASE_DIGGER",
@@ -30,13 +31,14 @@ newEntity{
     name = "a generic digging implement",
     desc = [[A digging implement.]],
     
-    digspeed = 5,
+    digspeed = 10,
     use_no_wear = true,
     use_no_energy = true, -- energy cost is handled by wait() below
 
     getEffectiveDigSpeed = function(self, who, show_message)
         local Talents = require "engine.interface.ActorTalents"
-        local mining = who:getTalentLevel(Talents.T_MINING)
+        -- TODO: Duplicate logic from Combat.talentPercentage; clean up
+        local mining = who:getTalentLevel(Talents.T_MINING) * who:getCon() / 10
         if mining == 0 then
             if show_message then game.logPlayer(who, "You don't know the first thing about mining. This could take a while...") end
             return math.floor(self.digspeed * 2)
@@ -59,7 +61,9 @@ newEntity{
                 return nil
             end
 
-            local digspeed = self:getEffectiveDigSpeed(who, true)
+            -- Hack: Subtracting 1 is necessary to make turns taken match.
+            -- I'm not sure why.
+            local digspeed = self:getEffectiveDigSpeed(who, true) - 1
 
             local wait = function()
                 local co = coroutine.running()

@@ -18,17 +18,36 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+-- TODO: Should these talents be more effective the more of them you have?
+
 --[[newTalent{
     name = "First Blessing: Virtue",
     short_name = "BLESSING_VIRTUE",
     type = {"qi techniques/right hand", 1},
 }]]
 
---[[newTalent{
+newTalent{
     name = "Second Blessing: Wealth",
     short_name = "BLESSING_WEALTH",
     type = {"qi techniques/left hand", 1},
-}]]
+    mode = "passive",
+    on_learn = function(self, t)
+        self:learnTalent(Talents.T_PICKPOCKET, true)
+    end,
+    on_unlearn = function(self, t)
+        self:unlearnTalent(Talents.T_PICKPOCKET)
+    end,
+    passives = function(self, t, p)
+        self:talentTemporaryValue(p, "money_value_multiplier", t.money_value_multiplier)
+    end,
+
+    money_value_multiplier = 0.1,
+
+    info = function(self, t)
+        return flavorText("+1 Pickpocket proficiency. Additionally, the amount of any money that you find (whether by pickpocketing or otherwise) will be increased by 10%.",
+            "The second of the Five Blessings is said to let you find wealth through good fortune. Of course, sometimes the easiest way to find wealth is in soneone else's pockets.")
+    end
+}
 
 newTalent{
     name = "Third Blessing: Health",

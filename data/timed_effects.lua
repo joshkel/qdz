@@ -59,7 +59,7 @@ newEffect{
         Qi.postCall(eff, eff.src, saved)
     end,
     on_merge = function(self, old_eff, new_eff)
-        merge_pow_dam(old_eff, new_eff)
+        merge_pow_dur(old_eff, new_eff)
         return old_eff
     end
 }
@@ -79,7 +79,7 @@ newEffect{
         Qi.postCall(eff, saved)
     end,
     on_merge = function(self, old_eff, new_eff)
-        merge_pow_dam(old_eff, new_eff)
+        merge_pow_dur(old_eff, new_eff)
         return old_eff
     end
 }

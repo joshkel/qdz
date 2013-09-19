@@ -167,7 +167,7 @@ function _M:drawDialog(kind)
 
             h = h + self.font_h
 
-            self:drawString(s, tstring{'Money', '         : ', {"color", GameUI.money_color}, tostring(player.money), {'color', 'LAST'}}:toString(), w, h,
+            self:drawString(s, tstring{'Money', '         : ', {"color", GameUI.money_color}, tostring(math.floor(player.money)), {'color', 'LAST'}}:toString(), w, h,
                 GameUI:tooltipTitle('Money'):merge{true, GameUI.money_desc}) h = h + self.font_h
         end
 

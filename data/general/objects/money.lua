@@ -28,11 +28,20 @@ newEntity{
     rarity = 5,
     identified = true,
     desc = GameUI.money_desc,
+    getMoneyValue = function(self, who)
+        local result = self.money_value * (1 + (who.money_value_multiplier or 0))
+        if result ~= self.money_value then print(("money_value_multiplier of %f changed money value from %f to %f"):format(who.money_value_multiplier, self.money_value, result)) end
+        return result
+    end,
     on_prepickup = function(self, who, id)
-        who:incMoney(self.money_value)
+        who:incMoney(self:getMoneyValue(who))
         game.logPlayer(who, "You pick up %i gold pieces.", self.money_value)
-        -- Remove from the map
-        game.level.map:removeObject(who.x, who.y, id)
+
+        if id then
+            -- Remove from the map
+            game.level.map:removeObject(who.x, who.y, id)
+        end
+
         return true
     end,
     -- FIXME: Actually implement auto_pickup (?)

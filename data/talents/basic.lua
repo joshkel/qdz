@@ -83,6 +83,7 @@ newTalent{
         return (self:getStr() + self:getCon()) / 5
     end,
     action = function(self, t)
+        -- TODO? This block is duplicated throughout basic.lua and other talents - can it be cleaned up?
         local tg = {type="hit", range=self:getTalentRange(t)}
         local x, y, target = self:getTarget(tg)
         if not x or not y or not target then return nil end

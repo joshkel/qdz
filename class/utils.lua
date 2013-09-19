@@ -86,6 +86,15 @@ function string.pluralize(s, n)
     end
 end
 
+--- Adds an indefinite article to s.  Special cases will be added as needed.
+function string.a(s)
+    if string.vowels[s:sub(1, 1)] then
+        return "an " .. s
+    else
+        return "a " .. s
+    end
+end
+
 function string.his(t)
     if t.male then return "his"
     elseif t.female then return "her"

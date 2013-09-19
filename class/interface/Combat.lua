@@ -56,10 +56,18 @@ function _M:skillCheck(skill, difficulty)
     return result >= difficulty, result
 end
 
---- Gets the chance of success for the given skill check, as a percentage,
+--- Gets the chance of success for the given skillCheck, as a percentage,
 --- without considering the +/- 100 limit in skillCheck.
 function _M:skillChanceOfSuccess(skill, difficulty)
     return 50 + 50 * math.tanh((skill - difficulty) / (2 * 5))
+end
+
+--- Several talents express their effectiveness as a percentage level; this
+--- function calculates that percentage level.  E.g., for a base percentage of
+--- 50, this results in a percentage of 50 at talent 1, 75 at talent 2, etc.
+function _M:talentPercentage(talent, base_percentage, stat)
+    stat = stat or 10
+    return (1 - math.pow(1 - base_percentage / 100, self:getTalentLevel(talent) * stat / 10)) * 100
 end
 
 function _M:movementSpeed()
