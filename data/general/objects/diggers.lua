@@ -28,7 +28,6 @@ newEntity{
     encumber = 8,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
-    name = "a generic digging implement",
     desc = [[A digging implement.]],
     
     digspeed = 10,

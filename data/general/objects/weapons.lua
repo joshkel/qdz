@@ -28,8 +28,7 @@ newEntity{
     encumber = 4,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
-    name = "a generic halberd",
-    desc = [[A polearm.]],
+    desc = [[A staff.]],
 }
 
 newEntity{ base = "BASE_STAFF",
@@ -52,7 +51,6 @@ newEntity{
     encumber = 12,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
-    name = "a generic halberd",
     desc = [[A polearm.]],
 }
 
@@ -76,7 +74,6 @@ newEntity{
     encumber = 4,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
-    name = "a generic saber",
     desc = [[A saber.]],
 }
 
@@ -99,7 +96,6 @@ newEntity{
     encumber = 4,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
-    name = "a generic sword",
     desc = [[A sword.]],
 }
 
@@ -124,7 +120,6 @@ newEntity{
     encumber = 1,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
-    name = "a generic dagger",
     desc = [[Small, sharp, and pointy.]],
 }
 

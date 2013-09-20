@@ -2,7 +2,7 @@
 -- Copyright (C) 2013 Josh Kelley
 --
 -- based on
--- ToME - Tales of Middle-Earth
+-- ToME - Tales of Maj'Eyal
 -- Copyright (C) 2009, 2010, 2011, 2012, 2013 Nicolas Casalini
 --
 -- This program is free software: you can redistribute it and/or modify
@@ -18,27 +18,32 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-newEntity{
-    define_as = "BASE_POTION",
-    type = "consumable", subtype="potion",
-    display = "!", color=colors.BLUE,
-    encumber = 1,
-    rarity = 5,
-    desc = [[Potions may have a variety of effects.]]
-}
+require "engine.class"
+require "mod.class.ui.SimpleListDialog"
 
-newEntity{
-    base = "BASE_POTION",
-    name = "minor healing potion",
-    level_range = {1, 10},
-    cost = 5,
-    use_simple = {
-        name = "minor healing",
-        use = function(self, who)
-            -- FIXME: Correct arguments?
-            who:heal(10, self)
-            game.log(("%s's wounds heal."):format(who.name))
-            return {used = true, destroy = true}
+module(..., package.seeall, class.inherit(mod.class.ui.SimpleListDialog))
+
+function _M:init()
+    mod.class.ui.SimpleListDialog.init(self, "Debug Menu - Create Item")
+end
+
+function _M:useItem(item)
+    local o = game.zone:makeEntityByName(game.level, "object", item.index)
+    if not o then
+        game.log("Failed to create item.")
+    else
+        game.level.map:addObject(game.player.x, game.player.y, o)
+    end
+end
+
+function _M:generateListContents()
+    local list = {}
+
+    for i, v in ipairs(game.zone.object_list) do
+        if v.name then
+            list[#list+1] = {name=v.name, index=i}
         end
-    }
-}
+    end
+
+    return list
+end

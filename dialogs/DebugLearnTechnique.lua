@@ -19,42 +19,16 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require "engine.class"
-require "engine.ui.Dialog"
-local List = require "engine.ui.List"
+require "mod.class.ui.SimpleListDialog"
 local Talents = require "engine.interface.ActorTalents"
 
-module(..., package.seeall, class.inherit(engine.ui.Dialog))
+module(..., package.seeall, class.inherit(mod.class.ui.SimpleListDialog))
 
 function _M:init()
-    self:generateList()
-
-    local name = "Debug Menu - Learn Technique"
-    local w = self.font_bold:size(name)
-    engine.ui.Dialog.init(self, name, 1, 100)
-
-    local list = List.new{width=math.max(w, self.max) + 10, nb_items=math.min(15, #self.list), scrollbar=#self.list>15, list=self.list, fct=function(item) self:use(item) end}
-
-    self:loadUI{
-        {left=0, top=0, ui=list},
-    }
-
-    self:setupUI(true, true)
-
-    self.mouse:reset()
-    self.mouse:registerZone(0, 0, game.w, game.h, function(button, x, y, xrel, yrel, bx, by, event) if (button == "left" or button == "right") and event == "button" then self.key:triggerVirtual("EXIT") end end)
-    self.mouse:registerZone(self.display_x, self.display_y, self.w, self.h, function(button, x, y, xrel, yrel, bx, by, event) if button == "right" and event == "button" then self.key:triggerVirtual("EXIT") else self:mouseEvent(button, x, y, xrel, yrel, bx, by, event) end end)
-    self.key:addBinds{ EXIT = function() game:unregisterDialog(self) end, }
+    mod.class.ui.SimpleListDialog.init(self, "Debug Menu - Learn Technique")
 end
 
-function _M:unload()
-    engine.ui.Dialog.unload(self)
-    self.exited = true
-end
-
-function _M:use(item)
-    if not item then return end
-    game:unregisterDialog(self)
-
+function _M:useItem(item)
     local player = game.player
     local id = item.id
     
@@ -67,7 +41,13 @@ function _M:use(item)
     end
 end
 
-function _M:generateList()
+function _M:selectItem(item, sel)
+    local t = Talents:getTalentFromId(item.id)
+    util.inspect(item)
+    game.tooltip:displayAtMap(nil, nil, game.w, game.h, game.player:getTalentFullDescription(t), true)
+end
+
+function _M:generateListContents()
     local list = {}
 
     for id, t in pairs(Talents.talents_def) do
@@ -78,13 +58,6 @@ function _M:generateList()
 
     table.sort(list, function(a, b) return a.name < b.name end)
 
-    self.max = 0
-    self.maxh = 0
-    for i, v in ipairs(list) do
-        local w, h = self.font:size(v.name)
-        self.max = math.max(self.max, w)
-        self.maxh = self.maxh + h
-    end
-
-    self.list = list
+    return list
 end
+
