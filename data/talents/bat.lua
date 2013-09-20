@@ -20,11 +20,39 @@
 
 -- TODO: Should these talents be more effective the more of them you have?
 
---[[newTalent{
+newTalent{
     name = "First Blessing: Virtue",
     short_name = "BLESSING_VIRTUE",
     type = {"qi techniques/right hand", 1},
-}]]
+    mode = "sustained",
+    sustain_qi = 5,
+    cooldown = 30,
+
+    combat_atk_bonus = 2,
+    combat_dam_bonus = 2,
+
+    activate = function(self, t)
+        local ret = {}
+        self:talentTemporaryValue(ret, "combat_atk", t.combat_atk_bonus)
+        self:talentTemporaryValue(ret, "combat_dam", t.combat_dam_bonus)
+        return ret
+    end,
+    deactivate = function(self, t, p)
+        return true
+    end,
+
+    on_kill = function(self, target)
+        if target.type == "undead" or target.type == "infernal" then return false end
+        target.life = target.die_at + 0.1
+        target:setEffect(target.EFF_UNCONSCIOUS, 1, {})
+        return true
+    end,
+
+    info = function(self, t)
+        return flavorText(("Adds %i to your Attack and %i to your normal attacks' damage. Your normal attacks will never kill an opponent; instead, critically injured opponents will be knocked unconscious.\n\Profoundly unnatural or evil opponents, such as undead or infernals, will be killed as normal. Also fFocusing your qi gives you sufficient self-control to kill without disrupting First Blessing: Virtue."):format(t.combat_atk_bonus, t.combat_dam_bonus),
+            "The first blessing is love of virtue. By purging your mind of killing intent, you can fight with clarity and strength of purpose.")
+    end
+}
 
 newTalent{
     name = "Second Blessing: Wealth",
@@ -62,7 +90,8 @@ newTalent{
         -- Go through all temporary effects
         -- TODO: As written, this can cure Prone.  Rather silly, although not presently an issue...
         -- Still, we might someday want to distinguish between "health" stuff
-        -- (poison, disease, etc.) and other effects (prone, grappled, on fire?).
+        -- (poison, disease, stunned...) and other effects (prone, grappled,
+        -- chicken on your head...).
         for eff_id, p in pairs(target.tmp) do
             local e = target.tempeffect_def[eff_id]
             if e.type == "physical" and e.status == "detrimental" then

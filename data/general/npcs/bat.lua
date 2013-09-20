@@ -49,7 +49,7 @@ newEntity{ base = "BASE_NPC_BAT",
     },]]
 
     can_absorb = {
-        --rhand = Talents.T_BLESSING_VIRTUE,
+        rhand = Talents.T_BLESSING_VIRTUE,
         lhand = Talents.T_BLESSING_WEALTH,
         chest = Talents.T_BLESSING_HEALTH,
         feet = Talents.T_BLESSING_LONGEVITY,

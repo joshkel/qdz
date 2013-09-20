@@ -187,6 +187,11 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
         damargs = dam
     end
 
+    -- Special case: First Blessing: Virtue (part 1)
+    local prev_on_kill = self.on_kill
+    local blessing_virtue_active = self:isTalentActive(self.T_BLESSING_VIRTUE) and not Qi.isFocused(self) 
+    if blessing_virtue_active then self.on_kill = self:getTalentFromId(self.T_BLESSING_VIRTUE).on_kill end
+
     DamageType:get(damtype).projector(self, target.x, target.y, damtype, damargs)
 
     -- Melee project
@@ -202,6 +207,11 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
             end
         end end
     end
+
+    -- Special case: First Blessing: Virtue (part 2)
+    -- Note that this placement means later talents may subvert
+    -- Blessing: Virtue's technical pacifism.  This is intentional.
+    if blessing_virtue_active then self.on_kill = prev_on_kill end
 
     -- Special case: Charged / Capacitive Appendage
     if is_melee and self:hasEffect(self.EFF_CHARGED) then
@@ -250,7 +260,7 @@ function _M:combatDamage(combat)
 end
 
 function _M:combatDamageRange(combat, mult)
-    local bonus = math.round(self:getStr() / 2)
+    local bonus = math.round(self:getStr() / 2) + (self.combat_dam or 0)
     local min, max = (combat.min_dam or 1) + bonus, combat.dam + bonus
     return math.round(min * (mult or 1)), math.round(max * (mult or 1))
 end

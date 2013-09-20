@@ -61,6 +61,7 @@ function _M:init(t, no_default)
     self.combat_armor = 0
     self.combat_atk = 0
     self.combat_def = 0
+    self.combat_dam = 0
     self.movement_speed = 1
 
     -- Default regen
@@ -129,7 +130,7 @@ function _M:act()
         end
     end
 
-    if self:attr("prone") then self.energy.value = 0 end
+    if self:attr("prone") or self:attr("unconscious") then self.energy.value = 0 end
 
     -- Still enough energy to act ?
     if self.energy.value < game.energy_to_act then return false end

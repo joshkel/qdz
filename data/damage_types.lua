@@ -83,6 +83,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     if not target.dead and type == DamageType.LIGHTNING and init_dam > 0 and target:knowTalent(target.T_ELECTROSTATIC_CAPTURE) then
         -- TODO: Better formula needed here?  (E.g., should we recompute the 
         -- effects of t.resist_lightning_bonus levels of resistance on init_dam?)
+        game.logSeen(target, ("%s absorbs a portion of the charge."):format(target.name:capitalize()))
         local charge_power = math.ceil(init_dam / 10)
         local eff = target:hasEffect(target.EFF_CHARGED)
         if not eff then

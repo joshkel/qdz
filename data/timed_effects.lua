@@ -98,14 +98,42 @@ newEffect{
     end,
     activate = function(self, eff)
         -- TODO: Should prone status grant knockback resistance?
+        -- Note that this logic is partially duplicated in UNCONSCIOUS.
         eff.tmpid = self:addTemporaryValue("prone", 1)
-        eff.defid = self:addTemporaryValue("plus_defense", -4)
+        eff.defid = self:addTemporaryValue("combat_def", -4)
     end,
     deactivate = function(self, eff)
         self:removeTemporaryValue("prone", eff.tmpid)
-        self:removeTemporaryValue("plus_defense", eff.defid)
+        self:removeTemporaryValue("combat_def", eff.defid)
     end,
 }
+
+newEffect{
+    name = "UNCONSCIOUS",
+    desc = "Unconscious",
+    type = "physical",
+    status = "detrimental",
+
+    decrease = 0,
+
+    on_gain = function(self, err) return "#Target# is is knocked out.", "+Unconscious" end,
+    on_lose = function(self, err) return "#Target# regains consciousness.", "-Unconscious" end,
+    long_desc = function(self, eff) return ("%s is unconscious until %s wounds start to heal."):format(self.name:capitalize(), string.his(self)) end,
+
+    activate = function(self, eff)
+        eff.tmpid = self:addTemporaryValue("unconscious", 1)
+        eff.defid = self:addTemporaryValue("combat_def", -4)
+    end,
+    deactivate = function(self, eff)
+        self:removeTemporaryValue("unconscious", eff.tmpid)
+        self:removeTemporaryValue("combat_def", eff.defid)
+    end,
+
+    on_timeout = function(self, eff)
+        if self.life >= 2 then self:removeEffect(self.EFF_UNCONSCIOUS) end
+    end,
+}
+
 
 newEffect{
     name = "CHARGED",
