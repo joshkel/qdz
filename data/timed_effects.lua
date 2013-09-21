@@ -97,8 +97,7 @@ newEffect{
         return old_eff
     end,
     activate = function(self, eff)
-        -- TODO: Should prone status grant knockback resistance?
-        -- Note that this logic is partially duplicated in UNCONSCIOUS.
+        -- TODO: Should prone or unconscious status grant knockback resistance?
         eff.tmpid = self:addTemporaryValue("prone", 1)
         eff.defid = self:addTemporaryValue("combat_def", -4)
     end,
@@ -122,11 +121,11 @@ newEffect{
 
     activate = function(self, eff)
         eff.tmpid = self:addTemporaryValue("unconscious", 1)
-        eff.defid = self:addTemporaryValue("combat_def", -4)
+        eff.defid = self:addTemporaryValue("combat_def_zero", 1)
     end,
     deactivate = function(self, eff)
         self:removeTemporaryValue("unconscious", eff.tmpid)
-        self:removeTemporaryValue("combat_def", eff.defid)
+        self:removeTemporaryValue("combat_def_zero", eff.defid)
     end,
 
     on_timeout = function(self, eff)

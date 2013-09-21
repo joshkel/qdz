@@ -217,6 +217,11 @@ function _M:die(src)
         src:gainExp(self:worthExp(src))
     end
 
+    -- Cancel First Blessing: Virtue if appropriate
+    if src:isTalentActive(src.T_BLESSING_VIRTUE) and not src:getTalentFromId(src.T_BLESSING_VIRTUE).canKill(src, self) then
+        src:forceUseTalent(src.T_BLESSING_VIRTUE, {ignore_energy=true})
+    end
+
     -- If the killer had focused qi, then try absorbing a technique.
     if src and Qi.isFocused(src) then
         if src:absorbTechnique(self) then

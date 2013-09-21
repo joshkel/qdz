@@ -189,7 +189,7 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
 
     -- Special case: First Blessing: Virtue (part 1)
     local prev_on_kill = self.on_kill
-    local blessing_virtue_active = self:isTalentActive(self.T_BLESSING_VIRTUE) and not Qi.isFocused(self) 
+    local blessing_virtue_active = self:isTalentActive(self.T_BLESSING_VIRTUE) and not self:getTalentFromId(self.T_BLESSING_VIRTUE).canKill(self, target)
     if blessing_virtue_active then self.on_kill = self:getTalentFromId(self.T_BLESSING_VIRTUE).on_kill end
 
     DamageType:get(damtype).projector(self, target.x, target.y, damtype, damargs)
@@ -247,7 +247,11 @@ function _M:combatAttack(combat)
 end
 
 function _M:combatDefense()
-    return math.floor(self:getAgi() / 2 + self.level / 2) + (self.combat_def or 0)
+    if self.combat_def_zero then
+        return 0
+    else
+        return math.floor(self:getAgi() / 2 + self.level / 2) + (self.combat_def or 0)
+    end
 end
 
 function _M:combatDamage(combat)

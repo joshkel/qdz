@@ -38,7 +38,7 @@ newEntity{ base = "BASE_STAFF",
     combat = {
         dam = 6,
     },
-    desc = [[A simple wooden staff, useful for self defense.  Staffs are known as "the grandfather of all weapons."]]
+    desc = [[A simple wooden staff, useful for self defense.  Staffs are known as “the grandfather of all weapons.”]]
 }
 
 -- Ji (Chinese halberd).  Reportedly the favored weapon of Lu Bu.
@@ -84,7 +84,7 @@ newEntity{ base = "BASE_SABER",
     combat = {
         dam = 7,
     },
-    desc = [[A slightly curved, single-edged sword, made for slashing and chopping. A common weapon in the Imperial army, it's known as "the general of all weapons."]]
+    desc = [[A slightly curved, single-edged sword, made for slashing and chopping. As one of the most common weapons in the Imperial army, it's known as “the general of all weapons.”]]
 }
 
 -- Jian
@@ -99,15 +99,15 @@ newEntity{
     desc = [[A sword.]],
 }
 
-newEntity{ base = "BASE_SABER",
-    name = "straightsword",
+newEntity{ base = "BASE_SWORD",
+    name = "straight sword",
     level_range = {1, 10},
     require = { stat = { ski=12 }, },
     cost = 5,
     combat = {
         dam = 8,
     },
-    desc = [[A straight, narrow, double-edged sword. Considered an elegant and refined weapon, it's known as "the gentleman of all weapons."]]
+    desc = [[A straight, narrow, double-edged sword. Considered an elegant and refined weapon, it's known as “the gentleman of all weapons.”]]
 }
 
 -- Chinese daggers are known as bi shou, although there appears to be little

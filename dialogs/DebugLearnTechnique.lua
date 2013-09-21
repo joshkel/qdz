@@ -43,7 +43,6 @@ end
 
 function _M:selectItem(item, sel)
     local t = Talents:getTalentFromId(item.id)
-    util.inspect(item)
     game.tooltip:displayAtMap(nil, nil, game.w, game.h, game.player:getTalentFullDescription(t), true)
 end
 

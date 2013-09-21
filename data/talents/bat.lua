@@ -20,6 +20,10 @@
 
 -- TODO: Should these talents be more effective the more of them you have?
 
+local virtueCanKill = function(self, target)
+    return require("mod.class.interface.Qi").isFocused(self) or target.type == "undead" or target.type == "infernal" 
+end
+
 newTalent{
     name = "First Blessing: Virtue",
     short_name = "BLESSING_VIRTUE",
@@ -41,15 +45,17 @@ newTalent{
         return true
     end,
 
+    canKill = virtueCanKill,
+
     on_kill = function(self, target)
-        if target.type == "undead" or target.type == "infernal" then return false end
+        if virtueCanKill(self, target) then return false end
         target.life = target.die_at + 0.1
         target:setEffect(target.EFF_UNCONSCIOUS, 1, {})
         return true
     end,
 
     info = function(self, t)
-        return flavorText(("Adds %i to your Attack and %i to your normal attacks' damage. Your normal attacks will never kill an opponent; instead, critically injured opponents will be knocked unconscious.\n\Profoundly unnatural or evil opponents, such as undead or infernals, will be killed as normal. Also fFocusing your qi gives you sufficient self-control to kill without disrupting First Blessing: Virtue."):format(t.combat_atk_bonus, t.combat_dam_bonus),
+        return flavorText(("Adds %i to your Attack and %i to your normal attacks' damage. Your normal attacks will knock creatures unconscious instead of killing them. Causing the death of a creature will cancel this technique.\n\nThere are two exceptions. First, when attacking profoundly unnatural or evil opponents, such as undead or infernals, you will strike to kill without penalty. Second, focusing your qi gives you sufficient discipline to kill without malice and without disrupting this technique."):format(t.combat_atk_bonus, t.combat_dam_bonus),
             "The first blessing is love of virtue. By purging your mind of killing intent, you can fight with clarity and strength of purpose.")
     end
 }
