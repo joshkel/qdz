@@ -56,7 +56,7 @@ newTalent{
 
     info = function(self, t)
         return flavorText(("Adds %i to your Attack and %i to your normal attacks' damage. Your normal attacks will knock creatures unconscious instead of killing them. Causing the death of a creature will cancel this technique.\n\nThere are two exceptions. First, when attacking profoundly unnatural or evil opponents, such as undead or infernals, you will strike to kill without penalty. Second, focusing your qi gives you sufficient discipline to kill without malice and without disrupting this technique."):format(t.combat_atk_bonus, t.combat_dam_bonus),
-            "The first blessing is love of virtue. By purging your mind of killing intent, you can fight with clarity and strength of purpose.")
+            "The first of the Five Blessings is love of virtue. By purging your mind of killing intent, you can fight with clarity and strength of purpose.")
     end
 }
 
@@ -116,7 +116,8 @@ newTalent{
         end
     end,
     info = function(self, t)
-        return [[Cures one physical status ailment, randomly chosen.]]
+        return flavorText("Cures one physical status ailment, randomly chosen.",
+            "The third of the Five Blessings symbolized by the bat is physical health.")
     end
 }
 
@@ -154,9 +155,30 @@ newTalent{
     end
 }
 
---[[newTalent{
+newTalent{
     name = "Fifth Blessing: Natural Death",
     short_name = "BLESSING_NATURAL_DEATH",
-    type = {"qi techniques/mind", 1},
-}]]
+    type = {"qi techniques/head", 1},
+    cooldown = 30,
+    qi = 10,
+
+    -- This currently allows player free will in choosing whether to break it,
+    -- so it makes no sense for NPC use.
+    no_npc_use = true,
+
+    getDuration = function(self, t)
+        return math.ceil(self:getMnd() / 4)
+    end,
+
+    action = function(self, t)
+        self:setEffect(self.EFF_CALM_AURA, t.getDuration(self, t), {})
+        return true
+    end,
+
+    info = function(self, t)
+        return flavorText(("Causes all hostilities to cease for %i %s (based on your Mind). Any damage done to creatures around you will cancel this effect."):format(
+                t.getDuration(self, t), ("turn"):pluralize()),
+            "The fifth of the Five Blessings, a peaceful death of natural causes, is almost too much to dream of for someone in your state. However, by spreading out your qi over the minds of those around you, you can at least gain a few moments' respite.")
+    end
+}
 

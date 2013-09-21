@@ -171,6 +171,8 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     local def = target:combatDefense()
     local is_melee = not combat or combat.type ~= "thrown"
 
+    target:checkAngered(self)
+
     if not self:skillCheck(atk, def) and not Qi.isFocused(self) then
         -- FIXME: This needs to support logic like "Dog-head man's dart", just like damage_types.lua does
         game.logSeen(target, game.flash.NEUTRAL, "%s misses %s.", self.name:capitalize(), target.name)

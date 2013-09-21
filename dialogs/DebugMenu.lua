@@ -31,6 +31,7 @@ function _M:useItem(item)
     local act = item.action
 
     if act == "reset_cooldowns" then game.player:resetTalentCooldowns() end
+    if act == "full_heal" then game.player:resetToFull() game.player.changed = true end
     if act == "learn_technique" then game:registerDialog(require("mod.dialogs.DebugLearnTechnique").new()) end
     if act == "create_item" then game:registerDialog(require("mod.dialogs.DebugCreateItem").new()) end
 end
@@ -39,6 +40,7 @@ function _M:generateListContents()
     local list = {}
 
     list[#list+1] = {name="Reset Cooldowns", action="reset_cooldowns"}
+    list[#list+1] = {name="Full Heal", action="full_heal"}
     list[#list+1] = {name="Learn Qi Technique", action="learn_technique"}
     list[#list+1] = {name="Create Item", action="create_item"}
 

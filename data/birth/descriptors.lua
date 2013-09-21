@@ -32,6 +32,8 @@ newBirthDescriptor{
         max_life = 10,
         max_qi = 10,
 
+        move_others = true,
+
         resolvers.equip {
             {type="weapon", subtype="staff", name="staff", ego_change=-1000},
             {type="light", subtype="light", name="paper lantern", ego_change=-1000},

@@ -172,3 +172,26 @@ newEffect{
     end,
 }
 
+newEffect{
+    name = "CALM_AURA",
+    desc = "Aura of Calm",
+    type = "mental",
+    status = "beneficial",
+    long_desc = function(self, eff) return ("An aura of calm surrounds %s, causing hostilities to cease in the area."):format(self.name) end,
+    on_gain = function(self, err) return "An aura of calm emanates from #target#.", "+Aura of Calm" end,
+    on_lose = function(self, err) return "The aura of calm dissipates.", "-Aura of Calm" end,
+
+    activate = function(self, eff)
+        -- Reset NPCs' targets.  Otherwise, they follow the player around
+        -- like a puppy dog.
+        for uid, e in pairs(game.level.entities) do
+            print(e.name)
+            if e.setTarget and e ~= game.player then
+                e:setTarget(nil)
+            end
+        end
+    end,
+
+    -- The rest of Aura of Calm's effects are implemented in Actor.onTakeHit and Actor.reactionToward
+}
+

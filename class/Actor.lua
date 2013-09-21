@@ -205,12 +205,25 @@ function _M:tooltip()
     return text
 end
 
+function _M:checkAngered(src)
+    if game.player:hasEffect(game.player.EFF_CALM_AURA) then
+        -- Allow player to maintain Calm Aura even if player is suffering from DoTs
+        if self ~= game.player then
+            game.player:removeEffect(game.player.EFF_CALM_AURA)
+        end
+    end
+end
+
 function _M:onTakeHit(value, src)
+    self:checkAngered(src)
+
     return value
 end
 
 function _M:die(src)
     engine.interface.ActorLife.die(self, src)
+
+    self:checkAngered(src)
 
     -- Gives the killer some exp for the kill
     if src and src.gainExp then
@@ -474,6 +487,14 @@ function _M:incMoney(v)
     self.money = self.money + v
     if self.money < 0 then self.money = 0 end
     self.changed = true
+end
+
+function _M:reactionToward(target)
+    local v = engine.Actor.reactionToward(self, target)
+
+    if game.player:hasEffect(game.player.EFF_CALM_AURA) then v = math.max(v, 0) end
+
+    return v
 end
 
 --- Attempts to absorb a qi technique.
