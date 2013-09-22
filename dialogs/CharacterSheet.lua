@@ -77,7 +77,7 @@ Mouse: Hover over stat for info
 end
 
 function _M:switchTo(kind)
-    self:drawDialog(kind, cs_player_dup)
+    self:drawDialog(kind)
     if kind == "general" then self.c_attack.selected = false self.c_defense.selected = false
     elseif kind == "attack" then self.c_general.selected = false self.c_defense.selected = false
     elseif kind == "defense" then self.c_attack.selected = false self.c_general.selected = false
@@ -100,7 +100,7 @@ function _M:updateKeys()
     }
 
     self.key:addBinds{
-        EXIT = function() cs_player_dup = game.player:clone() game:unregisterDialog(self) end,
+        EXIT = function() game:unregisterDialog(self) end,
     }
 end
 

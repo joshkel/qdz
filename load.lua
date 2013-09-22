@@ -24,6 +24,7 @@ require("mod.class.utils")
 
 -- Load monkey patches for core T-Engine code
 require("mod.class.patch.Astar")
+require("mod.class.patch.Dialog")
 require("mod.class.patch.DirectPath")
 require("mod.class.patch.ListColumns")
 
