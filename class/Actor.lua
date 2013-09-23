@@ -62,6 +62,7 @@ function _M:init(t, no_default)
     self.combat_atk = 0
     self.combat_def = 0
     self.combat_dam = 0
+    self.global_speed = 1
     self.movement_speed = 1
 
     -- Default regen
@@ -142,7 +143,24 @@ function _M:move(x, y, force)
     local moved = false
     local ox, oy = self.x, self.y
     local move_energy = game.energy_to_act * self:movementSpeed()
+    local target = game.level.map(x, y, Map.ACTOR)
     if force or self:enoughEnergy(move_energy) then
+
+        -- random_move gives a percentage chance for movements to be random,
+        -- but only if we're truly moving (not trying to attack).  Note that
+        -- this partially duplicates Combat:bumpInto.
+        if self.random_move and self.x and self.y and not (target and self:reactionToward(target) < 0) and rng.percent(self.random_move) then
+            local moves = {}
+            for k, v in pairs(util.adjacentCoords(self.x, self.y, self.forbid_diagonals)) do
+                if self:canMove(v[1], v[2]) then
+                    moves[#moves+1] = v
+                end
+            end
+            if #moves > 0 then
+                local selected = rng.table(moves)
+                x, y = selected[1], selected[2]
+            end
+        end
 
         if not force and self:isTalentActive(self.T_GEOMAGNETIC_ORIENTATION) then
             if x ~= ox and y ~= oy then

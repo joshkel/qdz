@@ -26,6 +26,10 @@ newEntity{
     display = "b", color=colors.UMBER,
     desc = [[A bat.]],
 
+    -- To quote Angband, bats move somewhat erratically, and quickly.
+    global_speed = 1.25,
+    random_move = 50,
+
     ai = "dumb_talented_simple", ai_state = { talent_in=3, },
     stats = { str=4, ski=14, con=6, agi=15, mnd=7 },
     combat_armor = 0
@@ -42,11 +46,6 @@ newEntity{ base = "BASE_NPC_BAT",
     combat = { dam=3 },
 
     desc = [[A common forest-dwelling bat. Forest bats are associated with positive qi and are a symbol of good fortune and happiness. A drawing of five bats symbolizes the Five Blessings: virtue, wealth, health, longevity, and a natural death.]],
-
-    -- TODO: Add "quick and erratic" movement
-    --[[resolvers.talents{
-        [Talents.T_POISONED_DART]={base=1},
-    },]]
 
     can_absorb = {
         rhand = Talents.T_BLESSING_VIRTUE,

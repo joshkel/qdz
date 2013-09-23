@@ -188,7 +188,12 @@ function _M:drawDialog(kind)
         h = 0
         w = self.w * 0.5
         s:drawColorStringBlended(self.font, "#GOLD##{bold}#Speed#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
-        self:drawString(s, ("Movement : #00ff00# %3i%%"):format(player.movement_speed * 100), w, h) h = h + self.font_h
+        self:drawString(s, ("Base     : #00ff00# %3i%%"):format(player.global_speed * 100), w, h,
+            GameUI:tooltipTitle('Base Speed'):merge{true, "Overall speed, indicating how many turns you get per “normal” game turn. Higher is better."}) h = h + self.font_h
+        if player.movement_speed ~= 100 then
+            self:drawString(s, ("Movement : #00ff00# %3i%%"):format(player.movement_speed * 100), w, h,
+                GameUI:tooltipTitle('Movement'):merge{true, "Movement speed. Higher is better. The displayed value is multiplied by your base speed to determine the actual movement speed."}) h = h + self.font_h
+        end
 
         -- Fourth column: Effects and sustains
         h = 0
