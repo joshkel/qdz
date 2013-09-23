@@ -40,7 +40,7 @@ newEntity{
 newEntity{ base = "BASE_NPC_BAT",
     name = "forest bat",
     level_range = {1, 4}, exp_worth = 1,
-    rarity = 4,
+    rarity = 5,
     max_life = resolvers.rngavg(4,6),
     max_qi = resolvers.rngavg(4,6),
     combat = { dam=3 },
@@ -53,6 +53,25 @@ newEntity{ base = "BASE_NPC_BAT",
         chest = Talents.T_BLESSING_HEALTH,
         feet = Talents.T_BLESSING_LONGEVITY,
         head = Talents.T_BLESSING_NATURAL_DEATH,
+    },
+}
+
+-- On the other hand, sinister Western-style bats offer too many gameplay
+-- possibilites to ignore.  Vampire bats are 
+--
+-- Fun fact: Vampire bats don't even exist in Europe or Asia.
+newEntity{ base = "BASE_NPC_BAT",
+    name = "cave bat",
+    level_range = {2, 6}, exp_worth = 1,
+    rarity = 5,
+    max_life = resolvers.rngavg(4,8),
+    max_qi = resolvers.rngavg(4,8),
+    combat = { dam=4 },
+
+    desc = [[A deep cave-dwelling bat, rarely seen by surface dwellers. Gloom bats are associated with negative qi and are considered a bad omen. They feed on the blood of humans, mammals, and birds.]],
+
+    can_absorb = {
+        feet = Talents.T_BAT_MOVEMENT,
     },
 }
 

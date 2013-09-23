@@ -182,3 +182,39 @@ newTalent{
     end
 }
 
+newTalent {
+    name = "Flight of the Bat",
+    short_name = "BAT_MOVEMENT",
+    type = {"qi techniques/feet", 1},
+    mode = "sustained",
+    sustain_qi = 1,
+    cooldown = 5,
+
+    -- 3/4 chance of normal movement means the move bonus should be at least
+    -- 4/3 to be worthwhile.  It probably should be even more than that, to
+    -- compensate for the headache of randomness and the opportunity cost of
+    -- other talents.
+    --
+    -- TODO: Can we make this any easier on autoexplore?
+    movement_speed_bonus = 0.35,
+    random_move = 25,
+
+    activate = function(self, t)
+        local ret = {}
+        self:talentTemporaryValue(ret, "movement_speed", t.movement_speed_bonus)
+        self:talentTemporaryValue(ret, "random_move", t.random_move)
+        return ret
+    end,
+    deactivate = function(self, t, p)
+        return true
+    end,
+
+    info = function(self, t)
+        return flavorText(("Increases your movement speed by %i%% but "..
+            "causes you to move randomly %i%% of the time.\n\n"..
+            "Only movements are affected; you retain full control of your attacks."):format(t.movement_speed_bonus * 100, t.random_move),
+            "Like the bat, you have learned to move quickly, but somewhat erratically.")
+    end,
+}
+
+
