@@ -102,6 +102,13 @@ function string.his(t)
     end
 end
 
+function string.he(t)
+    if t.male then return "he"
+    elseif t.female then return "she"
+    else return "it"
+    end
+end
+
 --- From http://lua-users.org/wiki/StringRecipes
 function string.startsWith(s, start)
     return string.sub(s, 1, string.len(start)) == start

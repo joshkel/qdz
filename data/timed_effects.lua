@@ -195,3 +195,22 @@ newEffect{
     -- The rest of Aura of Calm's effects are implemented in Actor.onTakeHit and Actor.reactionToward
 }
 
+newEffect{
+    name = "DWELLER_IN_DARKNESS",
+    desc = "Dweller in Darkness",
+    type = "physical",  -- ???
+    status = "beneficial",
+
+    decrease = 0,
+
+    on_gain = function(self, eff) return "#Target# slides into the comforting shadows.", "+Dweller in Darkness" end,
+    on_lose = function(self, eff) return ("#Target# cringes a bit when %s enters the light."):format(string.he(self)), "-Dweller in Darkness" end,
+
+    activate = function(self, eff)
+        eff.lifeid = self:addTemporaryValue("life_regen", eff.life_regen)
+    end,
+    deactivate = function(self, eff)
+        self:removeTemporaryValue("life_regen", eff.lifeid)
+    end,    
+}
+

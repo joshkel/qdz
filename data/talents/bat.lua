@@ -183,6 +183,33 @@ newTalent{
 }
 
 newTalent {
+    name = "Dweller in Darkness",
+    type = {"qi techniques/chest", 1},
+    mode = "passive",
+
+    life_regen = 0.25,
+
+    -- TODO: An additional regen bonus if you have no light radius would be
+    -- nifty, but we don't have any other gameplay mechanisms to make such
+    -- a thing work.
+    do_turn = function(self, t)
+        if game.level.map.lites(self.x, self.y) then
+            if self:hasEffect(self.EFF_DWELLER_IN_DARKNESS) then
+                self:removeEffect(self.EFF_DWELLER_IN_DARKNESS, true, true)
+            end
+        else
+            if not self:hasEffect(self.EFF_DWELLER_IN_DARKNESS) then
+                self:setEffect(self.EFF_DWELLER_IN_DARKNESS, 1, { life_regen = t.life_regen }, true)
+            end
+        end
+    end,
+
+    info = function(self, t)
+        return ("Adds %f to your life regeneration as long as you're standing in an unlit area."):format(t.life_regen)
+    end
+}
+
+newTalent {
     name = "Flight of the Bat",
     short_name = "BAT_MOVEMENT",
     type = {"qi techniques/feet", 1},

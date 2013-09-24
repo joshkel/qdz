@@ -121,6 +121,10 @@ function _M:act()
 
     -- Handle talents that may have an effect or may need updating each turn
     if not self.dead then
+        if self:knowTalent(self.T_DWELLER_IN_DARKNESS) then
+            local t = self:getTalentFromId(self.T_DWELLER_IN_DARKNESS)
+            t.do_turn(self, t)
+        end
         if self:isTalentActive(self.T_MINING_LIGHT) then
             local t = self:getTalentFromId(self.T_MINING_LIGHT)
             t.do_turn(self, t)
@@ -149,7 +153,7 @@ function _M:move(x, y, force)
         -- random_move gives a percentage chance for movements to be random,
         -- but only if we're truly moving (not trying to attack).  Note that
         -- this partially duplicates Combat:bumpInto.
-        if self.random_move and self.x and self.y and not (target and self:reactionToward(target) < 0) and rng.percent(self.random_move) then
+        if not force and self.random_move and self.x and self.y and not (target and self:reactionToward(target) < 0) and rng.percent(self.random_move) then
             local moves = {}
             for k, v in pairs(util.adjacentCoords(self.x, self.y, self.forbid_diagonals)) do
                 if self:canMove(v[1], v[2]) then
