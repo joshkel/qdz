@@ -85,6 +85,32 @@ newEffect{
 }
 
 newEffect{
+    name = "BLEEDING",
+    desc = "Bleeding",
+    type = "physical",
+    status = "detrimental",
+    parameters = { power=1, damage_message_passive=true },
+    long_desc = function(self, eff) return ("%s is bleeding, taking %.1f damage per turn."):format(self.name:capitalize(), eff.power) end,
+    on_gain = function(self, err) return ("#Target# bleeds from %s injuries."):format(string.his(self)), "+Bleeding" end,
+    on_lose = function(self, err) return "#Target#'s bleeding stops.", "-Bleeding" end,
+    on_timeout = function(self, eff)
+        local saved = Qi.preCall(eff)
+        DamageType:get(DamageType.PHYSICAL).projector(eff.src or self, self.x, self.y, DamageType.PHYSICAL, eff.power)
+
+        if eff.src and eff.src:knowTalent(eff.src.T_BLOOD_SIP) then
+            local t = eff.src:getTalentFromId(eff.src.T_BLOOD_SIP)
+            t.on_bleed(eff.src, t, eff, self)
+        end
+
+        Qi.postCall(eff, saved)
+    end,
+    on_merge = function(self, old_eff, new_eff)
+        merge_pow_dur(old_eff, new_eff)
+        return old_eff
+    end
+}
+
+newEffect{
     name = "PRONE",
     desc = "Prone",
     type = "physical",
@@ -201,8 +227,10 @@ newEffect{
     type = "physical",  -- ???
     status = "beneficial",
 
+    -- Adding / removing this effect is handled by T_DWELLER_IN_DARKNESS's do_turn.
     decrease = 0,
 
+    long_desc = function(self, eff) return ("%s finds respite in the shadows and will recover faster from injuries."):format(self.name:capitalize()) end,
     on_gain = function(self, eff) return "#Target# slides into the comforting shadows.", "+Dweller in Darkness" end,
     on_lose = function(self, eff) return ("#Target# cringes a bit when %s enters the light."):format(string.he(self)), "-Dweller in Darkness" end,
 

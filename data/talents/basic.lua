@@ -123,7 +123,7 @@ newTalent{
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
         local combat = self:getObjectCombat(nil, "kick")
-        local speed, hit = self:attackTargetWith(target, combat, DamageType.PHYSICAL)
+        local speed, hit = self:attackTargetWith(target, combat)
         if hit and not target.dead then
             if not target:canBe("knockback") then
                 game.logSeen(target, ("%s stands its ground!"):format(target.name:capitalize()))

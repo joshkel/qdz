@@ -57,7 +57,7 @@ newEntity{ base = "BASE_NPC_BAT",
 }
 
 -- On the other hand, sinister Western-style bats offer too many gameplay
--- possibilites to ignore.  Vampire bats only live in the New World, so their
+-- possibilities to ignore.  Vampire bats only live in the New World, so their
 -- presence in medieval and Oriental fantasy settings is a bit of an
 -- anachronism.
 newEntity{ base = "BASE_NPC_BAT",
@@ -71,6 +71,7 @@ newEntity{ base = "BASE_NPC_BAT",
     desc = [[A deep cave-dwelling bat, rarely seen by surface dwellers. Gloom bats are associated with negative qi and are considered a bad omen. They feed on the blood of humans, mammals, and birds.]],
 
     can_absorb = {
+        rhand = Talents.T_BLOOD_SIP,
         chest = Talents.T_DWELLER_IN_DARKNESS,
         feet = Talents.T_BAT_MOVEMENT,
     },

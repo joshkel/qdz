@@ -183,6 +183,48 @@ newTalent{
 }
 
 newTalent {
+    name = "Blood Sip",
+    type = {"qi techniques/right hand", 1},
+    mode = "activated",
+    cooldown = 6,
+    qi = 5,
+    range = 1,
+
+    getPower = function(self, t) return 0.10 end,
+    absorb_amount = 0.5,
+    getDuration = function(self, t) return 3 end,
+
+    action = function(self, t)
+        local tg = {type="hit", range=self:getTalentRange(t)}
+        local x, y, target = self:getTarget(tg)
+        if not x or not y or not target then return nil end
+        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
+
+        local speed, hit = self:attackTarget(target, DamageType.PHYSICAL_BLEEDING,
+            { power=t.getPower(self, t), duration=t.getDuration(self, t) })
+        return true
+    end,
+
+    on_bleed = function(self, t, eff, target)
+        if core.fov.distance(self.x, self.y, target.x, target.y) <= 1 then
+            self:heal(eff.power * t.absorb_amount, self)
+            game.level.map:particleEmitter(self.x, self.y, 1, "absorb_blood")
+        end
+    end,
+
+    info = function(self, t)
+        local flavor = "Wounds left by a gloom bat bleed freely for a short time. Bats feed off of the blood to replenish their strength."
+        if self == game.player then
+            flavor = flavor .. " Your use of the bat's qi lets you absorb vitality directly from your foes' exposed blood."
+        end
+        return flavorText(("Performs a normal melee attack against an adjacent enemy. "..
+            "If it hits, a bleeding wound is inflicted, dealing %i%% of your weapon damage for %i turns.\n\n"..
+            "As a passive effect, whenever an adjacent enemy takes bleeding damage from a wound you inflicted, "..
+            "you gain %i%% that damage as health."):format(t.getPower(self, t) * 100, t.getDuration(self, t), t.absorb_amount * 100), flavor)
+    end,
+}
+
+newTalent {
     name = "Dweller in Darkness",
     type = {"qi techniques/chest", 1},
     mode = "passive",

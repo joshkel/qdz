@@ -120,7 +120,7 @@ function _M:bumpInto(target)
 end
 
 --- Makes the death happen!
-function _M:attackTarget(target)
+function _M:attackTarget(target, damtype, damargs, mult)
     local speed
     local hit
 
@@ -131,7 +131,7 @@ function _M:attackTarget(target)
             for i, o in ipairs(self:getInven(self.INVEN_RHAND)) do
                 local combat = self:getObjectCombat(o, "rhand")
                 if combat and not target.dead then
-                    local s, h = self:attackTargetWith(target, combat)
+                    local s, h = self:attackTargetWith(target, combat, damtype, damargs, mult)
                     speed = math.max(speed or 0, s)
                     hit = hit or h
                 end
@@ -141,7 +141,7 @@ function _M:attackTarget(target)
             for i, o in ipairs(self:getInven(self.INVEN_LHAND)) do
                 local combat = self:getObjectCombat(o, "lhand")
                 if combat and not target.dead then
-                    local s, h = self:attackTargetWith(target, combat, nil, nil, self:getOffHandMult(combat))
+                    local s, h = self:attackTargetWith(target, combat, damtype, damargs, (mult or 1) * self:getOffHandMult(combat))
                     speed = math.max(speed or 0, s)
                     hit = hit or h
                 end
@@ -152,13 +152,13 @@ function _M:attackTarget(target)
     if not speed then
         local combat = self:getObjectCombat(o, "unarmed")
         if combat and not target.dead then
-            local s, h = self:attackTargetWith(target, combat)
+            local s, h = self:attackTargetWith(target, combat, damtype, damargs, mult)
             speed = math.max(speed or 0, s)
             hit = hit or h
         end
     end
 
-    return speed
+    return speed, hit
 end
 
 ---Attempts to attack target using the given combat information.

@@ -207,3 +207,27 @@ newDamageType{
         return result
     end
 }
+
+-- Physical damage plus poison.  dam should be a table containing these elements:
+-- - dam - immediate damage
+-- - power - damage per turn of the bleeding effect (as a multiple of dam)
+-- - duration - optional duration of the bleeding effect
+newDamageType{
+    name = "physical bleeding", type = "PHYSICAL_BLEEDING",
+    projector = function(src, x, y, typ, dam)
+        local result = DamageType:get(DamageType.PHYSICAL).projector(src, x, y, DamageType.PHYSICAL, dam.dam)
+        if result ~= 0 then
+            local target = game.level.map(x, y, Map.ACTOR)
+            if not target or target.dead then return result end   -- I don't think checking target.dead is necessary
+
+            if not target:canBe("cut") then
+                -- Need a message here?  Nothing seems appropriate.
+                --game.logSeen(target, "%s is not seriously injured.", target.name:capitalize())
+            else
+                target:setEffect(target.EFF_BLEEDING, dam.duration or 5, {src=src, power=math.max(result * dam.power)})
+            end
+        end
+        return result
+    end
+}
+

@@ -295,6 +295,18 @@ function _M:attack(target)
     self:bumpInto(target)
 end
 
+function _M:heal(value, src)
+    engine.interface.ActorLife.heal(self, value, src)
+    -- Friends' healing is green, enemies is red.
+    -- Use base reactionToward to ignore EFF_CALM_AURA.
+    local sx, sy = game.level.map:getTileToScreen(self.x, self.y)
+    if self == game.player or engine.Actor.reactionToward(game.player, self) >= 0 then
+        game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, '+'..tostring(math.ceil(value)), {0,255,0})
+    else
+        game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, '+'..tostring(math.ceil(value)), {255,0,0})
+    end
+end
+
 --- Called before a talent is used
 -- Check the actor can cast it
 -- @param ab the talent (not the id, the table)
