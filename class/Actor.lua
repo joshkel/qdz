@@ -71,6 +71,8 @@ function _M:init(t, no_default)
 
     t.money = 0
 
+    t.blindsense = t.blindsense or 0
+
     t.resists = t.resists or {}
     t.melee_project = t.melee_project or {}
 

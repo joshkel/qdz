@@ -57,6 +57,10 @@ _M.one_letter = 26
 _M.money_color = 'YELLOW'
 _M.money_desc = [[Money, either in Imperial coins or easily tradable precious metals. Unfortunately, since you're on the run and far from civilization, it's unlikely that you'll be able to use it any time soon.]]
 
+_M.extra_stat_desc = {
+    blindsense = "Blindsense lets you detect creatures (but not necessarily stealthed or invisible creatures) and major terrain features within a certain radius."
+}
+
 ---Generates a tstring giving the title for a tooltip.  Static function.
 ---@param display_string Optional display string
 ---@param title

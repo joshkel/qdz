@@ -74,6 +74,7 @@ newEntity{ base = "BASE_NPC_BAT",
         rhand = Talents.T_BLOOD_SIP,
         chest = Talents.T_DWELLER_IN_DARKNESS,
         feet = Talents.T_BAT_MOVEMENT,
+        head = Talents.T_ECHOLOCATION,
     },
 }
 

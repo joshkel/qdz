@@ -386,6 +386,10 @@ function _M:setupCommands()
                 local ud = require("mod.dialogs.UseItemDialog").new(event == "button", self.player, o, item, inven, function(_, _, _, stop)
                     d:generate()
                     d:generateList()
+
+                    -- In case player added or removed a light source.
+                    self.player:doFOV()
+
                     if stop then self:unregisterDialog(d) end
                 end)
                 self:registerDialog(ud)

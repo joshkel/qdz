@@ -184,7 +184,7 @@ function _M:drawDialog(kind)
         self:drawString(s, "Agility      : #00ff00# "..player:getAgi(), w, h, statTooltip('agi')) h = h + self.font_h
         self:drawString(s, "Mind         : #00ff00# "..player:getMnd(), w, h, statTooltip('mnd')) h = h + self.font_h
 
-        -- Third column: Speed
+        -- Third column: Speed and senses
         h = 0
         w = self.w * 0.5
         s:drawColorStringBlended(self.font, "#GOLD##{bold}#Speed#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
@@ -193,6 +193,17 @@ function _M:drawDialog(kind)
         if player.movement_speed ~= 100 then
             self:drawString(s, ("Movement : #00ff00# %3i%%"):format(player.movement_speed * 100), w, h,
                 GameUI:tooltipTitle('Movement'):merge{true, "Movement speed. Higher is better. The displayed value is multiplied by your base speed to determine the actual movement speed."}) h = h + self.font_h
+        end
+
+        h = h + self.font_h
+        s:drawColorStringBlended(self.font, "#GOLD##{bold}#Senses#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
+        self:drawString(s, ("Sight        : #00ff00# %2i"):format(player.sight), w, h,
+            GameUI:tooltipTitle('Sight'):merge{true, "How far you can see (assuming the area is sufficiently lit)."}) h = h + self.font_h
+        self:drawString(s, ("Light Radius : #00ff00# %2i"):format(player.lite or 0), w, h,
+            GameUI:tooltipTitle('Light Radius'):merge{true, "The area which you illuminate (due to your lantern, various techniques, etc.)."}) h = h + self.font_h
+        if player.blindsense ~= 0 then
+            self:drawString(s, ("Blindsense   : #00ff00# %2i"):format(player.blindsense), w, h,
+                GameUI:tooltipTitle('Blindsense'):merge{true, GameUI.extra_stat_desc.blindsense}) h = h + self.font_h
         end
 
         -- Fourth column: Effects and sustains

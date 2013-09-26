@@ -62,6 +62,9 @@ function _M:init(t, no_default)
     self.descriptor = {}
 end
 
+--- Sorts hotkeys in the order in which their corresponding talents are defined.
+--- By default, as far as I can tell, they're sorted effectively randomly, in
+--- whatever order the birth descriptors' talent hash tables happen to list them.
 function _M:sortHotkeysByTalent()
     -- Make a lookup of talent IDs giving the order in which they're defined.
     local talent_order = {}
@@ -118,14 +121,23 @@ end
 function _M:playerFOV()
     -- Clean FOV before computing it
     game.level.map:cleanFOV()
+
     -- Compute both the normal and the lite FOV, using cache
     self:computeFOV(self.sight or 20, "block_sight", function(x, y, dx, dy, sqdist)
         game.level.map:apply(x, y, fovdist[sqdist])
     end, true, false, true)
     self:computeFOV(self.lite, "block_sight", function(x, y, dx, dy, sqdist) game.level.map:applyLite(x, y) end, true, true, true)
+
+    -- Blindsense: View "major" terrain (i.e., anything normally blocking movement)
+    self:computeFOV(self.blindsense, "block_sight", function(x, y, dx, dy, sqdist)
+        if game.level.map:checkEntity(x, y, Map.TERRAIN, "does_block_move") or game.level.map:checkEntity(x, y, Map.TERRAIN, "door_opened") then
+            game.level.map:applyLite(x, y)
+        end
+    end, true, true, true)
 end
 
 function _M:doFOV()
+    game.level.map.clean_fov = true
     self:playerFOV()
 end
 
@@ -225,6 +237,10 @@ function _M:runCheck()
     self:playerFOV()
 
     return engine.interface.PlayerRun.runCheck(self)
+end
+
+function _M:runStopped()
+    self:doFOV()
 end
 
 --- Move with the mouse

@@ -20,6 +20,10 @@
 
 -- TODO: Should these talents be more effective the more of them you have?
 
+local GameUI = require "mod.class.ui.GameUI"
+
+-- Consolidates logic for whether or not someone under the effects of
+-- BLESSING_VIRTUE can kill the target.
 local virtueCanKill = function(self, target)
     return require("mod.class.interface.Qi").isFocused(self) or target.type == "undead" or target.type == "infernal" 
 end
@@ -286,4 +290,17 @@ newTalent {
     end,
 }
 
+newTalent {
+    name = "Echolocation",
+    type = {"qi techniques/head", 1},
+    mode = "passive",
+
+    passives = function(self, t, p)
+        self:talentTemporaryValue(p, "blindsense", 1)
+    end,
+
+    info = function(self, t)
+        return "Adds +1 to your blindsense radius. " .. GameUI.extra_stat_desc.blindsense
+    end,
+}
 
