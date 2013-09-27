@@ -65,6 +65,7 @@ _M.slots_def = {
 }
 
 --- Gets the currently active intermediate effect for the given entity.
+--- Returns e if no intermediate effect is active.
 function _M.getIntermediate(e)
     while e.intermediate do
         e = e.intermediate

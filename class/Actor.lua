@@ -193,6 +193,38 @@ function _M:setEffect(eff_id, dur, p, silent)
     end
 end
 
+--- Gets this actor's name, formatted for use in a log message.
+--- (This is thus somewhat player-centric in its wordings and assumptions.)
+function _M:getLogName()
+    if self == game.player or (game.level.map.seens(self.x, self.y) and game.player:canSee(self)) then
+        return self.name
+    else
+        return "something"
+    end
+end
+
+--- Gets this actor's name, formatted for use in a damage or effect source message.
+--- (This is thus somewhat player-centric in its wordings and assumptions.)
+function _M:getSrcName()
+    local name = self:getLogName()
+
+    -- Note that we assume that we're being called from a damage projector or
+    -- similar and thus have access to intermediate.  If not, it's harmless.
+    local intermediate = Qi.getIntermediate(self)
+
+    if intermediate ~= self and intermediate.damage_message_use_name then
+        name = ("%s's %s"):format(name, intermediate.name)
+    end
+
+    return name
+end
+
+--- Gets this actor's name, formatted for use in a damage or effect target message.
+--- See also getSrcName.
+function _M:getTargetName()
+    return self:getLogName()
+end
+
 function _M:tooltip()
     local color = GameUI.tooltipColor
     local delim

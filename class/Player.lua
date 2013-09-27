@@ -122,18 +122,24 @@ function _M:playerFOV()
     -- Clean FOV before computing it
     game.level.map:cleanFOV()
 
+    -- Blindsense: View "major" terrain (i.e., anything normally blocking movement)
+    -- Blindsense is dimmer than regular light. Do it first so that regular
+    -- light can override it.
+    if self:attr("blindsense") then
+        self:computeFOV(self.blindsense, "block_sight", function(x, y, dx, dy, sqdist)
+            if game.level.map:checkEntity(x, y, Map.TERRAIN, "does_block_move") or game.level.map:checkEntity(x, y, Map.TERRAIN, "door_opened") then
+                -- For comparison, a default remembered square is 0.6.
+                game.level.map:applyLite(x, y, 0.7)
+            end
+        end, true, true, true)
+    end
+
     -- Compute both the normal and the lite FOV, using cache
     self:computeFOV(self.sight or 20, "block_sight", function(x, y, dx, dy, sqdist)
         game.level.map:apply(x, y, fovdist[sqdist])
     end, true, false, true)
     self:computeFOV(self.lite, "block_sight", function(x, y, dx, dy, sqdist) game.level.map:applyLite(x, y) end, true, true, true)
 
-    -- Blindsense: View "major" terrain (i.e., anything normally blocking movement)
-    self:computeFOV(self.blindsense, "block_sight", function(x, y, dx, dy, sqdist)
-        if game.level.map:checkEntity(x, y, Map.TERRAIN, "does_block_move") or game.level.map:checkEntity(x, y, Map.TERRAIN, "door_opened") then
-            game.level.map:applyLite(x, y)
-        end
-    end, true, true, true)
 end
 
 function _M:doFOV()

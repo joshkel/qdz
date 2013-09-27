@@ -69,8 +69,13 @@ function _M:run()
     self.flyers = FlyingText.new()
     self:setFlyingText(self.flyers)
 
+    local function logSee(e)
+        return e and (self.level.map.seens(e.x, e.y) or e == game.player)
+    end
+
     self.log = function(style, ...) if type(style) == "number" then self.logdisplay(...) self.flash(style, ...) else self.logdisplay(style, ...) self.flash(self.flash.NEUTRAL, style, ...) end end
-    self.logSeen = function(e, style, ...) if e and self.level.map.seens(e.x, e.y) then self.log(style, ...); return true end end
+    self.logSeen = function(e, style, ...) if logSee(e) then self.log(style, ...); return true end end
+    self.logSeen2 = function(e1, e2, style, ...) if logSee(e1) or logSee(e2) then self.log(style, ...); return true end end
     self.logPlayer = function(e, style, ...) if e == self.player then self.log(style, ...) end end
 
     self.logAnySeen = function(e_list, style, ...)

@@ -297,6 +297,7 @@ newTalent {
 
     passives = function(self, t, p)
         self:talentTemporaryValue(p, "blindsense", 1)
+        if self.doFOV then self:doFOV() end
     end,
 
     info = function(self, t)

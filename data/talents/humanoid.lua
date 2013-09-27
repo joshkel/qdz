@@ -294,6 +294,7 @@ newTalent {
     deactivate = function(self, t, p)
         if p.attackid then self:removeTemporaryValue("combat_atk", p.attackid) end
         self:removeTemporaryValue("lite", p.liteid)
+        if self.doFOV then self:doFOV() end
         return true
     end,
 

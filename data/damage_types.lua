@@ -46,23 +46,20 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     -- Display log message.
     extra = extra or {}
     if extra.msg then
-        game.logSeen(target, getDamageFlash(src, target), extra.msg(src, target, DamageType:get(type)))
+        game.logSeen2(src, target, getDamageFlash(src, target), extra.msg(src, target, DamageType:get(type)))
     elseif not extra.silent then
-        local src_name = game.level.map.seens(src.x, src.y) and src.name or "someone"
+        local src_name = src:getSrcName()
+        local target_name = target:getTargetName()
         local intermediate = Qi.getIntermediate(src)
 
-        if intermediate ~= src and intermediate.damage_message_use_name then
-            src_name = ("%s's %s"):format(src_name, intermediate.name)
-        end
-
         local message
-        if intermediate ~= src and intermediate.damage_message_passive then
-            message = ("%s takes %s%i %s damage#LAST#."):format(target.name:capitalize(), DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
+        if Qi.getIntermediate(src).damage_message_passive then
+            message = ("%s takes %s%i %s damage#LAST#."):format(target_name:capitalize(), DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
         else
-            message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target.name, DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
+            message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target:getTargetName(), DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
         end
 
-        game.logSeen(target, getDamageFlash(src, target), message)
+        game.logSeen2(src, target, getDamageFlash(src, target), message)
     end
 
     -- Apply damage.  Check for kill.  Display flyer message.
