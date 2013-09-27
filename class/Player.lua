@@ -123,12 +123,17 @@ function _M:playerFOV()
     game.level.map:cleanFOV()
 
     -- Blindsense: View "major" terrain (i.e., anything normally blocking movement)
-    -- Blindsense is dimmer than regular light. Do it first so that regular
-    -- light can override it.
+    -- and (at least some) creatures.
+    --
+    -- This is dimmer than regular light. Do it first so that regular light
+    -- can override it.
+    --
+    -- TODO: Mostly working, but finding objects with blindsense only is almost impossible.
     if self:attr("blindsense") then
         self:computeFOV(self.blindsense, "block_sight", function(x, y, dx, dy, sqdist)
-            if game.level.map:checkEntity(x, y, Map.TERRAIN, "does_block_move") or game.level.map:checkEntity(x, y, Map.TERRAIN, "door_opened") then
-                -- For comparison, a default remembered square is 0.6.
+            -- TODO: Any way to show an actor without showing the ground under it?
+            if game.level.map:checkEntity(x, y, Map.TERRAIN, "does_block_move") or game.level.map:checkEntity(x, y, Map.TERRAIN, "door_opened") or self:canSee(game.level.map(x, y, Map.ACTOR)) then
+                -- For comparison, a default remembered (but unseen) square is 0.6.
                 game.level.map:applyLite(x, y, 0.7)
             end
         end, true, true, true)
@@ -139,7 +144,6 @@ function _M:playerFOV()
         game.level.map:apply(x, y, fovdist[sqdist])
     end, true, false, true)
     self:computeFOV(self.lite, "block_sight", function(x, y, dx, dy, sqdist) game.level.map:applyLite(x, y) end, true, true, true)
-
 end
 
 function _M:doFOV()
