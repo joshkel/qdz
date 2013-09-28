@@ -23,7 +23,7 @@ return { generator = function()
     local size = rng.range(2, 6)
     local alpha = rng.range(40, 140) / 255
     local angle = math.rad(rng.range(0, 360))
-    local distance = engine.Map.tile_w * rng.float(0.3, 0.6)
+    local distance = engine.Map.tile_w * rng.float(0.3, 0.5)
     local vel = distance / life
 	
     return {
@@ -36,7 +36,7 @@ return { generator = function()
         dir = angle, dirv = 0, dira = 0,
         vel = -vel, velv = 0, vela = 0,
 
-        r = rng.range(10, 30)/255, rv = rng.range(0, 10)/100, ra = 0,
+        r = rng.range(128, 200)/255, rv = 0, ra = 0,
         g = 0, gv = 0, ga = 0,
         b = 0, bv = 0, ba = 0,
         a = alpha,  av = -alpha / life / 2, aa = 0,

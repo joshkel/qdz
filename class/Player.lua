@@ -151,6 +151,11 @@ function _M:doFOV()
     self:playerFOV()
 end
 
+--- Adds map lighting (see playerFov) to Actor.canReallySee
+function _M:canReallySee(actor)
+    return self:canSee(actor) and game.level.map.seens(actor.x, actor.y)
+end
+
 --- Called before taking a hit, overload mod.class.Actor:onTakeHit() to stop resting and running
 function _M:onTakeHit(value, src)
     self:runStop("taken damage")

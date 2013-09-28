@@ -206,6 +206,15 @@ function _M:drawDialog(kind)
                 GameUI:tooltipTitle('Blindsense'):merge{true, GameUI.extra_stat_desc.blindsense}) h = h + self.font_h
         end
 
+        h = h + self.font_h
+        if player:attr("blind_fight") then
+            s:drawColorStringBlended(self.font, "#GOLD##{bold}#Other Senses#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
+        end
+        if player:attr("blind_fight") then
+            self:drawString(s, "Blind-Fighting", w, h,
+                GameUI:tooltipTitle('Blind-Fighting'):merge{true, "You have learned how to use senses other than sight in combat. You no longer suffer the flat 50% miss chance that most creatures do for attacking an unseen opponent."}) h = h + self.font_h
+        end
+
         -- Fourth column: Effects and sustains
         h = 0
         w = self.w * 0.75

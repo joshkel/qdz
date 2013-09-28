@@ -213,12 +213,21 @@ newTalent {
         if core.fov.distance(self.x, self.y, target.x, target.y) <= 1 then
             self:heal(eff.power * t.absorb_amount, self)
             game.level.map:particleEmitter(self.x, self.y, 1, "absorb_blood")
+
+            if not eff.blood_sip_message then
+                eff.blood_sip_message = true
+                if self.subtype == "bat" then
+                    game.logSeen2(self, target, "%s begins to feed on %s's blood.", self:getSrcName():capitalize(), target:getTargetName())
+                else
+                    game.logSeen2(self, target, "%s begins to draw vitality from %s's blood.", self:getSrcName():capitalize(), target:getTargetName())
+                end
+            end
         end
     end,
 
     info = function(self, t)
         local flavor = "Wounds left by a gloom bat bleed freely for a short time. Bats feed off of the blood to replenish their strength."
-        if self == game.player then
+        if self.subtype ~= "bat" then
             flavor = flavor .. " Your use of the bat's qi lets you absorb vitality directly from your foes' exposed blood."
         end
         return flavorText(("Performs a normal melee attack against an adjacent enemy. "..
@@ -235,23 +244,27 @@ newTalent {
 
     life_regen = 0.25,
 
-    -- TODO: An additional regen bonus if you have no light radius would be
-    -- nifty, but we don't have any other gameplay mechanisms to make such
-    -- a thing work.
     do_turn = function(self, t)
+        local new_life_regen
         if game.level.map.lites(self.x, self.y) then
+            new_life_regen = nil
+        elseif self.lite > 0 then
+            new_life_regen = t.life_regen
+        else
+            new_life_regen = t.life_regen * 2
+        end
+
+        if not new_life_regen then
             if self:hasEffect(self.EFF_DWELLER_IN_DARKNESS) then
                 self:removeEffect(self.EFF_DWELLER_IN_DARKNESS, true, true)
             end
-        else
-            if not self:hasEffect(self.EFF_DWELLER_IN_DARKNESS) then
-                self:setEffect(self.EFF_DWELLER_IN_DARKNESS, 1, { life_regen = t.life_regen }, true)
-            end
+        elseif (self:hasEffect(self.EFF_DWELLER_IN_DARKNESS) or {}).life_regen ~= new_life_regen then
+            self:setEffect(self.EFF_DWELLER_IN_DARKNESS, 1, { life_regen = new_life_regen }, true)
         end
     end,
 
     info = function(self, t)
-        return ("Adds %f to your life regeneration as long as you're standing in an unlit area."):format(t.life_regen)
+        return ("Adds %f to your life regeneration as long as you're standing in an unlit area (whether or not you're carrying a light source).\n\nIf you're in total darkness (an unlit area and no light source), adds a total of %f to your life regeneration."):format(t.life_regen, t.life_regen * 2)
     end
 }
 
@@ -291,17 +304,21 @@ newTalent {
 }
 
 newTalent {
-    name = "Echolocation",
+    name = "Bat-Blind Vision",
+    short_name = "ECHOLOCATION",
     type = {"qi techniques/head", 1},
     mode = "passive",
 
     passives = function(self, t, p)
         self:talentTemporaryValue(p, "blindsense", 1)
+        self:talentTemporaryValue(p, "blind_fight", 1)
         if self.doFOV then self:doFOV() end
     end,
 
     info = function(self, t)
-        return "Adds +1 to your blindsense radius. " .. GameUI.extra_stat_desc.blindsense
+        return flavorText("Adds +1 to your blindsense radius. " .. GameUI.extra_stat_desc.blindsense ..
+           "\n\nAlso grants blind-fighting, which negates the flat miss chance for attacking an opponent you can't see.",
+           "Despite darkness and their nearly blind vision, bats have a mysterious ability to navigate their surroundings.")
     end,
 }
 

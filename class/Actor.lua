@@ -507,6 +507,14 @@ function _M:canSee(actor, def, def_pct)
     end
 end
 
+--- Checks if the actor can see the target actor, *including* checking for
+--- LOS, lighting, etc.
+function _M:canReallySee(actor)
+    -- Non-players currently have no light limitations, so just use FOV.
+    if not self.fov then self:doFOV() end
+    return self:canSee(actor) and self.fov.actors[actor]
+end
+
 --- Can the target be applied some effects
 -- @param what a string describing what is being tried
 function _M:canBe(what)

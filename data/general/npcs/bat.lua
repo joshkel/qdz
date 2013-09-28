@@ -44,6 +44,7 @@ newEntity{ base = "BASE_NPC_BAT",
     max_life = resolvers.rngavg(4,6),
     max_qi = resolvers.rngavg(4,6),
     combat = { dam=3 },
+    blind_fight = 1,
 
     desc = [[A common forest-dwelling bat. Forest bats are associated with positive qi and are a symbol of good fortune and happiness. A drawing of five bats symbolizes the Five Blessings: virtue, wealth, health, longevity, and a natural death.]],
 
@@ -67,6 +68,7 @@ newEntity{ base = "BASE_NPC_BAT",
     max_life = resolvers.rngavg(4,8),
     max_qi = resolvers.rngavg(4,8),
     combat = { dam=4 },
+    blind_fight = 1,
 
     desc = [[A deep cave-dwelling bat, rarely seen by surface dwellers. Gloom bats are associated with negative qi and are considered a bad omen. They feed on the blood of humans, mammals, and birds.]],
 

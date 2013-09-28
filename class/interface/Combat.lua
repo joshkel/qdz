@@ -173,9 +173,15 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
 
     target:checkAngered(self)
 
-    if not self:skillCheck(atk, def) and not Qi.isFocused(self) then
-        game.logSeen2(self, target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName())
-        return 1, false
+    if not Qi.isFocused(self) then
+        if not self:skillCheck(atk, def) or not (self:canReallySee(target) or self:attr("blind_fight") or rng.chance(2)) then
+            if is_melee then
+                game.logSeen2(self, target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName())
+            else
+                game.logSeen(target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName())
+            end
+            return 1, false
+        end
     end
 
     local dam = self:combatDamage(combat) * mult
