@@ -20,7 +20,9 @@
 
 -- TODO: Should these talents be more effective the more of them you have?
 
-local GameUI = require "mod.class.ui.GameUI"
+local Map = require("engine.Map")
+local Target = require("engine.Target")
+local GameUI = require("mod.class.ui.GameUI")
 
 -- Consolidates logic for whether or not someone under the effects of
 -- BLESSING_VIRTUE can kill the target.
@@ -191,7 +193,7 @@ newTalent {
     type = {"qi techniques/right hand", 1},
     mode = "activated",
     cooldown = 6,
-    qi = 5,
+    qi = 4,
     range = 1,
 
     getPower = function(self, t) return 0.10 end,
@@ -204,7 +206,7 @@ newTalent {
         if not x or not y or not target then return nil end
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
-        local speed, hit = self:attackTarget(target, DamageType.PHYSICAL_BLEEDING,
+        self:attackTarget(target, DamageType.PHYSICAL_BLEEDING,
             { power=t.getPower(self, t), duration=t.getDuration(self, t) })
         return true
     end,
@@ -234,6 +236,44 @@ newTalent {
             "If it hits, a bleeding wound is inflicted, dealing %i%% of your weapon damage for %i turns.\n\n"..
             "As a passive effect, whenever an adjacent enemy takes bleeding damage from a wound you inflicted, "..
             "you gain %i%% that damage as health."):format(t.getPower(self, t) * 100, t.getDuration(self, t), t.absorb_amount * 100), flavor)
+    end,
+}
+
+newTalent {
+    name = "Batscreech",
+    type = {"qi techniques/left hand", 1},
+    mode = "activated",
+    cooldown = 10,
+    qi = 6,
+    range = 0,
+    radius = 5,
+    target = function(self, t) return {type="cone", range=self:getTalentRange(t), radius=self:getTalentRadius(t), selffire=false, cone_angle=180} end,
+    duration = 4,
+
+    action = function(self, t)
+        local tg = self:getTalentTarget(t)
+        local x, y = self:getTarget(tg)
+        if not x or not y then return nil end
+
+        self:project(tg, x, y, function(px, py, tg, self)
+            local target = game.level.map(px, py, Map.ACTOR)
+            if not target then return end
+            if target:canBe("confusion") and self:skillCheck(self:talentPower(self:getSki()), target:willSave()) then
+                target:setEffect(target.EFF_CONFUSED, t.duration, {})
+            end
+        end)
+
+        game.level.map:particleEmitter(self.x, self.y, self:getTalentRadius(t), "directional_shout", {life=8, size=2, tx=x-self.x, ty=y-self.y, distorion_factor=0.1, radius=self:getTalentRadius(t), nb_circles=8, rm=0.8, rM=1, gm=0.8, gM=1, bm=0.1, bM=0.2, am=0.6, aM=0.8, spread=180})
+
+        return true
+    end,
+
+    info = function(self, t)
+        local flavor
+        if self.subtype ~= "bat" then
+            flavor = "Through a series of rapid hand gestures, you can focus qi into a screech like that of the bat."
+        end
+        return flavorText(("Emits a radius %i cone of defeaning high-pitched sound that may confuse all who hear it for %i turns. The chance of confusion is based on your Skill compared against opponents' Will saves."):format(self:getTalentRadius(t), t.duration), flavor)
     end,
 }
 
@@ -304,7 +344,7 @@ newTalent {
 }
 
 newTalent {
-    name = "Bat-Blind Vision",
+    name = "Bat-Blind Vision",  -- because "Echolocation" sounds too modern and scientific
     short_name = "ECHOLOCATION",
     type = {"qi techniques/head", 1},
     mode = "passive",

@@ -24,10 +24,10 @@ Artwork
 Game Mechanics
 ==============
 
-Portions of game mechanics (such as some item statistics) are based on
-the Pathfinder Roleplaying Game Reference Document, which is (C) 2002-2012
-Paizo Publishing, LLC and is used under the terms of the Open Game License
-version 1.0a.
+Portions of game mechanics (such as some item statistics and portions of the
+saving throw mechanic) are based on the Pathfinder Roleplaying Game Reference
+Document, which is (C) 2002-2012 Paizo Publishing, LLC and is used under the
+terms of the Open Game License version 1.0a.
 
 GNU GENERAL PUBLIC LICENSE
 ==========================

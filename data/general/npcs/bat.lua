@@ -74,6 +74,7 @@ newEntity{ base = "BASE_NPC_BAT",
 
     can_absorb = {
         rhand = Talents.T_BLOOD_SIP,
+        lhand = Talents.T_BATSCREECH,
         chest = Talents.T_DWELLER_IN_DARKNESS,
         feet = Talents.T_BAT_MOVEMENT,
         head = Talents.T_ECHOLOCATION,

@@ -249,6 +249,18 @@ function _M:getObjectCombat(o, kind)
     return nil
 end
 
+function _M:fortSave()
+    return math.floor(self:getCon() / 2 + self.level / 2) + (self.fort_save or 0)
+end
+
+function _M:refSave()
+    return math.floor(self:getAgi() / 2 + self.level / 2) + (self.ref_save or 0)
+end
+
+function _M:willSave()
+    return math.floor(self:getMnd() / 2 + self.level / 2) + (self.will_save or 0)
+end
+
 function _M:combatAttack(combat)
     return math.floor(self:getSki() / 2 + self.level / 2) + (combat.attack or 0) + (self.combat_atk or 0)
 end
@@ -278,6 +290,12 @@ end
 
 function _M:combatArmor()
     return rng.range(0, self.combat_armor or 0)
+end
+
+--- Gets a "talent power", in the same scale as values used for combatAttack,
+--- combatDefense, skillCheck, etc.
+function _M:talentPower(stat)
+    return math.floor(stat / 2 + self.level / 2)
 end
 
 -- Determines the damage for a talent

@@ -133,6 +133,9 @@ newEffect{
     end,
 }
 
+-- Unconscious is special; it's planned to only be inflicted under special
+-- circumstances, as an alternative to death. It's therefore okay if it's
+-- abnormally dangerous.
 newEffect{
     name = "UNCONSCIOUS",
     desc = "Unconscious",
@@ -155,10 +158,11 @@ newEffect{
     end,
 
     on_timeout = function(self, eff)
+        -- Requiring life 2 means ~8 turns unconsciousness for default life regen.
+        -- That's probably about right for the Blessing: Virtue talent.
         if self.life >= 2 then self:removeEffect(self.EFF_UNCONSCIOUS) end
     end,
 }
-
 
 newEffect{
     name = "CHARGED",
@@ -242,3 +246,17 @@ newEffect{
     end,    
 }
 
+newEffect{
+    name = "CONFUSED",
+    desc = "Confused",
+    type = "mental",
+    status = "detrimental",
+
+    long_desc = function(self, eff) return ("%s is confused and suffers a %i%% chance each turn of moving or attacking randomly."):format(self.name:capitalize(), eff.power) end,
+    on_gain = function(self, eff) return "#Target# is confused!", "+Confused" end,
+    on_lose = function(self, eff) return "#Target recovers from the confusion.", "-Confused" end,
+
+    activate = function(self, eff)
+        eff.power = eff.power or 50
+    end
+}

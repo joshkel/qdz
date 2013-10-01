@@ -137,7 +137,7 @@ function _M:act()
         end
     end
 
-    if self:attr("prone") or self:attr("unconscious") then self.energy.value = 0 end
+    if self:attr("prone") or self:attr("unconscious") then self.energy.value = self.energy.value - game.energy_to_act end
 
     -- Still enough energy to act ?
     if self.energy.value < game.energy_to_act then return false end
