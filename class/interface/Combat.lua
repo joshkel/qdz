@@ -98,7 +98,7 @@ end
 --- "block_move"), so be careful what it does.
 function _M:bumpInto(target)
     local reaction = self:reactionToward(target)
-    if reaction < 0 then
+    if reaction < 0 or (self:attr("confused") and rng.percent(self.confused)) then
         -- FIXME: Need more detail (lhand versus rhand)
         self.last_action = 'attack'
         local speed = self:attackTarget(target)

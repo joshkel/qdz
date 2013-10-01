@@ -153,9 +153,20 @@ function _M:move(x, y, force)
     if force or self:enoughEnergy(move_energy) then
 
         -- random_move gives a percentage chance for movements to be random,
-        -- but only if we're truly moving (not trying to attack).  Note that
-        -- this partially duplicates Combat:bumpInto.
-        if not force and self.random_move and self.x and self.y and not (target and self:reactionToward(target) < 0) and rng.percent(self.random_move) then
+        -- but only if we're truly moving (not trying to attack).
+        --
+        -- confused gives a flat chance for movements to be random.
+        local do_random_move = false
+        if not force and self.x and self.y then
+            if self:attr("random_move") and not (target and self:reactionToward(target) < 0) and rng.percent(self.random_move) then
+                print(("%s: random movement from random_move"):format(self.name))
+                do_random_move = true
+            elseif self:attr("confused") and rng.percent(self.confused) then
+                print(("%s: random movement from confused"):format(self.name))
+                do_random_move = true
+            end
+        end
+        if do_random_move then
             local moves = {}
             for k, v in pairs(util.adjacentCoords(self.x, self.y, self.forbid_diagonals)) do
                 if self:canMove(v[1], v[2]) then
@@ -358,6 +369,12 @@ function _M:preUseTalent(ab, silent, fake)
             if not silent then game.logPlayer(self, "You do not have enough qi to use %s.", ab.name) end
             return false
         end
+    end
+
+    if not fake and self:attr("confused") and not ab.reliable and (ab.mode ~= "sustained" or not self:isTalentActive(ab.id)) and rng.percent(self.confused) then
+        game.logSeen(self, "%s is confused and fails to use %s.", self.name:capitalize(), ab.name)
+	self:useEnergy()
+        return false
     end
 
     if not silent then

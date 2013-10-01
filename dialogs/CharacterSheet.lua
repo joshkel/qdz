@@ -270,16 +270,26 @@ function _M:drawDialog(kind)
         -- First column: Basic / physical defenses
         h = 0
         w = 0
-
         s:drawColorStringBlended(self.font, "#GOLD##{bold}#Physical Defenses#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
         self:drawString(s, "Defense : #00ff00# "..player:combatDefense(), w, h,
             GameUI:tooltipTitle('Defense'):merge{true, "Ability to dodge or block attacks. Against an evenly matched opponent, +1 Defense decreases the chance to hit by roughly 5%."}) h = h + self.font_h
         self:drawString(s, "Armor   : #00ff00# "..player.combat_armor, w, h,
             GameUI:tooltipTitle('Armor'):merge{true, "Armor reduces damage from every physical attack by a random amount up to the given value."}) h = h + self.font_h
 
-        -- Second column: Resistances
+        -- Second column: Saving throws
         h = 0
         w = self.w * 0.25
+        s:drawColorStringBlended(self.font, "#GOLD##{bold}#Saving Throws#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
+        self:drawString(s, "Fortitude : #00ff00# "..player:fortSave(), w, h,
+            GameUI:tooltipTitle('Fortitude'):merge{true, "Ability to shrug off physical ailments such as poison and disease."}) h = h + self.font_h
+        self:drawString(s, "Reflex    : #00ff00# "..player:refSave(), w, h,
+            GameUI:tooltipTitle('Reflex'):merge{true, "Ability to get out of the way of dangerous area effects."}) h = h + self.font_h
+        self:drawString(s, "Will      : #00ff00# "..player:willSave(), w, h,
+            GameUI:tooltipTitle('Will'):merge{true, "Willpower; the ability to resist effects targeting your mind."}) h = h + self.font_h
+
+        -- Third column: Resistances
+        h = 0
+        w = self.w * 0.50
         s:drawColorStringBlended(self.font, "#GOLD##{bold}#Resistances#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
         is_none = true
         for k, v in pairs(player.resists) do

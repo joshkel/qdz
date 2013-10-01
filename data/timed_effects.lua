@@ -252,11 +252,16 @@ newEffect{
     type = "mental",
     status = "detrimental",
 
-    long_desc = function(self, eff) return ("%s is confused and suffers a %i%% chance each turn of moving or attacking randomly."):format(self.name:capitalize(), eff.power) end,
+    long_desc = function(self, eff) return ("%s is confused and suffers a %i%% chance each turn of moving randomly or attacking a random adjacent creature (whether friend or foe)."):format(self.name:capitalize(), eff.power) end,
     on_gain = function(self, eff) return "#Target# is confused!", "+Confused" end,
-    on_lose = function(self, eff) return "#Target recovers from the confusion.", "-Confused" end,
+    on_lose = function(self, eff) return "#Target# seems more lucid.", "-Confused" end,
 
     activate = function(self, eff)
         eff.power = eff.power or 50
-    end
+        eff.confid = self:addTemporaryValue("confused", eff.power)
+    end,
+    deactivate = function(self, eff)
+        self:removeTemporaryValue("confused", eff.confid)
+    end,
 }
+

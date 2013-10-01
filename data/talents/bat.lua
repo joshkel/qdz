@@ -84,8 +84,8 @@ newTalent{
     money_value_multiplier = 0.1,
 
     info = function(self, t)
-        return flavorText("+1 Pickpocket proficiency. Additionally, the amount of any money that you find (whether by pickpocketing or otherwise) will be increased by 10%.",
-            "The second of the Five Blessings is said to let you find wealth through good fortune. Of course, sometimes the easiest way to find wealth is in soneone else's pockets.")
+        return flavorText(("+1 Pickpocket proficiency. Additionally, the amount of any money that you find (whether by pickpocketing or otherwise) will be increased by %i%%."):format(t.money_value_multiplier * 100),
+            "The second of the Five Blessings is said to let you find wealth through good fortune. Of course, sometimes the easiest way to find wealth is in someone else's pockets.")
     end
 }
 
@@ -95,6 +95,9 @@ newTalent{
     type = {"qi techniques/chest", 1},
     cooldown = 12,
     qi = 3,
+
+    reliable = true,
+
     action = function(self, t)
         local target = self
         local effs = {}
@@ -106,7 +109,7 @@ newTalent{
         -- chicken on your head...).
         for eff_id, p in pairs(target.tmp) do
             local e = target.tempeffect_def[eff_id]
-            if e.type == "physical" and e.status == "detrimental" then
+            if (e.type == "physical" or e.type == "mental") and e.status == "detrimental" then
                 effs[#effs+1] = eff_id
             end
         end
@@ -122,8 +125,9 @@ newTalent{
         end
     end,
     info = function(self, t)
-        return flavorText("Cures one physical status ailment, randomly chosen.",
-            "The third of the Five Blessings symbolized by the bat is physical health.")
+        return flavorText("Cures one lesser physical or mental status ailment, randomly chosen.\n\n"..
+            "This technique may be used reliably even when confused.",
+            "The third of the Five Blessings symbolized by the bat is health of mind and body.")
     end
 }
 
@@ -247,8 +251,9 @@ newTalent {
     qi = 6,
     range = 0,
     radius = 5,
-    target = function(self, t) return {type="cone", range=self:getTalentRange(t), radius=self:getTalentRadius(t), selffire=false, cone_angle=180} end,
+    target = function(self, t) return {type="cone", range=self:getTalentRange(t), radius=self:getTalentRadius(t), selffire=false} end,
     duration = 4,
+    message = "@Source@ emits an ear-piercing screech.",
 
     action = function(self, t)
         local tg = self:getTalentTarget(t)
@@ -260,10 +265,12 @@ newTalent {
             if not target then return end
             if target:canBe("confusion") and self:skillCheck(self:talentPower(self:getSki()), target:willSave()) then
                 target:setEffect(target.EFF_CONFUSED, t.duration, {})
+            else
+                game.logSeen(target, "%s resists the confusion.", target.name:capitalize())
             end
         end)
 
-        game.level.map:particleEmitter(self.x, self.y, self:getTalentRadius(t), "directional_shout", {life=8, size=2, tx=x-self.x, ty=y-self.y, distorion_factor=0.1, radius=self:getTalentRadius(t), nb_circles=8, rm=0.8, rM=1, gm=0.8, gM=1, bm=0.1, bM=0.2, am=0.6, aM=0.8, spread=180})
+        game.level.map:particleEmitter(self.x, self.y, self:getTalentRadius(t), "directional_shout", {life=8, size=2, tx=x-self.x, ty=y-self.y, distorion_factor=0.1, radius=self:getTalentRadius(t), nb_circles=8, rm=0.8, rM=1, gm=0.8, gM=1, bm=0.1, bM=0.2, am=0.6, aM=0.8})
 
         return true
     end,
@@ -273,7 +280,7 @@ newTalent {
         if self.subtype ~= "bat" then
             flavor = "Through a series of rapid hand gestures, you can focus qi into a screech like that of the bat."
         end
-        return flavorText(("Emits a radius %i cone of defeaning high-pitched sound that may confuse all who hear it for %i turns. The chance of confusion is based on your Skill compared against opponents' Will saves."):format(self:getTalentRadius(t), t.duration), flavor)
+        return flavorText(("Emits a radius %i cone of deafening high-pitched sound that may confuse all who hear it for %i turns. The chance of confusion is based on your Skill compared against opponents' Will saves."):format(self:getTalentRadius(t), t.duration), flavor)
     end,
 }
 
