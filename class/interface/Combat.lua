@@ -289,7 +289,13 @@ function _M:combatDamageRange(combat, mult)
 end
 
 function _M:combatArmor()
-    return rng.range(0, self.combat_armor or 0)
+    local min, max = self:combatArmorRange()
+    return rng.range(min, max)
+end
+
+function _M:combatArmorRange()
+    -- Natural armor is more reliable than untrained external armor.
+    return (self.combat_natural_armor or 0) / 2, (self.combat_natural_armor or 0) + (self.combat_armor or 0)
 end
 
 --- Gets a "talent power", in the same scale as values used for combatAttack,

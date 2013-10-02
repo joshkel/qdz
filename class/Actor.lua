@@ -59,6 +59,7 @@ function _M:init(t, no_default)
 
     -- Define some basic stats
     self.combat_armor = 0
+    self.combat_natural_armor = 0
     self.combat_atk = 0
     self.combat_def = 0
     self.combat_dam = 0
@@ -208,26 +209,30 @@ end
 --- (This is thus somewhat player-centric in its wordings and assumptions.)
 function _M:getLogName()
     if self == game.player or (game.level.map.seens(self.x, self.y) and game.player:canSee(self)) then
-        return self.name
+        return self.name, true
     else
-        return "something"
+        return "something", false
     end
 end
 
 --- Gets this actor's name, formatted for use in a damage or effect source message.
 --- (This is thus somewhat player-centric in its wordings and assumptions.)
 function _M:getSrcName()
-    local name = self:getLogName()
+    local name, seen = self:getLogName()
 
     -- Note that we assume that we're being called from a damage projector or
     -- similar and thus have access to intermediate.  If not, it's harmless.
     local intermediate = Qi.getIntermediate(self)
 
     if intermediate ~= self and intermediate.damage_message_use_name then
-        name = ("%s's %s"):format(name, intermediate.name)
+        if seen then
+            name = ("%s's %s"):format(name, intermediate.name)
+        else
+            name = string.a(intermediate.name)
+        end
     end
 
-    return name
+    return name, seen
 end
 
 --- Gets this actor's name, formatted for use in a damage or effect target message.
@@ -372,8 +377,8 @@ function _M:preUseTalent(ab, silent, fake)
     end
 
     if not fake and self:attr("confused") and not ab.reliable and (ab.mode ~= "sustained" or not self:isTalentActive(ab.id)) and rng.percent(self.confused) then
-        game.logSeen(self, "%s is confused and fails to use %s.", self.name:capitalize(), ab.name)
-	self:useEnergy()
+        if not silent then game.logSeen(self, "%s is confused and fails to use %s.", self.name:capitalize(), ab.name) end
+        self:useEnergy()
         return false
     end
 

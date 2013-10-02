@@ -107,11 +107,15 @@ newDamageType{
 }
 
 newDamageType{
+    name = "fire", type = "FIRE", text_color = "#RED#",
+}
+
+newDamageType{
     name = "acid", type = "ACID", text_color = "#GREEN#",
 }
 
 newDamageType{
-    name = "poison", type = "POISON", text_color = "#GREEN#"
+    name = "poison", type = "POISON", text_color = "#GREEN#",
 }
 
 newDamageType{

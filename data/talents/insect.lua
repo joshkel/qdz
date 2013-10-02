@@ -193,3 +193,34 @@ newTalent {
     end,
 }
 
+newTalent {
+    name = "Fire Slash",
+    type = {"qi techniques/right hand", 1},
+    mode = "activated",
+    cooldown = 5,
+    qi = 6,
+    range = 1,
+
+    hit_mult = 1.1,
+    miss_mult = 0.3,
+
+    action = function(self, t)
+        local tg = {type="hit", range=self:getTalentRange(t)}
+        local x, y, target = self:getTarget(tg)
+        if not x or not y or not target then return nil end
+        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
+
+        local speed, hit = self:attackTarget(target, DamageType.FIRE, nil, t.hit_mult)
+        if not hit then
+            -- FIXME: Need a more appropriate message here
+            DamageType:get(DamageType.FIRE).projector(self, x, y, DamageType.FIRE,
+                self:combatDamage(self:getInvenCombat(self.INVEN_RHAND, true)))
+        end
+        return true
+    end,
+
+    info = function(self, t)
+        return ("Turns your weapon (or body part) into pure flame and attacks, dealing %i%% of weapon damage as fire damage. Even if the attack misses, the intense heat will deal %i%% of weapon damage as fire damage."):format(t.hit_mult * 100, t.miss_mult * 100)
+    end,
+}
+

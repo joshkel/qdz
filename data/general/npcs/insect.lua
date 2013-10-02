@@ -57,3 +57,38 @@ newEntity{
     }
 }
 
+-- TODO: Fire ants are tougher than grid bugs, should be worth more exp, once I figure all that out
+newEntity{
+    name = "fire ant",
+    type = "insect", subtype = "fire ant",
+    display = "a", color=colors.FIREBRICK,
+    desc = [[An enormous ant, about the size of a small dog. Heat shimmers over its carapace and smoke escapes from its mandibles.]],
+
+    ai = "dumb_talented_simple", ai_state = { talent_in=3, },
+    stats = { str=8, ski=10, con=10, agi=8, mnd=4 },
+
+    level_range = {1, 4}, exp_worth = 1,
+    rarity = 4,
+    max_life = resolvers.rngavg(4,6),
+    max_qi = resolvers.rngavg(4,6),
+    combat = {
+        dam=2,
+        melee_project={
+            [DamageType.FIRE] = resolvers.mbonus(10, 1)
+        }
+    },
+    combat_natural_armor = 4,
+
+    resolvers.talents{
+        [Talents.T_FIRE_SLASH]={base=1},
+    },
+
+    can_absorb = {
+        rhand = Talents.T_FIRE_SLASH,
+        --lhand = Talents.T_BURNING_HANDS,
+        --chest = Talents.T_FLAME_CARAPACE,
+        --feet = Talents.T_ANT_BURDEN,
+        --head = Talents.T_HIVEMIND,
+    }
+}
+

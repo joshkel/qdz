@@ -273,8 +273,9 @@ function _M:drawDialog(kind)
         s:drawColorStringBlended(self.font, "#GOLD##{bold}#Physical Defenses#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
         self:drawString(s, "Defense : #00ff00# "..player:combatDefense(), w, h,
             GameUI:tooltipTitle('Defense'):merge{true, "Ability to dodge or block attacks. Against an evenly matched opponent, +1 Defense decreases the chance to hit by roughly 5%."}) h = h + self.font_h
-        self:drawString(s, "Armor   : #00ff00# "..player.combat_armor, w, h,
-            GameUI:tooltipTitle('Armor'):merge{true, "Armor reduces damage from every physical attack by a random amount up to the given value."}) h = h + self.font_h
+        local armor_min, armor_max = player:combatArmorRange()
+        self:drawString(s, "Armor   : #00ff00# "..armor_max, w, h,
+            GameUI:tooltipTitle('Armor'):merge{true, ("An armor of %i reduces damage from every physical attack by %s (after including natural armor bonuses, techniques, etc.)."):format(armor_max, string.describe_range(armor_min, armor_max))}) h = h + self.font_h
 
         -- Second column: Saving throws
         h = 0
