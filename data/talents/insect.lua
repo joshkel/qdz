@@ -214,7 +214,8 @@ newTalent {
         if not hit then
             -- FIXME: Need a more appropriate message here
             DamageType:get(DamageType.FIRE).projector(self, x, y, DamageType.FIRE,
-                self:combatDamage(self:getInvenCombat(self.INVEN_RHAND, true)))
+                self:combatDamage(self:getInvenCombat(self.INVEN_RHAND, true)) * t.miss_mult,
+                { msg = function(self, target, dam, dam_type) return ("The flames of the near miss scorch %s for %s%i %s damage#LAST#."):format(target:getTargetName(), dam_type.text_color, dam, dam_type.name) end })
         end
         return true
     end,

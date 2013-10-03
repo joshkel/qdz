@@ -46,7 +46,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     -- Display log message.
     extra = extra or {}
     if extra.msg then
-        game.logSeen2(src, target, getDamageFlash(src, target), extra.msg(src, target, DamageType:get(type)))
+        game.logSeen2(src, target, getDamageFlash(src, target), extra.msg(src, target, dam, DamageType:get(type)))
     elseif not extra.silent then
         local src_name = src:getSrcName()
         local target_name = target:getTargetName()
@@ -54,9 +54,9 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
 
         local message
         if Qi.getIntermediate(src).damage_message_passive then
-            message = ("%s takes %s%i %s damage#LAST#."):format(target_name:capitalize(), DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
+            message = ("%s takes %s%i %s damage#LAST#."):format(target_name:capitalize(), DamageType:get(type).text_color, dam, DamageType:get(type).name)
         else
-            message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target:getTargetName(), DamageType:get(type).text_color or "#aaaaaa#", dam, DamageType:get(type).name)
+            message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target:getTargetName(), DamageType:get(type).text_color, dam, DamageType:get(type).name)
         end
 
         game.logSeen2(src, target, getDamageFlash(src, target), message)
@@ -124,8 +124,8 @@ newDamageType{
         -- For now, treat poison gas as poison.  A later version may add
         -- special handling for non-breathing creatures.
         return DamageType:get(DamageType.POISON).projector(src, x, y, DamageType.POISON, dam, {
-            msg=function(src, target, dam_type)
-                return ("%s takes %s%i %s damage#LAST# from the gas."):format(target.name:capitalize(), dam_type.text_color or "#aaaaaa#", dam, dam_type.name)
+            msg=function(src, target, dam, dam_type)
+                return ("%s takes %s%i %s damage#LAST# from the gas."):format(target.name:capitalize(), dam_type.text_color, dam, dam_type.name)
             end
         })
     end
@@ -177,10 +177,10 @@ newDamageType{
             target:setMoveAnim(old_x, old_y, 8, 5)
 
             game.logAnySeen({{x=old_x, y=old_y}, target}, getDamageFlash(src, target), "%s is knocked back and takes %s%i %s damage#LAST#!",
-                target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color or "#aaaaaa#", dam.dam, DamageType:get(DamageType.PHYSICAL).name)
+                target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color, dam.dam, DamageType:get(DamageType.PHYSICAL).name)
         else
             game.logSeen(target, getDamageFlash(src, target), "%s takes %s%i %s damage#LAST# but stands %s ground!",
-                target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color or "#aaaaaa#", dam.dam, DamageType:get(DamageType.PHYSICAL).name, string.his(target))
+                target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color, dam.dam, DamageType:get(DamageType.PHYSICAL).name, string.his(target))
         end
  
         return DamageType:get(DamageType.PHYSICAL).projector(src, target.x, target.y, DamageType.PHYSICAL, dam.dam, {silent=true} )
@@ -232,3 +232,10 @@ newDamageType{
     end
 }
 
+-- Assign default colors to any DamageTypes lacking an explicit color.
+for id, dam in ipairs(DamageType.dam_def) do
+    if not dam.text_color then
+        dam.text_color = "#aaaaaa#"
+        dam.color = dam.color or { r=0xaa, g=0xaa, b=0xaa }
+    end
+end
