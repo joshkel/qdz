@@ -214,7 +214,7 @@ newTalent {
         if not hit then
             -- FIXME: Need a more appropriate message here
             DamageType:get(DamageType.FIRE).projector(self, x, y, DamageType.FIRE,
-                self:combatDamage(self:getInvenCombat(self.INVEN_RHAND, true)) * t.miss_mult,
+                self:combatDamage(self:getInvenCombat(self.INVEN_RHAND, true) or self.combat) * t.miss_mult,
                 { msg = function(self, target, dam, dam_type) return ("The flames of the near miss scorch %s for %s%i %s damage#LAST#."):format(target:getTargetName(), dam_type.text_color, dam, dam_type.name) end })
         end
         return true
@@ -222,6 +222,28 @@ newTalent {
 
     info = function(self, t)
         return ("Turns your weapon (or body part) into pure flame and attacks, dealing %i%% of weapon damage as fire damage. Even if the attack misses, the intense heat will deal %i%% of weapon damage as fire damage."):format(t.hit_mult * 100, t.miss_mult * 100)
+    end,
+}
+
+newTalent {
+    name = "Heat Carapace",
+    type = {"qi techniques/chest", 1},
+    mode = "passive",
+
+    resist_fire_bonus = 2,
+    getArmorBonus = function(self, t)
+        return self:talentDamage(self:getCon(), 1, 0.3)
+    end,
+    getDuration = function(self, t)
+        return math.floor(self:getCon() / 2)
+    end,
+
+    on_learn = function(self, t) self.resists[DamageType.FIRE] = (self.resists[DamageType.FIRE] or 0) + t.resist_fire_bonus end,
+    on_unlearn = function(self, t) self.resists[DamageType.FIRE] = (self.resists[DamageType.FIRE] or 0) - t.resist_fire_bonus end,
+
+    info = function(self, t)
+        return flavorText(("Grants %i %s of fire resistance. Additionally, whenever you take fire damage, the heat hardens your skin, adding %i your natural armor for %i turns (both based on your Constitution)."):format(t.resist_fire_bonus, string.pluralize("level", t.resist_fire_bonus), t.getArmorBonus(self, t), t.getDuration(self, t)),
+            "Fire ants' outer shells are tempered and hardened by the flames that continually burn within.")
     end,
 }
 

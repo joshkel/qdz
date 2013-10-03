@@ -38,6 +38,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     if target.resists then
         local sub, mult = target:combatResist(type)
         dam = math.round((dam - sub) * mult)
+        dam = math.max(dam, 0)
         if dam ~= init_dam then
             print(("%s resistance reduced %i damage to %i"):format(DamageType:get(type).name, init_dam, dam))
         end
@@ -76,7 +77,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
         end
     end
 
-    -- Handle talent: Electrostatic Capture
+    -- Handle talent: Electrostatic Capture.  TODO: Move these to on_damage functions within talent definitions?
     if not target.dead and type == DamageType.LIGHTNING and init_dam > 0 and target:knowTalent(target.T_ELECTROSTATIC_CAPTURE) then
         -- TODO: Better formula needed here?  (E.g., should we recompute the 
         -- effects of t.resist_lightning_bonus levels of resistance on init_dam?)
@@ -88,6 +89,12 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
         else
             target.tempeffect_def[target.EFF_CHARGED].add_power(target, eff, charge_power)
         end
+    end
+
+    -- Handle talent: Heat Carapace
+    if not target.dead and type == DamageType.FIRE and init_dam > 0 and target:knowTalent(target.T_HEAT_CARAPACE) then
+        local t = target:getTalentFromId(target.T_HEAT_CARAPACE)
+        target:setEffect(target.EFF_HEAT_CARAPACE, t.getDuration(target, t), { power=t.getArmorBonus(target, t) })
     end
 
     return dam

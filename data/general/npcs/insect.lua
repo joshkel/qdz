@@ -77,16 +77,20 @@ newEntity{
             [DamageType.FIRE] = resolvers.mbonus(10, 1)
         }
     },
+    resists = {
+        [DamageType.FIRE] = 2, -- TODO: Higher value here?  Or less drop-off for stacking resistances?
+    },
     combat_natural_armor = 4,
 
     resolvers.talents{
         [Talents.T_FIRE_SLASH]={base=1},
+        [Talents.T_HEAT_CARAPACE]={base=1},
     },
 
     can_absorb = {
         rhand = Talents.T_FIRE_SLASH,
         --lhand = Talents.T_BURNING_HANDS,
-        --chest = Talents.T_FLAME_CARAPACE,
+        chest = Talents.T_HEAT_CARAPACE,
         --feet = Talents.T_ANT_BURDEN,
         --head = Talents.T_HIVEMIND,
     }

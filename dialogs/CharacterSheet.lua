@@ -299,7 +299,7 @@ function _M:drawDialog(kind)
                 local type = DamageType:get(k)
                 local sub, mult = player:combatResist(k)
                 local pct = 100 - (mult * 100)
-                self:drawString(s, ("%s%-10s#LAST#: #00ff00# %2i / %3i%%"):format(type.text_color or "", type.name:capitalize(), sub, mult), w, h,
+                self:drawString(s, ("%s%-10s#LAST#: #00ff00# %2i / %3i%%"):format(type.text_color or "", type.name:capitalize(), sub, pct), w, h,
                     GameUI:tooltipTitle(("%s Resistance"):format(type.name:capitalize())):merge{true, ("%i %s of %s resistance, meaning that %i is subtracted from all incoming %s damage, then the remainder is reduced by %i%%."):format(v, string.pluralize("level", v), type.name, sub, type.name, pct)}) h = h + self.font_h
             end
         end
