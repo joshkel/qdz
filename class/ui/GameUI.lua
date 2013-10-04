@@ -52,7 +52,7 @@ _M.tooltipColor = {
 }
 
 -- Approximate width to use for a single letter column in a ListColumns instance
-_M.one_letter = 26
+_M.one_letter = 31
 
 _M.money_color = 'YELLOW'
 _M.money_desc = [[Money, either in Imperial coins or easily tradable precious metals. Unfortunately, since you're on the run and far from civilization, it's unlikely that you'll be able to use it any time soon.]]

@@ -247,3 +247,25 @@ newTalent {
     end,
 }
 
+newTalent {
+    name = "Burden of the Ant",
+    short_name = "ANT_BURDEN",
+    type = {"qi techniques/feet", 1},
+    mode = "passive",
+
+    max_encumber_bonus = 20,
+
+    on_learn = function(self, t)
+        self.max_encumber = (self.max_encumber or 0) + t.max_encumber_bonus
+        self:checkEncumbrance()
+    end,
+    on_unlearn = function(self, t)
+        self.max_encumber = self.max_encumber - t.max_encumber_bonus
+        self:checkEncumbrance()
+    end,
+
+    info = function(self, t)
+        return flavorText(("Adds %i to your carrying capacity."):format(t.max_encumber_bonus))
+    end,
+}
+

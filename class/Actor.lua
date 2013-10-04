@@ -153,6 +153,15 @@ function _M:move(x, y, force)
     local target = game.level.map(x, y, Map.ACTOR)
     if force or self:enoughEnergy(move_energy) then
 
+        -- Never move, but allow attacking.
+        if not force and self:attr("never_move") then
+            -- Copied from ToME - this asks the collision code to check for attacking
+            if not game.level.map:checkAllEntities(x, y, "block_move", self, true) then
+                game.logPlayer(self, "You are unable to move!")
+            end
+            return false
+        end
+
         -- random_move gives a percentage chance for movements to be random,
         -- but only if we're truly moving (not trying to attack).
         --
@@ -330,11 +339,12 @@ function _M:levelup()
 end
 
 --- Notifies a change of stat value
---- TODO: Also need to change on temporary values??
 function _M:onStatChange(stat, v)
     if self.incomplete then return end
 
-    if stat == self.STAT_CON then
+    if stat == self.STAT_STR then
+        self:checkEncumbrance()
+    elseif stat == self.STAT_CON then
         self.max_life = self.max_life + 1 * v
     elseif stat == self.STAT_MND then
         self.max_qi = self.max_qi + 1 * v
@@ -548,7 +558,7 @@ function _M:canBe(what)
     if what == "fear" and rng.percent(100 * (self:attr("fear_immune") or 0)) then return false end
 
     -- Note that knockback also covers knockdown.
-    if what == "knockback" and rng.percent(100 * (self:attr("knockback_immune") or 0)) then return false end
+    if what == "knockback" and (rng.percent(100 * (self:attr("knockback_immune") or 0)) or self:attr("never_move")) then return false end
 
     if what == "instakill" and rng.percent(100 * (self:attr("instakill_immune") or 0)) then return false end
 
@@ -563,8 +573,12 @@ function _M:resetTalentCooldowns()
 end
 
 function _M:getMaxEncumbrance()
-    -- FIXME: Different math here
-	return math.floor(40 + self:getStr() * 1.8 + (self.max_encumber or 0))
+    -- For comparison, D20 says a heavy load starts at 67 lbs. for strength 10,
+    -- 267 lbs for strength 20.
+    --
+    -- This number is really chosen to try and make for interesting inventory
+    -- decisions, not for any attempt at realism.
+    return 30 + self:getStr() * 2 + (self.max_encumber or 0)
 end
 
 function _M:getEncumbrance()
@@ -578,6 +592,40 @@ function _M:getEncumbrance()
     end
 
     return math.floor(enc)
+end
+
+function _M:checkEncumbrance()
+    local enc, max = self:getEncumbrance(), self:getMaxEncumbrance()
+
+    -- We are pinned to the ground if we carry too much
+    if not self.encumbered and enc > max then
+        game.logPlayer(self, "#FF0000#You are carrying too much and are unable to move.#LAST#")
+        self.encumbered = self:addTemporaryValue("never_move", 1)
+
+        if self.x and self.y then
+            local sx, sy = game.level.map:getTileToScreen(self.x, self.y)
+            game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, rng.float(-2.5, -1.5), "+OVERBURDENED!", {255,0,0}, true)
+        end
+    elseif self.encumbered and enc <= max then
+        self:removeTemporaryValue("never_move", self.encumbered)
+        self.encumbered = nil
+        game.logPlayer(self, "#00FF00#You are no longer overburdened.#LAST#")
+
+        if self.x and self.y then
+            local sx, sy = game.level.map:getTileToScreen(self.x, self.y)
+            game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, rng.float(-2.5, -1.5), "-OVERBURDENED!", {255,0,0}, true)
+        end
+    end
+end
+
+function _M:onAddObject(o)
+    engine.interface.ActorInventory.onAddObject(self, o)
+    self:checkEncumbrance()
+end
+
+function _M:onRemoveObject(o)
+    engine.interface.ActorInventory.onRemoveObject(self, o)
+    self:checkEncumbrance()
 end
 
 function _M:incMoney(v)
