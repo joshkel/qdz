@@ -226,6 +226,38 @@ newTalent {
 }
 
 newTalent {
+    name = "Burning Hand",
+    type = {"qi techniques/left hand", 1},
+    mode = "activated",
+    cooldown = 4,
+    qi = 6,
+    range = 1,
+    radius = 1,
+    target = function(self, t) return {type="cone", range=self:getTalentRange(t), radius=self:getTalentRadius(t), selffire=true} end,
+    getDamage = function(self, t) return self:talentDamage(self:getMnd(), 3) end,
+
+    action = function(self, t)
+        local tg = self:getTalentTarget(t)
+        local x, y = self:getTarget(tg)
+        if not x or not y then return nil end
+
+        if x == self.x and y == self.y then
+            self:project(tg, x, y, DamageType.FIRE, t.getDamage(self, t) / 4)
+        else
+            self:project(tg, x, y, DamageType.FIRE_REF_HALF, t.getDamage(self, t))
+        end
+
+        --TODO: game.level.map:particleEmitter(self.x, self.y, self:getTalentRadius(t), "directional_shout", {life=8, size=2, tx=x-self.x, ty=y-self.y, distorion_factor=0.1, radius=self:getTalentRadius(t), nb_circles=8, rm=0.8, rM=1, gm=0.8, gM=1, bm=0.1, bM=0.2, am=0.6, aM=0.8})
+
+        return true
+    end,
+
+    info = function(self, t)
+        return ("Emits a short-ranged cone of fire doing %i damage (based on your Mind). It does 50%% damage if the opponent succeeds on a Reflex save against your Skill and 25%% damage if it's aimed at yourself."):format(t.getDamage(self, t))
+    end,
+}
+
+newTalent {
     name = "Heat Carapace",
     type = {"qi techniques/chest", 1},
     mode = "passive",

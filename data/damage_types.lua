@@ -50,17 +50,16 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
         game.logSeen2(src, target, getDamageFlash(src, target), extra.msg(src, target, dam, DamageType:get(type)))
     elseif not extra.silent then
         local src_name = src:getSrcName()
-        local target_name = target:getTargetName()
         local intermediate = Qi.getIntermediate(src)
 
         local message
         if Qi.getIntermediate(src).damage_message_passive then
-            message = ("%s takes %s%i %s damage#LAST#."):format(target_name:capitalize(), DamageType:get(type).text_color, dam, DamageType:get(type).name)
+            message = ("%s takes %s%i %s damage#LAST#."):format(target:getTargetName():capitalize(), DamageType:get(type).text_color, dam, DamageType:get(type).name)
+            game.logSeen(target, getDamageFlash(src, target), message)
         else
-            message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target:getTargetName(), DamageType:get(type).text_color, dam, DamageType:get(type).name)
+            message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target:getTargetName(src), DamageType:get(type).text_color, dam, DamageType:get(type).name)
+            game.logSeen2(src, target, getDamageFlash(src, target), message)
         end
-
-        game.logSeen2(src, target, getDamageFlash(src, target), message)
     end
 
     -- Apply damage.  Check for kill.  Display flyer message.
@@ -100,6 +99,15 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     return dam
 end)
 
+local function refHalf(src, x, y, typ, dam)
+    local base_type = DamageType:get(typ).base_type
+    local target = game.level.map(x, y, Map.ACTOR)
+    if target and not src:skillCheck(src:talentPower(src:getSki()), target:refSave()) then
+        dam = dam / 2
+    end
+    return DamageType:get(base_type).projector(src, x, y, base_type, dam)
+end
+
 -- Special case: A damage type that wraps another damage type (indicated by
 -- dam.type and dam.dam) while handling intermediate qi state (see Qi.call).
 newDamageType{
@@ -115,6 +123,11 @@ newDamageType{
 
 newDamageType{
     name = "fire", type = "FIRE", text_color = "#RED#",
+}
+
+newDamageType{
+    name = "fire (reflex half)", type = "FIRE_REF_HALF", text_color = "#RED#",
+    projector = refHalf, base_type = DamageType.FIRE
 }
 
 newDamageType{
@@ -246,3 +259,4 @@ for id, dam in ipairs(DamageType.dam_def) do
         dam.color = dam.color or { r=0xaa, g=0xaa, b=0xaa }
     end
 end
+

@@ -273,7 +273,7 @@ newEffect{
 
     long_desc = function(self, eff) return ("%s's skin is hardened by flames, adding %i to natural armor."):format(self.name:capitalize(), eff.power) end,
     on_gain = function(self, eff) return "#Target#'s skin is hardened by the flames.", "+Heat Carapace" end,  -- TODO: Skin? Exoskeleton? Stone? Ectoplasm?  Etc.
-    on_lose = function(self, eff) return ("#Target#'s skin is no longer flame-hardened."):format(string.he(self)), "-Dweller in Darkness" end,
+    on_lose = function(self, eff) return ("#Target#'s skin is no longer fire-hardened."):format(string.he(self)), "-Dweller in Darkness" end,
 
     activate = function(self, eff)
         eff.armorid = self:addTemporaryValue("combat_natural_armor", eff.power)

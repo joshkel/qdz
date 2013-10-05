@@ -51,7 +51,8 @@ _M.tooltipColor = {
     bad = { "color", "LIGHT_RED" }
 }
 
--- Approximate width to use for a single letter column in a ListColumns instance
+-- Approximate width to use for a single letter column in a ListColumns instance.
+-- 31 is just wide enough for "m" in our current font.
 _M.one_letter = 31
 
 _M.money_color = 'YELLOW'
@@ -81,7 +82,7 @@ function _M:tempEffectText(actor, eff_id)
     local text = tstring{this_color, e.desc}
     if e.decrease ~= 0 then
         local dur = actor:hasEffect(eff_id).dur + 1
-        text:merge((" (%i)"):format(dur))
+        text:merge{(" (%i)"):format(dur)}
     end
     text:merge{{"color", "LAST"}}
     return text

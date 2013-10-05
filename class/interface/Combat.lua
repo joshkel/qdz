@@ -50,8 +50,9 @@ function _M:skillCheck(skill, difficulty)
     result = math.min(result, skill + 5 * 100)
     result = math.max(result, skill - 5 * 100)
 
-    print(("Skill check: %f against %f, %f chance of success, result %f"):format(
-        skill, difficulty, self:skillChanceOfSuccess(skill, difficulty), result))
+    print(("Skill check: %f against %f, %f chance of success, result %f, %s"):format(
+        skill, difficulty, self:skillChanceOfSuccess(skill, difficulty), result,
+        result >= difficulty and "SUCCESS" or "FAILURE"))
 
     return result >= difficulty, result
 end
@@ -176,9 +177,9 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     if not Qi.isFocused(self) then
         if not self:skillCheck(atk, def) or not (self:canReallySee(target) or self:attr("blind_fight") or rng.chance(2)) then
             if is_melee then
-                game.logSeen2(self, target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName())
+                game.logSeen2(self, target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName(self))
             else
-                game.logSeen(target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName())
+                game.logSeen(target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName(self))
             end
             return 1, false
         end

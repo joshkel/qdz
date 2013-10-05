@@ -246,8 +246,12 @@ end
 
 --- Gets this actor's name, formatted for use in a damage or effect target message.
 --- See also getSrcName.
-function _M:getTargetName()
-    return self:getLogName()
+function _M:getTargetName(src)
+    if src == self then
+        return string.himself(self)
+    else
+        return self:getLogName()
+    end
 end
 
 function _M:tooltip()
