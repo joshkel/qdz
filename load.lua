@@ -89,6 +89,7 @@ end
 
 -- Actor AIs
 ActorAI:loadDefinition("/engine/ai/")
+ActorAI:loadDefinition("/mod/ai/")
 
 -- Actor Inventory
 ActorInventory:defineInventory("RHAND", "Right hand", true, "Your right hand, generally used for your main weapon")

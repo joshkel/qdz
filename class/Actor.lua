@@ -214,6 +214,14 @@ function _M:setEffect(eff_id, dur, p, silent)
     end
 end
 
+function _M:resolveSource()
+    if self.summoner_gain_exp and self.summoner then
+        return self.summoner:resolveSource()
+    else
+        return self
+    end
+end
+
 --- Gets this actor's name, formatted for use in a log message.
 --- (This is thus somewhat player-centric in its wordings and assumptions.)
 function _M:getLogName()
@@ -311,8 +319,10 @@ function _M:die(src)
     self:checkAngered(src)
 
     -- Gives the killer some exp for the kill
-    if src and src.gainExp then
-        src:gainExp(self:worthExp(src))
+    local killer
+    if src and src.resolveSource and src:resolveSource().gainExp then
+        killer = src:resolveSource()
+        killer:gainExp(self:worthExp(killer))
     end
 
     -- Cancel First Blessing: Virtue if appropriate

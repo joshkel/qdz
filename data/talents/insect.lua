@@ -253,7 +253,7 @@ newTalent {
     end,
 
     info = function(self, t)
-        return ("Emits a short-ranged cone of fire doing %i damage (based on your Mind). It does 50%% damage if the opponent succeeds on a Reflex save against your Skill and 25%% damage if it's aimed at yourself."):format(t.getDamage(self, t))
+        return ("Emits a short-range cone of fire doing %i damage (based on your Mind). It does 50%% damage if the opponent succeeds on a Reflex save against your Skill and 25%% damage if it's aimed at yourself."):format(t.getDamage(self, t))
     end,
 }
 
@@ -298,6 +298,61 @@ newTalent {
 
     info = function(self, t)
         return flavorText(("Adds %i to your carrying capacity."):format(t.max_encumber_bonus))
+    end,
+}
+
+newTalent {
+    name = "Hive Mind",
+    type = {"qi techniques/head", 1},
+    cooldown = 20,
+    qi = 5,
+    range = 5,
+    no_npc_use = true,
+    target = function(self, t) return {type="hit", range=self:getTalentRange(t) } end,
+
+    -- Picking up a permanent ally should be hard, especially since insects
+    -- tend to have low Will saves (which would otherwise make this easy).
+    check_modifier = -5,
+
+    action = function(self, t)
+        local tg = self:getTalentTarget(t)
+        local x, y, target = self:getTarget(tg)
+        if not x or not y then return nil end
+
+        if target.type ~= "insect" then
+            game.logPlayer(self, "This technique only works on insects.")
+            return false
+        end
+
+        if not self:skillCheck(self:talentPower(self:getMnd()) + t.check_modifier, target:willSave()) then
+            game.logSeen(target, ("%s resists the mental assault."):format(target.name:capitalize()))
+            return true
+        end
+
+        -- Gain experience for defeating the monster.
+        self:gainExp(target:worthExp(self))
+        target.exp_worth = 0
+
+        -- FIXME: More robust version: make allies follow you to other levels, but limit the number you can have.  Increase qi cost and maybe decrease failure rate once that's done?
+        -- Test interaction with First Blessing: Virtue and Focus Qi.
+        -- Tooltip for ally.
+        -- What about angering allies?
+
+        game.logSeen(target, ("%s's mind is dominated!"):format(target.name:capitalize()))
+
+        target.faction = self.faction
+        target.move_others = true
+        target.summoner = self
+        target.summoner_gain_exp = true
+
+        target.ai_state.ai_party = target.ai
+        target.ai = "party_member"
+
+        return true
+    end,
+
+    info = function(self, t)
+        return flavorText("Attempts to dominate an insect's mind, causing it to view you as its hive queen and turning it into your ally until you leave the current level. The chance of success is based on your Mind compared to the insect's Will save.")
     end,
 }
 

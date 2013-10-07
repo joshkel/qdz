@@ -62,7 +62,7 @@ newEntity{
     name = "fire ant",
     type = "insect", subtype = "fire ant",
     display = "a", color=colors.FIREBRICK,
-    desc = [[An enormous ant, about the size of a small dog. Heat shimmers over its carapace and smoke escapes from its mandibles.]],
+    desc = [[An enormous ant, not much smaller than a human. Heat shimmers over its carapace and smoke escapes from its mandibles.]],
 
     ai = "dumb_talented_simple", ai_state = { talent_in=3, },
     stats = { str=8, ski=10, con=10, agi=8, mnd=4 },
@@ -89,10 +89,10 @@ newEntity{
 
     can_absorb = {
         rhand = Talents.T_FIRE_SLASH,
-        --lhand = Talents.T_BURNING_HANDS,
+        lhand = Talents.T_BURNING_HAND,
         chest = Talents.T_HEAT_CARAPACE,
-        --feet = Talents.T_ANT_BURDEN,
-        --head = Talents.T_HIVEMIND,
+        feet = Talents.T_ANT_BURDEN,
+        head = Talents.T_HIVE_MIND,
     }
 }
 

@@ -108,6 +108,8 @@ function _M:bumpInto(target)
         self:useEnergy(game.energy_to_act * speed)
     elseif reaction >= 0 then
         if self.move_others then
+            if target.move_others and self ~= game.player then return end
+
             -- Displace
             game.level.map:remove(self.x, self.y, Map.ACTOR)
             game.level.map:remove(target.x, target.y, Map.ACTOR)
@@ -185,6 +187,7 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
         end
     end
 
+    -- TODO: Should Qi Focus ignore armor as well?
     local dam = self:combatDamage(combat) * mult
     dam = dam - target:combatArmor() -- TODO? As implemented, this armor ignores damtype - should it?
     dam = math.max(0, math.round(dam))
