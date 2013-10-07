@@ -18,8 +18,6 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-base_size = 48
-
 return { generator = function()
     local x = rng.range(-20, 20)
     local y = 20 - math.abs(math.sin(x / 20) * 10)

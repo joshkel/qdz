@@ -243,11 +243,11 @@ newTalent {
 
         if x == self.x and y == self.y then
             self:project(tg, x, y, DamageType.FIRE, t.getDamage(self, t) / 4)
+            game.level.map:particleEmitter(self.x, self.y, tg.radius, "burn_self")
         else
             self:project(tg, x, y, DamageType.FIRE_REF_HALF, t.getDamage(self, t))
+            game.level.map:particleEmitter(self.x, self.y, tg.radius, "burning_hand", {radius=self:getTalentRadius(t), tx=x-self.x, ty=y-self.y})
         end
-
-        --TODO: game.level.map:particleEmitter(self.x, self.y, self:getTalentRadius(t), "directional_shout", {life=8, size=2, tx=x-self.x, ty=y-self.y, distorion_factor=0.1, radius=self:getTalentRadius(t), nb_circles=8, rm=0.8, rM=1, gm=0.8, gM=1, bm=0.1, bM=0.2, am=0.6, aM=0.8})
 
         return true
     end,
