@@ -193,3 +193,164 @@ newTalent {
     end,
 }
 
+newTalent {
+    name = "Fire Slash",
+    type = {"qi techniques/right hand", 1},
+    mode = "activated",
+    cooldown = 5,
+    qi = 6,
+    range = 1,
+
+    hit_mult = 1.1,
+    miss_mult = 0.3,
+
+    action = function(self, t)
+        local tg = {type="hit", range=self:getTalentRange(t)}
+        local x, y, target = self:getTarget(tg)
+        if not x or not y or not target then return nil end
+        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
+
+        local speed, hit = self:attackTarget(target, DamageType.FIRE, nil, t.hit_mult)
+        if not hit then
+            -- FIXME: Need a more appropriate message here
+            DamageType:get(DamageType.FIRE).projector(self, x, y, DamageType.FIRE,
+                self:combatDamage(self:getInvenCombat(self.INVEN_RHAND, true) or self.combat) * t.miss_mult,
+                { msg = function(self, target, dam, dam_type) return ("The flames of the near miss scorch %s for %s%i %s damage#LAST#."):format(target:getTargetName(), dam_type.text_color, dam, dam_type.name) end })
+        end
+        return true
+    end,
+
+    info = function(self, t)
+        return ("Turns your weapon (or body part) into pure flame and attacks, dealing %i%% of weapon damage as fire damage. Even if the attack misses, the intense heat will deal %i%% of weapon damage as fire damage."):format(t.hit_mult * 100, t.miss_mult * 100)
+    end,
+}
+
+newTalent {
+    name = "Burning Hand",
+    type = {"qi techniques/left hand", 1},
+    mode = "activated",
+    cooldown = 4,
+    qi = 6,
+    range = 1,
+    radius = 1,
+    target = function(self, t) return {type="cone", range=self:getTalentRange(t), radius=self:getTalentRadius(t), selffire=true} end,
+    getDamage = function(self, t) return self:talentDamage(self:getMnd(), 3) end,
+
+    action = function(self, t)
+        local tg = self:getTalentTarget(t)
+        local x, y = self:getTarget(tg)
+        if not x or not y then return nil end
+
+        if x == self.x and y == self.y then
+            self:project(tg, x, y, DamageType.FIRE, t.getDamage(self, t) / 4)
+            game.level.map:particleEmitter(self.x, self.y, tg.radius, "burn_self")
+        else
+            self:project(tg, x, y, DamageType.FIRE_REF_HALF, t.getDamage(self, t))
+            game.level.map:particleEmitter(self.x, self.y, tg.radius, "burning_hand", {radius=self:getTalentRadius(t), tx=x-self.x, ty=y-self.y})
+        end
+
+        return true
+    end,
+
+    info = function(self, t)
+        return ("Emits a short-range cone of fire doing %i damage (based on your Mind). It does 50%% damage if the opponent succeeds on a Reflex save against your Skill and 25%% damage if it's aimed at yourself."):format(t.getDamage(self, t))
+    end,
+}
+
+newTalent {
+    name = "Heat Carapace",
+    type = {"qi techniques/chest", 1},
+    mode = "passive",
+
+    resist_fire_bonus = 2,
+    getArmorBonus = function(self, t)
+        return self:talentDamage(self:getCon(), 1, 0.3)
+    end,
+    getDuration = function(self, t)
+        return math.floor(self:getCon() / 2)
+    end,
+
+    on_learn = function(self, t) self.resists[DamageType.FIRE] = (self.resists[DamageType.FIRE] or 0) + t.resist_fire_bonus end,
+    on_unlearn = function(self, t) self.resists[DamageType.FIRE] = (self.resists[DamageType.FIRE] or 0) - t.resist_fire_bonus end,
+
+    info = function(self, t)
+        return flavorText(("Grants %i %s of fire resistance. Additionally, whenever you take fire damage, the heat hardens your skin, adding %i your natural armor for %i turns (both based on your Constitution)."):format(t.resist_fire_bonus, string.pluralize("level", t.resist_fire_bonus), t.getArmorBonus(self, t), t.getDuration(self, t)),
+            "Fire ants' outer shells are tempered and hardened by the flames that continually burn within.")
+    end,
+}
+
+newTalent {
+    name = "Burden of the Ant",
+    short_name = "ANT_BURDEN",
+    type = {"qi techniques/feet", 1},
+    mode = "passive",
+
+    max_encumber_bonus = 20,
+
+    on_learn = function(self, t)
+        self.max_encumber = (self.max_encumber or 0) + t.max_encumber_bonus
+        self:checkEncumbrance()
+    end,
+    on_unlearn = function(self, t)
+        self.max_encumber = self.max_encumber - t.max_encumber_bonus
+        self:checkEncumbrance()
+    end,
+
+    info = function(self, t)
+        return flavorText(("Adds %i to your carrying capacity."):format(t.max_encumber_bonus))
+    end,
+}
+
+newTalent {
+    name = "Hive Mind",
+    type = {"qi techniques/head", 1},
+    cooldown = 20,
+    qi = 8,
+    range = 5,
+    no_npc_use = true,
+    target = function(self, t) return {type="hit", range=self:getTalentRange(t) } end,
+
+    -- Picking up a permanent ally should be hard, especially since insects
+    -- tend to have low Will saves (which would otherwise make this easy).
+    check_modifier = -5,
+
+    action = function(self, t)
+        local tg = self:getTalentTarget(t)
+        local x, y, target = self:getTarget(tg)
+        if not x or not y then return nil end
+
+        if target.type ~= "insect" then
+            game.logPlayer(self, "This technique only works on insects.")
+            return false
+        end
+
+        if not self:skillCheck(self:talentPower(self:getMnd()) + t.check_modifier, target:willSave()) then
+            game.logSeen(target, ("%s resists the mental assault."):format(target.name:capitalize()))
+            return true, { ignore_cd = true }
+        end
+
+        -- Gain experience for defeating the monster.
+        self:gainExp(target:worthExp(self))
+        target.exp_worth = 0
+
+        -- FIXME: More robust version: make allies follow you to other levels, but limit the number you can have.  Adjust cost, cooldown, failure rate once that's done?
+        -- TODO: Pull into proper party member code.  Add provision for angering allies?
+
+        game.logSeen(target, ("%s's mind is dominated!"):format(target.name:capitalize()))
+
+        target.faction = self.faction
+        target.move_others = true
+        target.summoner = self
+        target.summoner_gain_exp = true
+
+        target.ai_state.ai_party = target.ai
+        target.ai = "party_member"
+
+        return true
+    end,
+
+    info = function(self, t)
+        return flavorText("Attempts to dominate an insect's mind, causing it to view you as its hive queen and turning it into your ally until you leave the current level. The chance of success is based on your Mind compared to the insect's Will save.\n\nThis technique only incurs a cooldown if it succeeds.")
+    end,
+}
+

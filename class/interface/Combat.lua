@@ -50,8 +50,9 @@ function _M:skillCheck(skill, difficulty)
     result = math.min(result, skill + 5 * 100)
     result = math.max(result, skill - 5 * 100)
 
-    print(("Skill check: %f against %f, %f chance of success, result %f"):format(
-        skill, difficulty, self:skillChanceOfSuccess(skill, difficulty), result))
+    print(("Skill check: %f against %f, %f chance of success, result %f, %s"):format(
+        skill, difficulty, self:skillChanceOfSuccess(skill, difficulty), result,
+        result >= difficulty and "SUCCESS" or "FAILURE"))
 
     return result >= difficulty, result
 end
@@ -107,6 +108,8 @@ function _M:bumpInto(target)
         self:useEnergy(game.energy_to_act * speed)
     elseif reaction >= 0 then
         if self.move_others then
+            if target.move_others and self ~= game.player then return end
+
             -- Displace
             game.level.map:remove(self.x, self.y, Map.ACTOR)
             game.level.map:remove(target.x, target.y, Map.ACTOR)
@@ -176,14 +179,15 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     if not Qi.isFocused(self) then
         if not self:skillCheck(atk, def) or not (self:canReallySee(target) or self:attr("blind_fight") or rng.chance(2)) then
             if is_melee then
-                game.logSeen2(self, target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName())
+                game.logSeen2(self, target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName(self))
             else
-                game.logSeen(target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName())
+                game.logSeen(target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName(self))
             end
             return 1, false
         end
     end
 
+    -- TODO: Should Qi Focus ignore armor as well?
     local dam = self:combatDamage(combat) * mult
     dam = dam - target:combatArmor() -- TODO? As implemented, this armor ignores damtype - should it?
     dam = math.max(0, math.round(dam))
@@ -289,7 +293,13 @@ function _M:combatDamageRange(combat, mult)
 end
 
 function _M:combatArmor()
-    return rng.range(0, self.combat_armor or 0)
+    local min, max = self:combatArmorRange()
+    return rng.range(min, max)
+end
+
+function _M:combatArmorRange()
+    -- Natural armor is more reliable than untrained external armor.
+    return (self.combat_natural_armor or 0) / 2, (self.combat_natural_armor or 0) + (self.combat_armor or 0)
 end
 
 --- Gets a "talent power", in the same scale as values used for combatAttack,

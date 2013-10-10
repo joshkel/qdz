@@ -59,6 +59,7 @@ function _M:init(t, no_default)
 
     -- Define some basic stats
     self.combat_armor = 0
+    self.combat_natural_armor = 0
     self.combat_atk = 0
     self.combat_def = 0
     self.combat_dam = 0
@@ -152,6 +153,15 @@ function _M:move(x, y, force)
     local target = game.level.map(x, y, Map.ACTOR)
     if force or self:enoughEnergy(move_energy) then
 
+        -- Never move, but allow attacking.
+        if not force and self:attr("never_move") then
+            -- Copied from ToME - this asks the collision code to check for attacking
+            if not game.level.map:checkAllEntities(x, y, "block_move", self, true) then
+                game.logPlayer(self, "You are unable to move!")
+            end
+            return false
+        end
+
         -- random_move gives a percentage chance for movements to be random,
         -- but only if we're truly moving (not trying to attack).
         --
@@ -204,36 +214,52 @@ function _M:setEffect(eff_id, dur, p, silent)
     end
 end
 
+function _M:resolveSource()
+    if self.summoner_gain_exp and self.summoner then
+        return self.summoner:resolveSource()
+    else
+        return self
+    end
+end
+
 --- Gets this actor's name, formatted for use in a log message.
 --- (This is thus somewhat player-centric in its wordings and assumptions.)
 function _M:getLogName()
     if self == game.player or (game.level.map.seens(self.x, self.y) and game.player:canSee(self)) then
-        return self.name
+        return self.name, true
     else
-        return "something"
+        return "something", false
     end
 end
 
 --- Gets this actor's name, formatted for use in a damage or effect source message.
 --- (This is thus somewhat player-centric in its wordings and assumptions.)
 function _M:getSrcName()
-    local name = self:getLogName()
+    local name, seen = self:getLogName()
 
     -- Note that we assume that we're being called from a damage projector or
     -- similar and thus have access to intermediate.  If not, it's harmless.
     local intermediate = Qi.getIntermediate(self)
 
     if intermediate ~= self and intermediate.damage_message_use_name then
-        name = ("%s's %s"):format(name, intermediate.name)
+        if seen then
+            name = ("%s's %s"):format(name, intermediate.name)
+        else
+            name = string.a(intermediate.name)
+        end
     end
 
-    return name
+    return name, seen
 end
 
 --- Gets this actor's name, formatted for use in a damage or effect target message.
 --- See also getSrcName.
-function _M:getTargetName()
-    return self:getLogName()
+function _M:getTargetName(src)
+    if src == self then
+        return string.himself(self)
+    else
+        return self:getLogName()
+    end
 end
 
 function _M:tooltip()
@@ -293,11 +319,14 @@ function _M:die(src)
     self:checkAngered(src)
 
     -- Gives the killer some exp for the kill
-    if src and src.gainExp then
-        src:gainExp(self:worthExp(src))
+    local killer
+    if src and src.resolveSource and src:resolveSource().gainExp then
+        killer = src:resolveSource()
+        killer:gainExp(self:worthExp(killer))
     end
 
     -- Cancel First Blessing: Virtue if appropriate
+    -- TODO: Should we also check src:resolveSource() (e.g., summoned creatures)?
     if src:isTalentActive(src.T_BLESSING_VIRTUE) and not src:getTalentFromId(src.T_BLESSING_VIRTUE).canKill(src, self) then
         src:forceUseTalent(src.T_BLESSING_VIRTUE, {ignore_energy=true})
     end
@@ -325,11 +354,12 @@ function _M:levelup()
 end
 
 --- Notifies a change of stat value
---- TODO: Also need to change on temporary values??
 function _M:onStatChange(stat, v)
     if self.incomplete then return end
 
-    if stat == self.STAT_CON then
+    if stat == self.STAT_STR then
+        self:checkEncumbrance()
+    elseif stat == self.STAT_CON then
         self.max_life = self.max_life + 1 * v
     elseif stat == self.STAT_MND then
         self.max_qi = self.max_qi + 1 * v
@@ -372,8 +402,8 @@ function _M:preUseTalent(ab, silent, fake)
     end
 
     if not fake and self:attr("confused") and not ab.reliable and (ab.mode ~= "sustained" or not self:isTalentActive(ab.id)) and rng.percent(self.confused) then
-        game.logSeen(self, "%s is confused and fails to use %s.", self.name:capitalize(), ab.name)
-	self:useEnergy()
+        if not silent then game.logSeen(self, "%s is confused and fails to use %s.", self.name:capitalize(), ab.name) end
+        self:useEnergy()
         return false
     end
 
@@ -543,7 +573,7 @@ function _M:canBe(what)
     if what == "fear" and rng.percent(100 * (self:attr("fear_immune") or 0)) then return false end
 
     -- Note that knockback also covers knockdown.
-    if what == "knockback" and rng.percent(100 * (self:attr("knockback_immune") or 0)) then return false end
+    if what == "knockback" and (rng.percent(100 * (self:attr("knockback_immune") or 0)) or self:attr("never_move")) then return false end
 
     if what == "instakill" and rng.percent(100 * (self:attr("instakill_immune") or 0)) then return false end
 
@@ -558,8 +588,12 @@ function _M:resetTalentCooldowns()
 end
 
 function _M:getMaxEncumbrance()
-    -- FIXME: Different math here
-	return math.floor(40 + self:getStr() * 1.8 + (self.max_encumber or 0))
+    -- For comparison, D20 says a heavy load starts at 67 lbs. for strength 10,
+    -- 267 lbs for strength 20.
+    --
+    -- This number is really chosen to try and make for interesting inventory
+    -- decisions, not for any attempt at realism.
+    return 30 + self:getStr() * 2 + (self.max_encumber or 0)
 end
 
 function _M:getEncumbrance()
@@ -573,6 +607,40 @@ function _M:getEncumbrance()
     end
 
     return math.floor(enc)
+end
+
+function _M:checkEncumbrance()
+    local enc, max = self:getEncumbrance(), self:getMaxEncumbrance()
+
+    -- We are pinned to the ground if we carry too much
+    if not self.encumbered and enc > max then
+        game.logPlayer(self, "#FF0000#You are carrying too much and are unable to move.#LAST#")
+        self.encumbered = self:addTemporaryValue("never_move", 1)
+
+        if self.x and self.y then
+            local sx, sy = game.level.map:getTileToScreen(self.x, self.y)
+            game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, rng.float(-2.5, -1.5), "+OVERBURDENED!", {255,0,0}, true)
+        end
+    elseif self.encumbered and enc <= max then
+        self:removeTemporaryValue("never_move", self.encumbered)
+        self.encumbered = nil
+        game.logPlayer(self, "#00FF00#You are no longer overburdened.#LAST#")
+
+        if self.x and self.y then
+            local sx, sy = game.level.map:getTileToScreen(self.x, self.y)
+            game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, rng.float(-2.5, -1.5), "-OVERBURDENED!", {255,0,0}, true)
+        end
+    end
+end
+
+function _M:onAddObject(o)
+    engine.interface.ActorInventory.onAddObject(self, o)
+    self:checkEncumbrance()
+end
+
+function _M:onRemoveObject(o)
+    engine.interface.ActorInventory.onRemoveObject(self, o)
+    self:checkEncumbrance()
 end
 
 function _M:incMoney(v)
