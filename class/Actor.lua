@@ -326,6 +326,7 @@ function _M:die(src)
     end
 
     -- Cancel First Blessing: Virtue if appropriate
+    -- TODO: Should we also check src:resolveSource() (e.g., summoned creatures)?
     if src:isTalentActive(src.T_BLESSING_VIRTUE) and not src:getTalentFromId(src.T_BLESSING_VIRTUE).canKill(src, self) then
         src:forceUseTalent(src.T_BLESSING_VIRTUE, {ignore_energy=true})
     end

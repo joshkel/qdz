@@ -305,7 +305,7 @@ newTalent {
     name = "Hive Mind",
     type = {"qi techniques/head", 1},
     cooldown = 20,
-    qi = 5,
+    qi = 8,
     range = 5,
     no_npc_use = true,
     target = function(self, t) return {type="hit", range=self:getTalentRange(t) } end,
@@ -326,17 +326,15 @@ newTalent {
 
         if not self:skillCheck(self:talentPower(self:getMnd()) + t.check_modifier, target:willSave()) then
             game.logSeen(target, ("%s resists the mental assault."):format(target.name:capitalize()))
-            return true
+            return true, { ignore_cd = true }
         end
 
         -- Gain experience for defeating the monster.
         self:gainExp(target:worthExp(self))
         target.exp_worth = 0
 
-        -- FIXME: More robust version: make allies follow you to other levels, but limit the number you can have.  Increase qi cost and maybe decrease failure rate once that's done?
-        -- Test interaction with First Blessing: Virtue and Focus Qi.
-        -- Tooltip for ally.
-        -- What about angering allies?
+        -- FIXME: More robust version: make allies follow you to other levels, but limit the number you can have.  Adjust cost, cooldown, failure rate once that's done?
+        -- TODO: Pull into proper party member code.  Add provision for angering allies?
 
         game.logSeen(target, ("%s's mind is dominated!"):format(target.name:capitalize()))
 
@@ -352,7 +350,7 @@ newTalent {
     end,
 
     info = function(self, t)
-        return flavorText("Attempts to dominate an insect's mind, causing it to view you as its hive queen and turning it into your ally until you leave the current level. The chance of success is based on your Mind compared to the insect's Will save.")
+        return flavorText("Attempts to dominate an insect's mind, causing it to view you as its hive queen and turning it into your ally until you leave the current level. The chance of success is based on your Mind compared to the insect's Will save.\n\nThis technique only incurs a cooldown if it succeeds.")
     end,
 }
 
