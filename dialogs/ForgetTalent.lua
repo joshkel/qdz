@@ -75,9 +75,7 @@ function _M:init(actor, newest_tid)
     if newest_tid then
         self.key:addBinds{
             EXIT = function()
-                Dialog:yesnoPopup(self.title, ("Give up on learning %s?"):format(self.newest_talent.name), function(ok)
-                    if ok then self:finishForget(self.newest_talent) end
-                end)
+                self:use({talent = self.newest_talent.id })
             end,
         }
     end
@@ -94,20 +92,20 @@ function _M:use(item)
 
     local talent = self.actor:getTalentFromId(item.talent)
     local msg
-    if self.newest_talent then
-        msg = ("Unlearn %s so you can learn %s?"):format(talent.name, self.newest_talent.name)
-    else
+    if not self.newest_talent then
         msg = ("Unlearn %s?"):format(talent.name)
+    elseif self.newest_talent.id == talent.id then
+        msg = ("Give up on learning %s?"):format(self.newest_talent.name)
+    else
+        msg = ("Unlearn %s so you can learn %s?"):format(talent.name, self.newest_talent.name)
     end
 
     Dialog:yesnoPopup(self.title, msg, function(ok)
-        if ok then self:finishForget(talent) end
+        if ok then 
+            game:unregisterDialog(self)
+            game.logPlayer(self.actor, ("You unlearn %s."):format(talent.name))
+            self.actor:unlearnTalent(talent.id)
+        end
     end)
-end
-
-function _M:finishForget(talent)
-    game:unregisterDialog(self)
-    game.logPlayer(self.actor, ("You unlearn %s."):format(talent.name))
-    self.actor:unlearnTalent(talent.id)
 end
 
