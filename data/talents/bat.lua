@@ -311,7 +311,7 @@ newTalent {
     end,
 
     info = function(self, t)
-        return ("Adds %f to your life regeneration as long as you're standing in an unlit area (whether or not you're carrying a light source).\n\nIf you're in total darkness (an unlit area and no light source), adds a total of %f to your life regeneration."):format(t.life_regen, t.life_regen * 2)
+        return ("Adds %.2f to your life regeneration as long as you're standing in an unlit area (whether or not you're carrying a light source).\n\nIf you're in total darkness (an unlit area and no light source), adds a total of %.2f to your life regeneration."):format(t.life_regen, t.life_regen * 2)
     end
 }
 

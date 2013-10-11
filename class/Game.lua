@@ -497,9 +497,9 @@ end
 
 --- Right mouse click on the map
 function _M:mouseRightClick(mx, my, extra)
-	if not self.level then return end
-	local tmx, tmy = self.level.map:getMouseTile(mx, my)
-	self:registerDialog(MapMenu.new(mx, my, tmx, tmy))
+    if not self.level then return end
+    local tmx, tmy = self.level.map:getMouseTile(mx, my)
+    self:registerDialog(MapMenu.new(mx, my, tmx, tmy))
 end
 
 -- Quit to main menu
@@ -507,33 +507,33 @@ function _M:onQuit()
     self.player:runStop("quitting")
     self.player:restStop("quitting")
 
-	if not self.quit_dialog and not self.player.dead and not self:hasDialogUp() then
-		self.quit_dialog = Dialog:yesnoPopup("Save and exit to the menu?", "Save and exit to the menu?", function(ok)
-			if ok then
-				self:saveGame()
+    if not self.quit_dialog and not self.player.dead and not self:hasDialogUp() then
+        self.quit_dialog = Dialog:yesnoPopup("Save and exit to the menu?", "Save and exit to the menu?", function(ok)
+            if ok then
+                self:saveGame()
                 util.showMainMenu()
-			end
-			self.quit_dialog = nil
-		end)
-	end
+            end
+            self.quit_dialog = nil
+        end)
+    end
 end
 
 -- Exit game
 function _M:onExit()
-	self.player:runStop("quitting")
-	self.player:restStop("quitting")
+    self.player:runStop("quitting")
+    self.player:restStop("quitting")
 
-	if not self.quit_dialog and not self.player.dead and not self:hasDialogUp() then
-		self.quit_dialog = Dialog:yesnoPopup("Save and exit game?", "Save and exit game?", function(ok)
-			if ok then
-				-- savefile_pipe is created as a global by the engine
-				self:saveGame()
-				savefile_pipe:forceWait()
-				os.exit()
-			end
-			self.quit_dialog = nil
-		end)
-	end
+    if not self.quit_dialog and not self.player.dead and not self:hasDialogUp() then
+        self.quit_dialog = Dialog:yesnoPopup("Save and exit game?", "Save and exit game?", function(ok)
+            if ok then
+                -- savefile_pipe is created as a global by the engine
+                self:saveGame()
+                savefile_pipe:forceWait()
+                os.exit()
+            end
+            self.quit_dialog = nil
+        end)
+    end
 end
 
 --- Requests the game to save

@@ -19,19 +19,18 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require "engine.class"
-local Dialog = require "engine.ui.Dialog"
+local ListTalents = require "mod.dialogs.ListTalents"
 local ListColumns = require "engine.ui.ListColumns"
 local Textzone = require "engine.ui.Textzone"
 local TextzoneList = require "engine.ui.TextzoneList"
 local Separator = require "engine.ui.Separator"
 local GameUI = require "mod.class.ui.GameUI"
 
-module(..., package.seeall, class.inherit(Dialog))
+module(..., package.seeall, class.inherit(ListTalents))
 
 function _M:init(actor)
-    self.actor = actor
     actor.hotkey = actor.hotkey or {}
-    Dialog.init(self, "Use Techniques: "..actor.name, game.w * 0.7, game.h * 0.7)
+    ListTalents.init(self, actor, "Use Techniques", game.w * 0.7, game.h * 0.7)
 
     local tut_text = tstring{[[
 You can bind a technique to a hotkey be pressing the corresponding hotkey while selecting a technique.
@@ -48,7 +47,7 @@ Check out the keybinding screen in the game menu to bind hotkeys to a key (defau
     self.c_tut = Textzone.new{width=math.floor(self.iw / 2 - 10), height=1, auto_height=true, no_color_bleed=true, text=tut_text}
     self.c_desc = TextzoneList.new{width=math.floor(self.iw / 2 - 10), height=self.ih - self.c_tut.h - 20, scrollbar=true, no_color_bleed=true}
 
-    self:generateList()
+    self:generateList(false, false)
 
     self.c_list = ListColumns.new{width=math.floor(self.iw / 2 - 10), height=self.ih - 10, sortable=true, scrollbar=true, columns={
         {name="", width={GameUI.one_letter,"fixed"}, display_prop="char", sort="id"},
@@ -105,50 +104,3 @@ function _M:use(item)
     self.actor:useTalent(item.talent)
 end
 
-function _M:generateList()
-    -- Makes up the list
-    local list = {}
-    list.chars = {}
-    local letter = 1
-    for i, tt in ipairs(self.actor.talents_types_def) do
-        local cat = tt.type:gsub("/.*", "")
-        local where = #list
-        local added = false
-
-        -- Find all talents of this type
-        for j, t in ipairs(tt.talents) do
-            if self.actor:knowTalent(t.id) then
-                local status = tstring{{"color", "LIGHT_GREEN"}, "Active"}
-                if self.actor:isTalentCoolingDown(t) then
-                    status = tstring{{"color", "LIGHT_RED"}, self.actor:isTalentCoolingDown(t).." turns"}
-                elseif t.mode == "sustained" then
-                    status = self.actor:isTalentActive(t.id) and tstring{{"color", "YELLOW"}, "Sustaining"} or tstring{{"color", "LIGHT_GREEN"}, "Sustain"}
-                elseif t.mode == "passive" then
-                    status = tstring{{"color", "GREY"}, "Passive"}
-                end
-
-                if t.mode == "passive" then
-                    list[#list+1] = { char="", name=t.name, status=status, desc=self.actor:getTalentFullDescription(t) }
-                else
-                    list[#list+1] = { char=self:makeKeyChar(letter), name=t.name, status=status, talent=t.id, desc=self.actor:getTalentFullDescription(t) }
-                    list.chars[self:makeKeyChar(letter)] = list[#list]
-                    if not self.sel then self.sel = #list + 1 end
-                    letter = letter + 1
-                end
-
-                added = true
-            end
-        end
-
-        if added then
-            table.insert(list, where+1, { char="", name=tstring{{"font","bold"}, cat:capitalize().." / "..tt.name:capitalize(), {"font","normal"}}, type=tt.type, color={0x80, 0x80, 0x80}, status="", desc=tt.description })
-            if where ~= 0 then 
-                -- If this isn't the first category we've added, insert a blank
-                -- line between categories.
-                table.insert(list, where+1, { char="", name=tstring{}, type=tt.type, color={0x80, 0x80, 0x80}, status="" })
-            end
-        end
-    end
-    for i = 1, #list do list[i].id = i end
-    self.list = list
-end

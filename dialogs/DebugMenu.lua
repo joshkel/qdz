@@ -34,6 +34,20 @@ function _M:useItem(item)
     if act == "full_heal" then game.player:resetToFull() game.player.changed = true end
     if act == "learn_technique" then game:registerDialog(require("mod.dialogs.DebugLearnTechnique").new()) end
     if act == "create_item" then game:registerDialog(require("mod.dialogs.DebugCreateItem").new()) end
+    if act == "reload_ui" then self:reloadUI() end
+end
+
+--- Reload what we can of the UI, to test changes without reloading the whole
+--- game.
+---
+--- For now, this reloads custom dialogs (only).  That should be safe.
+function _M:reloadUI()
+    for k, v in pairs(package.loaded) do
+        if k:startsWith("mod.dialogs.") then
+            print(("reloading %s"):format(k))
+            package.loaded[k] = nil
+        end
+    end
 end
 
 function _M:generateListContents()
@@ -43,6 +57,8 @@ function _M:generateListContents()
     list[#list+1] = {name="Full Heal", action="full_heal"}
     list[#list+1] = {name="Learn Qi Technique", action="learn_technique"}
     list[#list+1] = {name="Create Item", action="create_item"}
+    list[#list+1] = {name="Reload UI", action="reload_ui"}
 
     return list
 end
+

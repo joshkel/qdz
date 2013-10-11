@@ -187,9 +187,12 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
         end
     end
 
-    -- TODO: Should Qi Focus ignore armor as well?
     local dam = self:combatDamage(combat) * mult
-    dam = dam - target:combatArmor() -- TODO? As implemented, this armor ignores damtype - should it?
+    if Qi.isFocused(self) then
+        dam = dam - target:combatArmorRange()
+    else    
+        dam = dam - target:combatArmor() -- TODO? As implemented, this armor ignores damtype - should it?
+    end
     dam = math.max(0, math.round(dam))
 
     if damargs then

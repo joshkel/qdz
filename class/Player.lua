@@ -27,7 +27,6 @@ require "engine.interface.PlayerHotkeys"
 local Map = require "engine.Map"
 local Dialog = require "engine.Dialog"
 local Talents = require "engine.interface.ActorTalents"
-local DeathDialog = require "mod.dialogs.DeathDialog"
 local Astar = require "engine.Astar"
 local DirectPath = require "engine.DirectPath"
 local Qi = require "mod.class.interface.Qi"
@@ -173,7 +172,7 @@ function _M:die(src)
         engine.interface.ActorLife.die(self, src)
         game.paused = true
         self.energy.value = game.energy_to_act
-        game:registerDialog(DeathDialog.new(self))
+        game:registerDialog(require("mod.dialogs.DeathDialog").new(self))
     else
         mod.class.Actor.die(self, src)
     end
@@ -186,6 +185,7 @@ end
 
 --- Notify the player of available cooldowns
 function _M:onTalentCooledDown(tid)
+    if not self:knowTalent(tid) then return end
     local t = self:getTalentFromId(tid)
 
     local x, y = game.level.map:getTileToScreen(self.x, self.y)
@@ -391,10 +391,10 @@ function _M:getTechniqueLimit()
     return self.level + 1
 end
 
-function _M:checkTechniqueLimit()
+function _M:checkTechniqueLimit(newest_tid)
     if self:getTechniqueCount() <= self:getTechniqueLimit() then return end
 
-    -- TODO
+    game:registerDialog(require("mod.dialogs.ForgetTalent").new(self, newest_tid))
 end
 
 --- Absorbs the qi technique from a slain opponent (given by src)
@@ -430,7 +430,7 @@ function _M:absorbTechnique(src)
     end
     self:learnTalent(t_id, true)
 
-    self:checkTechniqueLimit()
+    self:checkTechniqueLimit(t_id)
 
     return true
 end

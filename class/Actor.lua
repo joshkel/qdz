@@ -283,8 +283,9 @@ function _M:tooltip()
     -- TODO: Find equipped item instead of self.combat?  Display damage?
     text:add(true, color.caption, 'Attack: ', color.text, tostring(self:combatAttack(self.combat)))
 
-    -- TODO: Display armor?
     text:add(true, color.caption, 'Defense: ', color.text, tostring(self:combatDefense()))
+    local armor_min, armor_max = self:combatArmorRange()
+    text:add(true, color.caption, 'Armor: ', color.text, string.describe_range(armor_min, armor_max))
 
     for tid, act in pairs(self.sustain_talents) do
         if act then text:add(true, color.text, ' - ', color.good, self:getTalentFromId(tid).name) end
@@ -380,6 +381,16 @@ function _M:heal(value, src)
     else
         game.flyers:add(sx, sy, 30, (rng.range(0,2)-1) * 0.5, -3, '+'..tostring(math.ceil(value)), {255,0,0})
     end
+end
+
+function _M:unlearnTalent(t_id, nb)
+    if not engine.interface.ActorTalents.unlearnTalent(self, t_id, nb) then return false end
+
+    local t = _M.talents_def[t_id]
+
+    if not self:knowTalent(t_id) and t.mode == "sustained" and self:isTalentActive(t_id) then self:forceUseTalent(t_id, {ignore_energy=true}) end
+
+    return true
 end
 
 --- Called before a talent is used
