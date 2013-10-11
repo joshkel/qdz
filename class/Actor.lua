@@ -690,3 +690,18 @@ function _M:getAbsorbSlot()
     end
 end
 
+function _M:getTechniqueCount()
+    local nb = 0
+    for id, _ in pairs(self.talents) do
+        local t = self.talents_def[id]
+        if t.type[1]:startsWith("qi techniques/") then nb = nb + 1 end
+    end
+    return nb
+end
+
+--- Gets the maximum number of qi techniques that an actor can learn.
+function _M:getTechniqueLimit()
+    -- Only Player can dynamically learn techniques.
+    return 0
+end
+

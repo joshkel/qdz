@@ -387,10 +387,18 @@ function _M:doTakeoff(inven, item, o)
     self.changed = true
 end
 
+function _M:getTechniqueLimit()
+    return self.level + 1
+end
+
+function _M:checkTechniqueLimit()
+    if self:getTechniqueCount() <= self:getTechniqueLimit() then return end
+
+    -- TODO
+end
+
 --- Absorbs the qi technique from a slain opponent (given by src)
 function _M:absorbTechnique(src)
-    -- FIXME: Replace this with the full implementation (limited # of techniques,
-    -- tracking the order learned and update Use Talents screen to match (?), etc.).
     local typ = self:getAbsorbSlot()
     print(("ABSORB TECHNIQUE: getAbsorbSlot = %s"):format(typ or "nil"))
 
@@ -421,6 +429,9 @@ function _M:absorbTechnique(src)
             src.name, Qi.slots_def[typ].desc, self:getTalentDisplayName(t)))
     end
     self:learnTalent(t_id, true)
+
+    self:checkTechniqueLimit()
+
     return true
 end
 

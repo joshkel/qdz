@@ -33,11 +33,19 @@ function _M:init(actor)
     actor.hotkey = actor.hotkey or {}
     Dialog.init(self, "Use Techniques: "..actor.name, game.w * 0.7, game.h * 0.7)
 
-    self.c_tut = Textzone.new{width=math.floor(self.iw / 2 - 10), height=1, auto_height=true, no_color_bleed=true, text=[[
+    local tut_text = tstring{[[
 You can bind a technique to a hotkey be pressing the corresponding hotkey while selecting a technique.
 
 Check out the keybinding screen in the game menu to bind hotkeys to a key (default is 1-0 plus control or shift).
 ]]}
+
+    if self.actor == game.player then
+        tut_text = tut_text:merge{true, "You can learn up to ", GameUI.tooltipColor.use, tostring(self.actor:getTechniqueLimit()),
+            "#LAST# qi techniques at this level. You currently know ", GameUI.tooltipColor.use, tostring(self.actor:getTechniqueCount()),
+            "#LAST#.", true}
+    end
+
+    self.c_tut = Textzone.new{width=math.floor(self.iw / 2 - 10), height=1, auto_height=true, no_color_bleed=true, text=tut_text}
     self.c_desc = TextzoneList.new{width=math.floor(self.iw / 2 - 10), height=self.ih - self.c_tut.h - 20, scrollbar=true, no_color_bleed=true}
 
     self:generateList()
