@@ -171,6 +171,26 @@ function _M:drawDialog(kind)
                 GameUI:tooltipTitle('Money'):merge{true, GameUI.money_desc}) h = h + self.font_h
         end
 
+        if player.can_absorb then
+            h = h + self.font_h
+            self:drawString(s, ("#GOLD##{bold}#Available Techniques#{normal}##LAST#"):format(player:getQi(), player.max_qi), w, h,
+                GameUI:tooltipTitle('Available Techniques'):merge{true, "You can learn these techniques if you kill this opponent while your qi is focused."}) h = h + self.font_h
+            local absorb_count = #table.keys(player.can_absorb)
+            local any_slot = { 'any', absorb_count > 1 and 'Other ' or 'Any   ' }
+            for i, v in pairs({ { 'rhand', 'R.hand' }, { 'lhand', 'L.hand' }, { 'chest', 'Chest ' }, { 'feet', 'Feet  ' }, { 'head', 'Head  ' }, any_slot }) do
+                if player.can_absorb[v[1]] then
+                    local talent = player:getTalentFromId(player.can_absorb[v[1]])
+                    local known = profile.mod.techniques and profile.mod.techniques.techniques and profile.mod.techniques.techniques[talent.id]
+                    if known then
+                        self:drawString(s, tstring{color.caption, v[2], ': ', color.text, talent.name}:toString(), w, h,
+                            GameUI:tooltipTitle(talent.name):add(true):merge(game.player:getTalentFullDescription(talent))) h = h + self.font_h
+                    else
+                        self:drawString(s, tstring{color.caption, v[2], ': #777777#???'}:toString(), w, h) h = h + self.font_h
+                    end
+                end
+            end
+        end
+
         -- Second column: Attributes
         h = 0
         w = self.w * 0.25

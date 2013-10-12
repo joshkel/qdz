@@ -411,6 +411,9 @@ function _M:setupCommands()
         EXIT = function()
             local menu menu = require("engine.dialogs.GameMenu").new{
                 "resume",
+                { "Inventory", function() self:unregisterDialog(menu) self.key:triggerVirtual("SHOW_INVENTORY") end },
+                { "Character Sheet", function() self:unregisterDialog(menu) self.key:triggerVirtual("SHOW_CHARACTER_SHEET") end },
+                --{ "Show Techniques Learned", function() self:unregisterDialog(menu) self:registerDialog(require("mod.dialogs.ShowTechniquesLearned").new()) end },  TODO
                 "keybinds",
                 "video",
                 "save",

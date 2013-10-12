@@ -87,6 +87,7 @@ function string.pluralize(s, n)
 end
 
 --- Adds an indefinite article to s.  Special cases will be added as needed.
+--- See also T-Engine's string.a_an.
 function string.a(s)
     if string.vowels[s:sub(1, 1)] then
         return "an " .. s
@@ -95,6 +96,7 @@ function string.a(s)
     end
 end
 
+--- See also T-Engine's string.his_her.
 function string.his(t)
     if t.male then return "his"
     elseif t.female then return "her"
@@ -109,6 +111,7 @@ function string.he(t)
     end
 end
 
+--- See also T-Engine's string.his_her_self.
 function string.himself(t)
     if t.male then return "himself"
     elseif t.female then return "herself"

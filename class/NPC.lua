@@ -60,6 +60,19 @@ end
 function _M:tooltip()
     local color = GameUI.tooltipColor
     local text = mod.class.Actor.tooltip(self)
+
+    -- Sample code for displaying available qi techniques in tooltips.
+    -- Disabled for now; it makes the tooltips too verbose.
+    --[[if self.can_absorb then
+        local absorb_count = #table.keys(self.can_absorb)
+        text:add(true, color.caption, 'Available Qi Techniques')
+        for i, v in pairs(Qi.slots_order) do
+            if self.can_absorb[v] then
+                text:add(true, color.caption, Qi.slots_def[v].desc:capitalize(), ': ', color.text, self:getTalentFromId(self.can_absorb[v]).name)
+            end
+        end
+    end]]
+
     if config.settings.cheat then
         text:add(true, color.caption, 'Target: ', color.text, self.ai_target.actor and self.ai_target.actor.name or "none")
         text:add(true, color.caption, 'UID: ', color.text, tostring(self.uid))
@@ -72,3 +85,4 @@ function _M:aiCanPass(x, y)
     if self:attr("forbid_diagonals") and self.x ~= x and self.y ~= y then return false end
     return ActorAI.aiCanPass(self, x, y)
 end
+

@@ -430,6 +430,9 @@ function _M:absorbTechnique(src)
     end
     self:learnTalent(t_id, true)
 
+    -- Mark this technique as seen.
+    profile:saveModuleProfile("techniques", {tid=t_id, nb={"inc",1}})
+
     self:checkTechniqueLimit(t_id)
 
     return true

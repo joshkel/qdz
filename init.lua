@@ -40,3 +40,10 @@ background_name = {
     "peach_festival" -- https://en.wikipedia.org/wiki/File:Freer_019.jpg
 }
 
+profile_stats_fields = { "techniques" }
+profile_defs = {
+    techniques = { {tid="index:string:30"},
+        receive=function(data, save) save.techniques = save.techniques or {} save.techniques[data.tid] = true end,
+        export=function(env) for k, v in pairs(env.techniques) do add{tid=k, nb=v} end end }
+}
+
