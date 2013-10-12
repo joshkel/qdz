@@ -174,18 +174,30 @@ function _M:drawDialog(kind)
         if player.can_absorb then
             h = h + self.font_h
             self:drawString(s, ("#GOLD##{bold}#Available Techniques#{normal}##LAST#"):format(player:getQi(), player.max_qi), w, h,
-                GameUI:tooltipTitle('Available Techniques'):merge{true, "You can learn these techniques if you kill this opponent while your qi is focused."}) h = h + self.font_h
+                GameUI:tooltipTitle('Available Techniques'):merge{true, "You can learn these techniques if you kill this creature while your qi is focused."}) h = h + self.font_h
             local absorb_count = #table.keys(player.can_absorb)
-            local any_slot = { 'any', absorb_count > 1 and 'Other ' or 'Any   ' }
-            for i, v in pairs({ { 'rhand', 'R.hand' }, { 'lhand', 'L.hand' }, { 'chest', 'Chest ' }, { 'feet', 'Feet  ' }, { 'head', 'Head  ' }, any_slot }) do
+            local slots = {
+                { 'rhand', 'R.hand', 'Killing this creature with a right-handed or two-handed attack while focused lets you learn ' },
+                { 'lhand', 'L.hand', 'Killing this creature with a left-handed attack or ranged weapon while focused lets you learn ' },
+                { 'chest', 'Chest ', 'Killing this creature with a bash while focused lets you learn ' },
+                { 'feet',  'Feet  ', 'Killing this creature with a kick while focused lets you learn ' },
+                { 'head',  'Head  ', 'Killing this creature with a qi technique while focused lets you learn ' }
+            }
+            if absorb_count > 1 then
+                slots[#slots+1] = { 'any', 'Other ', 'Killing this creature in another fashion while focused lets you learn ' }
+            else
+                slots[#slots+1] = { 'any', 'Any   ', 'Killing this creature by any means while focused lets you learn ' }
+            end
+            for i, v in pairs(slots) do
                 if player.can_absorb[v[1]] then
                     local talent = player:getTalentFromId(player.can_absorb[v[1]])
                     local known = profile.mod.techniques and profile.mod.techniques.techniques and profile.mod.techniques.techniques[talent.id]
                     if known then
                         self:drawString(s, tstring{color.caption, v[2], ': ', color.text, talent.name}:toString(), w, h,
-                            GameUI:tooltipTitle(talent.name):add(true):merge(game.player:getTalentFullDescription(talent))) h = h + self.font_h
+                            tstring{v[3]}:add('this technique.', true, true):merge(GameUI:tooltipTitle(talent.name)):add(true):merge(game.player:getTalentFullDescription(talent))) h = h + self.font_h
                     else
-                        self:drawString(s, tstring{color.caption, v[2], ': #777777#???'}:toString(), w, h) h = h + self.font_h
+                        self:drawString(s, tstring{color.caption, v[2], ': #777777#???'}:toString(), w, h,
+                            tstring{v[3], 'a new technique.'}) h = h + self.font_h
                     end
                 end
             end
