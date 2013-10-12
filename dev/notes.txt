@@ -1,8 +1,7 @@
 To do:
 Why do I get an "offline" error message, even after uploading?
 Basic game mechanics: shields
-AI is quite bad - if there's a row of monsters, does the second one step around the first to double-team you?  One monster will throw a dart at another's back.
-Fully implement absorbing abilities
+AI is quite bad - if there's a row of monsters, does the second one step around the first to double-team you?  One monster will throw a dart at another's back. Fire ants toss flame slash with no one in range.
 Flasher needs to not go off the edge of the screen
 Random name generator
 Critical hits
@@ -10,9 +9,6 @@ Left vs right hand
 Quick switch weapons???
 Not sure that dig speed is working right - monsters may get a free move afterwards, and displayed number of turns is always 1 greater than intended digspeed
 What to do about fractional HP?  It stinks to think you do enough damage to kill a foe and find out you haven't...
-Redraw FOV / light radius when light radius changes
-Penalties for blind fighting (e.g., throwing a dart outside of light radius)
-Inventory - encumbrance (doesn't seem to work); better inventory limits
 
 To do a while later:
 Logo

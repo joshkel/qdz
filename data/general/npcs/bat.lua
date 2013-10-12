@@ -63,6 +63,7 @@ newEntity{ base = "BASE_NPC_BAT",
 -- anachronism.
 newEntity{ base = "BASE_NPC_BAT",
     name = "cave bat",
+    color=colors.GREY,
     level_range = {2, 6}, exp_worth = 1,
     rarity = 5,
     max_life = resolvers.rngavg(4,8),

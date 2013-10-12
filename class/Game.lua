@@ -386,11 +386,14 @@ function _M:setupCommands()
         SHOW_INVENTORY = function()
             if self.player.no_inventory_access then return end
             local d
+            local titleupdater = self.player:getEncumberTitleUpdater("Inventory")
+
             d = self.player:showEquipInven("Inventory", nil, function(o, inven, item, button, event)
                 if not o then return end
                 local ud = require("mod.dialogs.UseItemDialog").new(event == "button", self.player, o, item, inven, function(_, _, _, stop)
                     d:generate()
                     d:generateList()
+                    d:updateTitle(titleupdater())
 
                     -- In case player added or removed a light source.
                     self.player:doFOV()

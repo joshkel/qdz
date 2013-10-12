@@ -217,7 +217,7 @@ newTalent {
     name = "Dancing Lights",
     type = {"qi techniques/feet", 1},
     cooldown = 6,
-    qi = 2,
+    qi = 5,
     range = function(self, t) return self.lite or 0 end,
     target = function(self, t)
          return {type="hit", range=self:getTalentRange(t), nowarning=true, nolock=true, talent=t}

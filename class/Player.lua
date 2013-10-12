@@ -264,7 +264,7 @@ function _M:mouseMove(tmx, tmy)
     return engine.interface.PlayerMouse.mouseMove(self, tmx, tmy, spotHostiles)
 end
 
-function _M:getEncumberTitleUpdator(title)
+function _M:getEncumberTitleUpdater(title)
     return function()
         local enc, max = self:getEncumbrance(), self:getMaxEncumbrance()
         local color = "#00ff00#"
@@ -278,12 +278,12 @@ end
 
 function _M:showEquipInven(title, filter, action, on_select, inven)
     return engine.interface.ActorInventory.showEquipInven(self,
-        self:getEncumberTitleUpdator(title)(), filter, action, on_select, inven)
+        self:getEncumberTitleUpdater(title)(), filter, action, on_select, inven)
 end
 
 function _M:showInventory(title, inven, filter, action)
     return engine.interface.ActorInventory.showInventory(self,
-        self:getEncumberTitleUpdator(title)(), inven, filter, action)
+        self:getEncumberTitleUpdater(title)(), inven, filter, action)
 end
 
 function _M:playerPickup()
