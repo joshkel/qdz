@@ -229,7 +229,7 @@ newTalent {
     name = "Burning Hand",
     type = {"qi techniques/left hand", 1},
     mode = "activated",
-    cooldown = 4,
+    cooldown = 6,
     qi = 6,
     range = 1,
     radius = 1,

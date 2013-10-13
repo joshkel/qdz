@@ -388,7 +388,8 @@ function _M:doTakeoff(inven, item, o)
 end
 
 function _M:getTechniqueLimit()
-    return self.level + 1
+    -- TODO: Figure out a good value for this number
+    return self.level + 2
 end
 
 function _M:checkTechniqueLimit(newest_tid)

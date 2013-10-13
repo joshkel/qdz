@@ -23,7 +23,7 @@ long_name = "Qi Daozei"
 short_name = "qdz"
 author = { "Castler", "joshkel@gmail.com" }
 homepage = "http://te4.org/games/qdz"
-version = {0,1,0}
+version = {0,2,0}
 engine = {1,0,4,"te4"}
 description = [[
 An Oriental-themed fantasy roguelike. Fight creatures from folklore and legend and absorb their qi to gain new abilities while fleeing the sinister minions of the Empire and its warlocks.
