@@ -16,6 +16,5 @@ More artwork for startup screens?
 Custom skin
 
 Game mechanics
-Monster ranks??? (E.g., lower hp per con for minions / mooks, higher hp per con for elites)
 Melee accuracy - based on str, ski, or a combination?  (E.g., average for most weapons, str for power weapons, ski for finesse weapons)  Kick should be based on agi; what about bash?
 

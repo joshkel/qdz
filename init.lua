@@ -34,7 +34,18 @@ starter = "mod.load"
 -- TODO: no_get_name = true
 
 allow_userchat = true
--- FIXME: show_funfacts = true, load_tips = {}
+
+show_funfacts = true
+load_tips = {
+    { text=[[Right-hand techniques are useful in hand-to-hand combat. To learn a right-hand technique, focus qi, then kill an enemy with a normal melee attack.]] },
+    { text=[[Left-hand techniques are useful for ranged and indirect attacks. To learn a left-hand technique, focus qi, then kill an enemy with an off-hand melee attack or normal ranged attack.]] },
+    { text=[[Chest techniques provide defense and enhancement. To learn a chest technique, focus qi, then kill an enemy with a bash.]] },
+    { text=[[Foot techniques provide defense and enhancement. To learn a foot technique, focus qi, then kill an enemy with a kick.]] },
+    { text=[[Head techniques can have a variety of effects. To learn a head technique, focus qi, then kill an enemy with another qi technique.]] },
+    { text=[[Absorbing qi strengthens your mind and body as well as granting new techniques. Your stats are based on what kinds of qi you absorb.]] },
+    { text=[[While focused, your qi imbues everything you do. Poison, projectiles, and other effects can all carry your qi even after your own focus has ended.]] },
+    { text=[[Some beings can attack with pure negative qi, which can destroy your own qi even as it wracks your body.]] },
+}
 
 background_name = {
     "peach_festival" -- https://en.wikipedia.org/wiki/File:Freer_019.jpg
