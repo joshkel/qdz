@@ -12,11 +12,11 @@ Stats
 
 5 stats:
 
-* Str - damage, encumbrance.  Maybe some sort of combat maneuver bonus?
-* Ski - attack.  Maybe critical hits?
-* Con - health points, fortitude save.  Maybe health regeneration?
-* Agi - defense, reflex save.  Maybe speed?
-* Mnd - qi points, will save.  Maybe qi regeneration?
+* Str - damage, encumbrance.  Maybe some sort of combat maneuver bonus?  Associated with the right hand and perhaps fire.
+* Ski - attack.  Maybe critical hits?  Associated with the left hand and perhaps water.
+* Con - health points, fortitude save.  Maybe health regeneration?  Associated with the chest and perhaps earth.
+* Agi - defense, reflex save.  Maybe speed?  Associated with the feet and perhaps wood.
+* Mnd - qi points, will save.  Maybe qi regeneration?  Associated with the head and perhaps metal.
 
 Stat magnitudes are based loosely on D20:
 
