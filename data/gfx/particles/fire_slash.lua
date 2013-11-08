@@ -26,6 +26,8 @@ local radius = 0.5
 local life = radius * 2
 local start_radius = 15
 
+-- Determine the angle of the slash: diagonal, either perpedicular to the
+-- attack or originating from the character
 local a1, a2
 if tx < 0 then
     if ty < 0 then
@@ -52,6 +54,8 @@ else
 end
 local a = math.rad(rng.table{a1, a2})
 
+-- Diagonal slashes should originate a bit closer to the character;
+-- they look funny otherwise.
 local xy_mult = math.sqrt(tx * tx + ty * ty)
 
 return { generator = function()

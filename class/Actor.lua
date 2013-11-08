@@ -170,9 +170,14 @@ function _M:move(x, y, force)
         -- but only if we're truly moving (not trying to attack).
         --
         -- confused gives a flat chance for movements to be random.
+        --
+        -- random_move causes running to an unknown map location to abort
+        -- early (??? - this seems to be the case, but I've had trouble
+        -- figuring out why).  As a gift to the player, disable random movement
+        -- while running.
         local do_random_move = false
         if not force and self.x and self.y then
-            if self:attr("random_move") and not (target and self:reactionToward(target) < 0) and rng.percent(self.random_move) then
+            if self:attr("random_move") and not (target and self:reactionToward(target) < 0) and rng.percent(self.random_move) and not self.running then
                 print(("%s: random movement from random_move"):format(self.name))
                 do_random_move = true
             elseif self:attr("confused") and rng.percent(self.confused) then

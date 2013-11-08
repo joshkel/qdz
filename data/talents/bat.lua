@@ -326,7 +326,8 @@ newTalent {
     -- compensate for the headache of randomness and the opportunity cost of
     -- other talents.
     --
-    -- TODO: Can we make this any easier on autoexplore?
+    -- (It's actually not quite that bad, since even a random move has a chance
+    -- of being useful.)
     movement_speed_bonus = 0.35,
     random_move = 25,
 
