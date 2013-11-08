@@ -80,6 +80,10 @@ function _M:init(t, no_default)
     -- Default melee barehanded damage
     self.combat = { dam=_M.BASE_UNARMED_DAMAGE }
 
+    -- Default body parts
+    t.body_parts = t.body_parts or {}
+    t.body_parts.skin = t.body_parts.skin or "skin"
+
     engine.Actor.init(self, t, no_default)
     engine.interface.ActorInventory.init(self, t)
     engine.interface.ActorTemporaryEffects.init(self, t)
@@ -327,7 +331,7 @@ function _M:die(src)
     end
 
     -- Cancel First Blessing: Virtue if appropriate
-    -- TODO: Should we also check src:resolveSource() (e.g., summoned creatures)?
+    -- For now, at least, we do not also check src:resolveSource() (e.g., summoned creatures).
     if src:isTalentActive(src.T_BLESSING_VIRTUE) and not src:getTalentFromId(src.T_BLESSING_VIRTUE).canKill(src, self) then
         src:forceUseTalent(src.T_BLESSING_VIRTUE, {ignore_energy=true})
     end

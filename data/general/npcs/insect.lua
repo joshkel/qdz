@@ -22,12 +22,22 @@ local Talents = require("engine.interface.ActorTalents")
 local DamageType = require("engine.DamageType")
 
 newEntity{
+    define_as = "BASE_NPC_INSECT",
+    type = "insect",
+
+    ai = "dumb_talented_simple", ai_state = { talent_in=3, },
+
+    body_parts = {
+        skin = "exoskeleton",
+    },
+}
+
+newEntity{ base = "BASE_NPC_INSECT",
     name = "grid bug",
     type = "insect", subtype = "grid bug",
     display = "x", color=colors.PURPLE,
     desc = [[A strange, four-legged alien insectoid creature. It advances towards you in odd zig-zag motions, electricity crackling over its body.]],
 
-    ai = "dumb_talented_simple", ai_state = { talent_in=3, },
     stats = { str=1, ski=14, con=6, agi=10, mnd=4 },
 
     level_range = {1, 4}, exp_worth = 1,
@@ -58,13 +68,12 @@ newEntity{
 }
 
 -- TODO: Fire ants are tougher than grid bugs, should be worth more exp, once I figure all that out
-newEntity{
+newEntity{ base = "BASE_NPC_INSECT",
     name = "fire ant",
     type = "insect", subtype = "fire ant",
     display = "a", color=colors.FIREBRICK,
     desc = [[An enormous ant, not much smaller than a human. Heat shimmers over its carapace and smoke escapes from its mandibles.]],
 
-    ai = "dumb_talented_simple", ai_state = { talent_in=3, },
     stats = { str=8, ski=10, con=10, agi=8, mnd=4 },
 
     level_range = {1, 4}, exp_worth = 1,

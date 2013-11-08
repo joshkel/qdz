@@ -32,7 +32,7 @@ end
 newEffect{
     name = "FOCUSED_QI",
     desc = "Focused Qi",
-    type = "physical", -- TODO?
+    type = "physical",
     status = "beneficial",
     long_desc = function(self, eff) return ("%s's qi aura is focused, causing %s attacks to always hit and do maximum damage."):format(self.name:capitalize(), string.his(self)) end,
     on_gain = function(self, err) return ("#Target# focuses %s qi."):format(string.his(self)), "+Qi focus" end,
@@ -61,7 +61,7 @@ newEffect{
     on_merge = function(self, old_eff, new_eff)
         merge_pow_dur(old_eff, new_eff)
         return old_eff
-    end
+    end,
 }
 
 newEffect{
@@ -81,7 +81,7 @@ newEffect{
     on_merge = function(self, old_eff, new_eff)
         merge_pow_dur(old_eff, new_eff)
         return old_eff
-    end
+    end,
 }
 
 newEffect{
@@ -107,7 +107,7 @@ newEffect{
     on_merge = function(self, old_eff, new_eff)
         merge_pow_dur(old_eff, new_eff)
         return old_eff
-    end
+    end,
 }
 
 newEffect{
@@ -272,8 +272,8 @@ newEffect{
     status = "beneficial",
 
     long_desc = function(self, eff) return ("%s's skin is hardened by flames, adding %i to natural armor."):format(self.name:capitalize(), eff.power) end,
-    on_gain = function(self, eff) return "#Target#'s skin is hardened by the flames.", "+Heat Carapace" end,  -- TODO: Skin? Exoskeleton? Stone? Ectoplasm?  Etc.
-    on_lose = function(self, eff) return ("#Target#'s skin is no longer fire-hardened."):format(string.he(self)), "-Dweller in Darkness" end,
+    on_gain = function(self, eff) return ("#Target#'s %s is hardened by the flames."):format(self.body_parts.skin), "+Heat Carapace" end,
+    on_lose = function(self, eff) return ("#Target#'s %s is no longer fire-hardened."):format(self.body_parts.skin), "-Heat Carapace" end,
 
     activate = function(self, eff)
         eff.armorid = self:addTemporaryValue("combat_natural_armor", eff.power)

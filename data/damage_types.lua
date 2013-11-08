@@ -103,7 +103,8 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
 end)
 
 -- An alternate DamageType projector that does half damage on a reflex save.
--- TODO: Should this print any message if an opponent succeeds on a reflex save?
+-- Should this print any message if an opponent succeeds on a reflex save?
+-- Probably not; it's probably too noisy.
 local function refHalf(src, x, y, typ, dam)
     local base_type = DamageType:get(typ).base_type
     local target = game.level.map(x, y, Map.ACTOR)
