@@ -16,10 +16,12 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
-Artwork
-=======
+Artwork and Text
+================
 
 "Peach Festival of the Queen Mother of the West," anonymous artist.  Made available on Wikipedia by PericlesofAthens at en.wikipedia. From https://en.wikipedia.org/wiki/File:Freer_019.jpg.
+
+The list of Chinese names is taken from Wikipedia and is used under the terms of the Creative Commons Attribution-ShareAlike License.
 
 Game Mechanics
 ==============

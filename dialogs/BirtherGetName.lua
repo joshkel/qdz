@@ -25,10 +25,12 @@ local Module = require "engine.Module"
 local Dialog = require "engine.ui.Dialog"
 local Button = require "engine.ui.Button"
 local Textbox = require "engine.ui.Textbox"
+local NameGenerator = require "mod.class.NameGenerator"
 
 module(..., package.seeall, class.inherit(Dialog))
 
-function _M:init(action, cancel)
+function _M:init(actor, action, cancel)
+    self.actor = actor
     self.action = action
     self.cancel = cancel
     self.min = 2
@@ -38,11 +40,13 @@ function _M:init(action, cancel)
 
     local c_box = Textbox.new{title="Enter your character's name: ", text="", chars=30, max_len=self.max, fct=function(text) self:okclick() end}
     self.c_box = c_box
-    local ok = require("engine.ui.Button").new{text="Accept", fct=function() self:okclick() end}
-    local cancel = require("engine.ui.Button").new{text="Cancel", fct=function() self:cancelclick() end}
+    local ok = Button.new{text="Accept", fct=function() self:okclick() end}
+    local cancel = Button.new{text="Cancel", fct=function() self:cancelclick() end}
+    local random = Button.new{text="Random", fct=function() self:randomName() end}
 
     self:loadUI{
         {left=0, top=0, padding_h=10, ui=c_box},
+        {right=0, top=0, ui=random},
         {left=0, bottom=0, ui=ok},
         {right=0, bottom=0, ui=cancel},
     }
@@ -81,5 +85,10 @@ function _M:checkNew(name, fct)
 	else
 		fct()
 	end
+end
+
+function _M:randomName()
+    local namegen = NameGenerator.new(self.actor.female and NameGenerator.chinese_name_female_def or NameGenerator.chinese_name_male_def)
+    self.c_box:setText(namegen:generate())
 end
 

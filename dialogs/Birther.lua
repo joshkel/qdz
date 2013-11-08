@@ -39,7 +39,7 @@ function _M:init(title, actor, order, at_end, quickbirth, w, h)
         self.at_end = at_end
     else
         self.at_end = function()
-            game:registerDialog(require("mod.dialogs.BirtherGetName").new(function(text)
+            game:registerDialog(require("mod.dialogs.BirtherGetName").new(actor, function(text)
                 game:setPlayerName(text)
                 actor.name = text
                 at_end()
