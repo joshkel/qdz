@@ -18,9 +18,9 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
--- A combination of burning_hand.lua and focused_qi.lua.  radius and sradius
--- come from burning_hand.lua, even though the terminology isn't quite right
--- here.  start_radius, x, and y are based on focused_qi.lua.
+-- NOTE: A combination of burning_hand and focused_qi.  radius and sradius come
+-- from burning_hand, even though the terminology isn't quite right here.
+-- start_radius, x, and y are based on focused_qi.
 local nb = 10
 local radius = 0.5
 local life = radius * 2

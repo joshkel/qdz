@@ -18,8 +18,6 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
--- TODO: Should these talents be more effective the more of them you have?
-
 local Map = require("engine.Map")
 local Target = require("engine.Target")
 local GameUI = require("mod.class.ui.GameUI")

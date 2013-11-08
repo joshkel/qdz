@@ -80,13 +80,6 @@ ActorStats:defineStat("Constitution", "con", 10, 1, 100, "Constitution represent
 ActorStats:defineStat("Agility",      "agi", 10, 1, 100, "Agility gives your overall balance and quickness. It affects your ability to dodge and your reflexes. It is associated with the qi of your feet.", "You feel quicker.", "You feel more sluggish.")
 ActorStats:defineStat("Mind",         "mnd", 10, 1, 100, "Mind covers your intelligence, insight, and strength of will. It affects your willpower; additionally, numerous special techniques derive their effectiveness from your mind. Mind is associated with the qi of your head.", "You feel wiser.", "You feel less wise.")
 
--- Add D20-style stat modifiers.  TODO: Not sure if I'll end up using these...
-for i, s in ipairs(ActorStats.stats_def) do
-    ActorStats["get"..s.short_name:lower():capitalize().."Mod"] = function(self, scale, raw, no_inc)
-        return (self:getStat(ActorStats["STAT_"..s.short_name:upper()], scale, raw, no_inc) - 10) / 2
-    end
-end
-
 -- Actor AIs
 ActorAI:loadDefinition("/engine/ai/")
 ActorAI:loadDefinition("/mod/ai/")
