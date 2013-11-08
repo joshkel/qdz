@@ -31,7 +31,7 @@ An Oriental-themed fantasy roguelike. Fight creatures from folklore and legend a
 Qi (pronounced “chee”) is the life energy that flows through all beings and throughout the universe. You are a qi daozei – a “qi rogue” – born with the ability to absorb others' life energy. Your kind is feared and persecuted by the Empire, so for years you've hidden your gifts and tried to live a normal life among the citizenry. Now you've been discovered and must fight your way through caverns and wilderness to escape to safety, knowing that the magics and minions of the Empire are quickly closing in...
 ]]
 starter = "mod.load"
--- TODO: no_get_name = true
+no_get_name = true
 
 allow_userchat = true
 
@@ -40,7 +40,7 @@ load_tips = {
     { image="/data/gfx/characters/right-red.png", text=[[Right-hand techniques are useful in hand-to-hand combat. To learn a right-hand technique, focus qi, then kill an enemy with a normal melee attack.]] },
     { image="/data/gfx/characters/left-blue.png", text=[[Left-hand techniques are useful for ranged and indirect attacks. To learn a left-hand technique, focus qi, then kill an enemy with an off-hand melee attack or normal ranged attack.]] },
     { image="/data/gfx/characters/chest-yellow.png", text=[[Chest techniques provide defense and enhancement. To learn a chest technique, focus qi, then kill an enemy with a bash.]] },
-    { image="/data/gfx/characters/foot-green.png", text=[[Foot techniques provide defense and enhancement. To learn a foot technique, focus qi, then kill an enemy with a kick.]] },
+    { image="/data/gfx/characters/foot-green.png", text=[[Foot techniques grant movement and mobility. To learn a foot technique, focus qi, then kill an enemy with a kick.]] },
     { image="/data/gfx/characters/head-grey.png", text=[[Head techniques can have a variety of effects. To learn a head technique, focus qi, then kill an enemy with another qi technique.]] },
     { image="/data/gfx/characters/five-gold.png", text=[[Absorbing qi strengthens your mind and body as well as granting new techniques. Your stats are based on what kinds of qi you absorb.]] },
     { image="/data/gfx/characters/focus-blue.png", text=[[While focused, your qi imbues everything you do. Poison, projectiles, and other effects can all carry your qi even after your own focus has ended.]] },

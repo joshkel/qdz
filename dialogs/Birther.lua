@@ -33,16 +33,24 @@ function _M:init(title, actor, order, at_end, quickbirth, w, h)
     self.quickbirth = quickbirth
     self.actor = actor
     self.order = order
-    self.at_end = at_end
 
-    --[[game:registerDialog(require('engine.dialogs.GetText').new("Enter your character's name", "Name", 2, 25, function(text)
-        game:setPlayerName(text)
-        at_end()
-    end, function()
-        util.showMainMenu()
-    end))]]
+    local need_name = game.player_name == "player"
+    if not need_name then
+        self.at_end = at_end
+    else
+        self.at_end = function()
+            game:registerDialog(require("mod.dialogs.BirtherGetName").new(function(text)
+                game:setPlayerName(text)
+                actor.name = text
+                at_end()
+            end, function()
+                util.showMainMenu()
+            end))
+        end
+    end
 
-    Dialog.init(self, title and title or ("Character Creation: "..actor.name), w or 600, h or 400)
+    if not title then title = need_name and "Character Creation" or "Character Creation: "..actor.name end
+    Dialog.init(self, title, w or 600, h or 400)
 
     self.descriptors = {}
     self.descriptors_by_type = {}
@@ -75,7 +83,7 @@ Mouse: #00FF00#Left click#FFFFFF# to accept; #00FF00#right click#FFFFFF# to go b
     self:loadUI{
         {left=0, top=self.c_step_desc.h, ui=self.c_list},
 
-        -- This needs to be at 2 for compatibility with the base Birther class
+        -- This needs to be at index 2 for compatibility with the base Birther class
         {right=0, top=self.c_step_desc.h, ui=self.c_desc}, 
         {right=0, bottom=0, ui=self.c_tut},
 
@@ -100,6 +108,7 @@ Mouse: #00FF00#Left click#FFFFFF# to accept; #00FF00#right click#FFFFFF# to go b
     }
 end
 
+-- Override engine.Birther.selectType to add an overall description of this step.
 function _M:selectType(type)
     engine.Birther.selectType(self, type)
     if self.step_names.detail[type] then
@@ -107,3 +116,4 @@ function _M:selectType(type)
         self.c_step_desc:generate()
     end
 end
+
