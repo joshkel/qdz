@@ -52,7 +52,7 @@ newBirthDescriptor{
     type = "background",
     name = "Scholar",
     desc = {
-        [[You worked as a scholar or scribe, employed either by one of the Imperial bureaucracy or by one of the merchants who wheedle their way into the social order.]],  -- TODO: Better description here - how best to communicate the view of merchants as being somewhat parasitical?
+        [[You worked as a scholar or scribe, employed either by one of the Imperial bureaucracy or by one of the merchants who wheedle their way into the social order.]],
         [[#LIGHT_BLUE#Str 8 / Ski 14 / Con 11 / Agi 12 / Mnd 16]]
     },
 
@@ -82,5 +82,5 @@ newBirthDescriptor{
     }
 }
 
--- TODO: Add "Custom"?
+-- We could add "Custom", but it seems too much complexity for too little benefit.
 

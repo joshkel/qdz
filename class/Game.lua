@@ -96,10 +96,10 @@ function _M:run()
     self.hotkeys_display.actor = self.player
     self.npcs_display.actor = self.player
 
-    -- Setup the targetting system
+    -- Setup the targeting system
     engine.interface.GameTargeting.init(self)
 
-    -- Ok everything is good to go, activate the game in the engine!
+    -- OK, everything is good to go, activate the game in the engine!
     self:setCurrent()
 
     if self.level then self:setupDisplayMode() end
@@ -212,9 +212,6 @@ function _M:tick()
         self:targetOnTick()
 
         engine.GameTurnBased.tick(self)
-        -- Fun stuff: this can make the game realtime, although calling it in display() will make it work better
-        -- (since display is on a set FPS while tick() ticks as much as possible
-        -- engine.GameEnergyBased.tick(self)
     else
         engine.Game.tick(self)
     end
@@ -247,7 +244,7 @@ function _M:display(nb_keyframe)
 
         self.level.map:display(nil, nil, nb_keyframe)
 
-        -- Display the targetting system if active
+        -- Display the targeting system if active
         self.target:display()
 
         -- And the minimap

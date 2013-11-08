@@ -83,7 +83,7 @@ newTalent {
         local feat = game.level.map(x, y, Map.TERRAIN)
         if not feat then return nil end
         if not feat.dig or not feat.is_stone then
-            game.logPlayer(self, "You must select a section of diggable stone to poison.")
+            game.logPlayer(self, "You must target a section of diggable stone to poison.")
             return nil
         end
 

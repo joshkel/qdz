@@ -76,10 +76,13 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
         end
     end
 
-    -- Handle talent: Electrostatic Capture.  TODO: Move these to on_damage functions within talent definitions?
+    -- Beginning of on-damage talent effects.  Should these be moved to
+    -- on_damage functions within talent definitions?
+
+    -- Handle talent: Electrostatic Capture.
     if not target.dead and type == DamageType.LIGHTNING and init_dam > 0 and target:knowTalent(target.T_ELECTROSTATIC_CAPTURE) then
-        -- TODO: Better formula needed here?  (E.g., should we recompute the 
-        -- effects of t.resist_lightning_bonus levels of resistance on init_dam?)
+        -- Better formula needed here?  (E.g., should we recompute the effects
+        -- of t.resist_lightning_bonus levels of resistance on init_dam?)
         game.logSeen(target, ("%s absorbs a portion of the charge."):format(target.name:capitalize()))
         local charge_power = math.ceil(init_dam / 10)
         local eff = target:hasEffect(target.EFF_CHARGED)
