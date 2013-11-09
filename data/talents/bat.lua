@@ -196,6 +196,7 @@ newTalent {
     mode = "activated",
     cooldown = 6,
     qi = 4,
+    requires_target = true,
     range = 1,
 
     getPower = function(self, t) return 0.10 end,
@@ -247,6 +248,7 @@ newTalent {
     mode = "activated",
     cooldown = 10,
     qi = 6,
+    requires_target = true,
     range = 0,
     radius = 5,
     target = function(self, t) return {type="cone", range=self:getTalentRange(t), radius=self:getTalentRadius(t), selffire=false} end,

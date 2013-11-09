@@ -17,4 +17,6 @@ Custom skin
 
 Game mechanics
 Melee accuracy - based on str, ski, or a combination?  (E.g., average for most weapons, str for power weapons, ski for finesse weapons)  Kick should be based on agi; what about bash?
-
+Bash's knockback distance may be excessive
+Starting a scholar is too tough
+Fire ants are probably too tough - Burning Hand seems better than Poisoned Dart, damage on hit is probably high

@@ -58,6 +58,7 @@ newTalent {
     type = {"qi techniques/left hand", 1},
     cooldown = 2,
     qi = 2,
+    requires_target = true,
     range = 10,
     proj_speed = 2,
 
@@ -199,10 +200,11 @@ newTalent {
     mode = "activated",
     cooldown = 5,
     qi = 6,
+    requires_target = true,
     range = 1,
 
     hit_mult = 1.1,
-    miss_mult = 0.3,
+    miss_mult = 0.4,
 
     action = function(self, t)
         local tg = {type="hit", range=self:getTalentRange(t)}
@@ -231,6 +233,7 @@ newTalent {
     mode = "activated",
     cooldown = 6,
     qi = 6,
+    requires_target = true,
     range = 1,
     radius = 1,
     target = function(self, t) return {type="cone", range=self:getTalentRange(t), radius=self:getTalentRadius(t), selffire=true} end,
@@ -307,6 +310,7 @@ newTalent {
     cooldown = 20,
     qi = 8,
     range = 5,
+    requires_target = true,
     no_npc_use = true,
     target = function(self, t) return {type="hit", range=self:getTalentRange(t) } end,
 
