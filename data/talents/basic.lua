@@ -52,6 +52,7 @@ newTalent{
     short_name = "OFF_HAND_ATTACK",
     type = {"basic/combat", 1},
     cooldown = 3,
+    requires_target = true,
     range = 1,
     speed = 2.0,
     action = function(self, t)
@@ -78,6 +79,7 @@ newTalent{
     name = "Bash",
     type = {"basic/combat", 1},
     cooldown = 6,
+    requires_target = true,
     range = 1,
     getDistance = function(self, t)
         return (self:getStr() + self:getCon()) / 5
@@ -115,6 +117,7 @@ newTalent{
     name = "Kick",
     type = {"basic/combat", 1},
     cooldown = 6,
+    requires_target = true,
     range = 1,
     action = function(self, t)
         local tg = {type="hit", range=self:getTalentRange(t)}

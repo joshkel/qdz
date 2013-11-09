@@ -26,6 +26,7 @@ newTalent{
     type = {"qi techniques/right hand", 1},
     cooldown = 6,
     qi = 2,
+    requires_target = true,
     range = 6,
     action = function(self, t)
         local tg = {type="ball", range=self:getTalentRange(t), radius=1, talent=t}
@@ -57,6 +58,7 @@ newTalent {
     type = {"qi techniques/right hand", 1},
     cooldown = 6,
     qi = 10,
+    requires_target = true,
     range = 1,
     radius = 1,
     getDuration = function(self, t) return 5 end,
@@ -129,6 +131,7 @@ newTalent {
     type = {"qi techniques/left hand", 1},
     cooldown = 6,
     qi = 2,
+    requires_target = true,
     range = 5,
     getCombat = function(self, t) return {dam=3, type="thrown"} end,
     getPower = function(self, t) return self:talentDamage(self:getSki(), 1, 0.3) end,

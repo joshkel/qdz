@@ -1,9 +1,7 @@
 To do:
 Why do I get an "offline" error message, even after uploading?
 Basic game mechanics: shields
-AI is quite bad - if there's a row of monsters, does the second one step around the first to double-team you?  One monster will throw a dart at another's back. Fire ants toss flame slash with no one in range.
 Flasher needs to not go off the edge of the screen
-Random name generator
 Critical hits
 Left vs right hand
 Quick switch weapons???
@@ -17,4 +15,6 @@ Custom skin
 
 Game mechanics
 Melee accuracy - based on str, ski, or a combination?  (E.g., average for most weapons, str for power weapons, ski for finesse weapons)  Kick should be based on agi; what about bash?
-
+Bash's knockback distance may be excessive
+Starting a scholar is too tough
+Fire ants are probably too tough - Burning Hand seems better than Poisoned Dart, damage on hit is probably high

@@ -83,7 +83,7 @@ newEntity{ base = "BASE_NPC_INSECT",
     combat = {
         dam=2,
         melee_project={
-            [DamageType.FIRE] = resolvers.mbonus(10, 1)
+            [DamageType.FIRE] = resolvers.mbonus(10, 0)
         }
     },
     resists = {

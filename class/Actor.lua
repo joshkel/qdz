@@ -173,7 +173,7 @@ function _M:move(x, y, force)
         --
         -- random_move causes running to an unknown map location to abort
         -- early (??? - this seems to be the case, but I've had trouble
-        -- figuring out why).  As a gift to the player, disable random movement
+        -- figuring out why).  As a favor to the player, disable random movement
         -- while running.
         local do_random_move = false
         if not force and self.x and self.y then
