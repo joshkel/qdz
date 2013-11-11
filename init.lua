@@ -45,6 +45,9 @@ load_tips = {
     { image="/data/gfx/characters/five-gold.png", text=[[Absorbing qi strengthens your mind and body as well as granting new techniques. Your stats are based on what kinds of qi you absorb.]] },
     { image="/data/gfx/characters/focus-blue.png", text=[[While focused, your qi imbues everything you do. Poison, projectiles, and other effects can all carry your qi even after your own focus has ended.]] },
     { image="/data/gfx/characters/yin-black.png", text=[[Some beings can attack with pure negative qi, which can destroy your own qi even as it wracks your body.]] },
+
+    -- Story / fluff.  Disabled until more of the story is developed.
+    -- { text=[[The emperor's eunuch advisors are the true power within the land. Thoroughly corrupt, they maintain power through a network of spies and agents. Many of them are accomplished sorcerers.]] },
 }
 
 background_name = {

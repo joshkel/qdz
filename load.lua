@@ -98,4 +98,4 @@ dofile("/mod/resolvers.lua")
 -- Birther descriptor
 Birther:loadDefinition("/data/birth/descriptors.lua")
 
-return {require "mod.class.Game" }
+return { require "mod.class.Game" }

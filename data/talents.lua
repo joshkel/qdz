@@ -22,6 +22,8 @@ newTalentType{ type="basic/qi", name = "qi", description = "Basic manipulation o
 newTalentType{ type="basic/combat", name = "combat", description = "Basic combat techniques" }
 newTalentType{ type="basic/proficiencies", name = "proficiencies", description = "Proficiencies are various (mostly) mundane skills. Most beings learn these through instinct, training, or practice. As a qi daozei, you can instead be granted them through the techniques you absorb from your foes."}
 
+newTalentType{ type="basic/items", name = "items", description = "Various item effects." }
+
 newTalentType{ type="qi techniques/right hand", name = "right hand", description = "Qi techniques bound to your right hand. These are typically direct, physical, hand-to-hand attacks.", slot="rhand" }
 newTalentType{ type="qi techniques/left hand", name = "left hand", description = "Qi techniques bound to your left hand. These are typically indirect, magical, and / or ranged attacks.", slot="lhand" }
 newTalentType{ type="qi techniques/chest", name = "chest", description = "Qi techniques bound to your chest. Chest techniques provide defense, enhancement, and healing.", slot="chest" }
@@ -41,6 +43,7 @@ end
 
 load("/data/talents/basic.lua")
 load("/data/talents/proficiencies.lua")
+load("/data/talents/items.lua")
 
 load("/data/talents/bat.lua")
 load("/data/talents/humanoid.lua")

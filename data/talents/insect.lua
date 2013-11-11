@@ -236,7 +236,7 @@ newTalent {
     requires_target = true,
     range = 1,
     radius = 1,
-    target = function(self, t) return {type="cone", range=self:getTalentRange(t), radius=self:getTalentRadius(t), selffire=true} end,
+    target = function(self, t) return {type="cone", range=self:getTalentRange(t), radius=self:getTalentRadius(t), selffire=true, talent=t} end,
     getDamage = function(self, t) return self:talentDamage(self:getMnd(), 3) end,
 
     action = function(self, t)
