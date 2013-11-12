@@ -29,8 +29,7 @@ newTalent {
     range = 5,
     radius = 1,
     duration = 4,
-    target = function(self, t) return {type="ball", range=self:getTalentRange(t), radius=self:getTalentRadius(t), nowarning=true, nolock=true} end,
-    getDamage = function(self, t) return self:talentDamage(self:getMnd(), 3) end,
+    target = function(self, t) return {type="ball", range=self:getTalentRange(t), radius=self:getTalentRadius(t), nowarning=true, stop_block=true, talent=t, display={display='*', color=colors.LIGHT_GRAY}, name="smoke bomb"} end,
 
     message = function(self, t) return "@Source@ throws a smoke bomb." end,
 
@@ -39,7 +38,7 @@ newTalent {
         local x, y = self:getTarget(tg)
         if not x or not y then return nil end
 
-        self:project(tg, x, y, function(px, py)
+        self:projectile(tg, x, y, function(px, py)
             -- Based on ToME's Creeping Dark
             local e = Object.new{
                 name = "smoke cloud",
@@ -80,7 +79,7 @@ newTalent {
     end,
 
     info = function(self, t)
-        return ("Emits a short-range cone of fire doing %i damage (based on your Mind). It does 50%% damage if the opponent succeeds on a Reflex save against your Skill and 25%% damage if it's aimed at yourself."):format(t.getDamage(self, t))
+        return ("Creates a smoke cloud of radius %i lasting %i turns. The smoke blocks line of sight and grants concealment to everyone in it."):format(t.radius, t.duration)
     end,
 }
 
