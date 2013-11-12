@@ -177,11 +177,22 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     target:checkAngered(self)
 
     if not Qi.isFocused(self) then
-        if not self:skillCheck(atk, def) or not (self:canReallySee(target) or self:attr("blind_fight") or rng.chance(2)) then
+        local miss          -- Message to display on melee miss; doubles as a boolean flag
+        local missile_miss  -- Custom message to display on missile miss, if any
+        if not (self:canReallySee(target) or self:attr("blind_fight") or rng.percent(50)) then
+            miss = "%s attacks blindly and misses %s."
+        elseif not self:attr("blind_fight") and (self:attr("concealment_attack") or target:attr("concealment")) and not rng.percent(25) then
+            -- NOTE that we assume that concealment is always due to smoke.
+            miss = "%s misses %s in the smoke."
+            missile_miss = miss
+        elseif not self:skillCheck(atk, def) then
+            miss = "%s misses %s."
+        end
+        if miss then
             if is_melee then
-                game.logSeen2(self, target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName(self))
+                game.logSeen2(self, target, game.flash.NEUTRAL, miss, self:getSrcName():capitalize(), target:getTargetName(self))
             else
-                game.logSeen(target, game.flash.NEUTRAL, "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName(self))
+                game.logSeen(target, game.flash.NEUTRAL, missile_miss or "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName(self))
             end
             return 1, false
         end

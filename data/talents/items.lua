@@ -32,6 +32,8 @@ newTalent {
     target = function(self, t) return {type="ball", range=self:getTalentRange(t), radius=self:getTalentRadius(t), nowarning=true, nolock=true} end,
     getDamage = function(self, t) return self:talentDamage(self:getMnd(), 3) end,
 
+    message = function(self, t) return "@Source@ throws a smoke bomb." end,
+
     action = function(self, t)
         local tg = self:getTalentTarget(t)
         local x, y = self:getTarget(tg)
@@ -44,6 +46,11 @@ newTalent {
                 x = px, y = py,
                 duration = t.duration - 1,  -- Subtract 1 to sync cloud duration with creator's turns
                 block_sight = true,
+
+                on_stand = function(self, x, y, who)
+                    who:setEffect(who.EFF_SMOKE_CONCEALMENT, 1, {})
+                end,
+
                 act = function(self)
                     local Map = require "engine.Map"
 
@@ -51,19 +58,22 @@ newTalent {
 
                     if self.duration <= 0 then
                         if self.particles then game.level.map:removeParticleEmitter(self.particles) end
-                        game.level.map:remove(self.x, self.y, Map.TERRAIN+3)
+                        game.level.map:remove(self.x, self.y, Map.TERRAIN_CLOUD)
                         game.level:removeEntity(self, true)
                     else
                         self.duration = self.duration - 1
                     end
-                end
+                end,
             }
             game.level:addEntity(e)
-            game.level.map(px, py, Map.TERRAIN+3, e)
+            game.level.map(px, py, Map.TERRAIN_CLOUD, e)
 
             e.particles = Particles.new("smoke_cloud", 1, {})
             e.particles.x, e.particles.y = px, py
             game.level.map:addParticleEmitter(e.particles)
+
+            local actor = game.level.map(px, py, Map.ACTOR)
+            if actor then e:on_stand(px, py, actor) end
         end)
 
         return true

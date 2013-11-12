@@ -144,6 +144,9 @@ function _M:act()
 
     if self:attr("prone") or self:attr("unconscious") then self.energy.value = self.energy.value - game.energy_to_act end
 
+    game.level.map:checkEntity(self.x, self.y, Map.TERRAIN, "on_stand", self)
+    game.level.map:checkEntity(self.x, self.y, Map.TERRAIN_CLOUD, "on_stand", self)
+
     -- Still enough energy to act ?
     if self.energy.value < game.energy_to_act then return false end
 

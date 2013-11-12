@@ -1,4 +1,6 @@
 To do:
+Clean up monkey patches that are no longer necessary in 1.0.5
+Consolidate references to 25% miss chance for concealment, 50% miss chance for blind-fighting
 Why do I get an "offline" error message, even after uploading?
 Basic game mechanics: shields
 Flasher needs to not go off the edge of the screen
@@ -7,6 +9,7 @@ Left vs right hand
 Quick switch weapons???
 Not sure that dig speed is working right - monsters may get a free move afterwards, and displayed number of turns is always 1 greater than intended digspeed
 What to do about fractional HP?  It stinks to think you do enough damage to kill a foe and find out you haven't...
+Monsters should probably not have flawless no-light vision of player
 
 To do a while later:
 Logo

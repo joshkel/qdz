@@ -244,7 +244,7 @@ function _M:drawDialog(kind)
         end
         if player:attr("blind_fight") then
             self:drawString(s, "Blind-Fighting", w, h,
-                GameUI:tooltipTitle('Blind-Fighting'):merge{true, "You have learned how to use senses other than sight in combat. You no longer suffer the flat 50% miss chance that most creatures do for attacking an unseen opponent."}) h = h + self.font_h
+                GameUI:tooltipTitle('Blind-Fighting'):merge{true, "You have learned how to use senses other than sight in combat. You no longer suffer the flat 50% miss chance for attacking an unseen opponent or the flat 25% miss chance for attacking a concealed opponent."}) h = h + self.font_h
         end
 
         -- Fourth column: Effects and sustains

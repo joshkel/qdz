@@ -18,6 +18,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+local Map = require "engine.Map"
 local Stats = require "mod.class.interface.ActorStats"
 local Particles = require "engine.Particles"
 local Qi = require "mod.class.interface.Qi"
@@ -32,7 +33,7 @@ end
 newEffect{
     name = "FOCUSED_QI",
     desc = "Focused Qi",
-    type = "physical",
+    type = "physical",  -- ???
     status = "beneficial",
     long_desc = function(self, eff) return ("%s's qi aura is focused, causing %s attacks to always hit and do maximum damage."):format(self.name:capitalize(), string.his(self)) end,
     on_gain = function(self, err) return ("#Target# focuses %s qi."):format(string.his(self)), "+Qi focus" end,
@@ -42,6 +43,31 @@ newEffect{
     end,
     deactivate = function(self, eff)
         self:removeParticles(eff.particle)
+    end,
+}
+
+newEffect{
+    name = "SMOKE_CONCEALMENT",
+    desc = "Smoke Concealment",
+    type = "other",
+    status = "neutral",
+
+    decrease = 0,
+
+    long_desc = function(self, eff) return ("Smoke obscures %s's vision and others' view of %s, granting a 25%% miss chance on attacks by or against %s."):format(self.name:capitalize(), string.him(self), string.him(self)) end,
+    on_gain = function(self, err) return "#Target# is concealed by the smoke.", "+Concealment" end,
+    on_lose = function(self, err) return "#Target# is no longer concealed by the smoke.", "-Concealment" end,
+    activate = function(self, eff)
+        eff.tmpid1 = self:addTemporaryValue("concealment", 1)
+        eff.tmpid2 = self:addTemporaryValue("concealment_attack", 1)
+    end,
+    deactivate = function(self, eff)
+        self:removeTemporaryValue("concealment", eff.tmpid1)
+        self:removeTemporaryValue("concealment_attack", eff.tmpid2)
+    end,
+
+    on_timeout = function(self, eff)
+        if not game.level.map(self.x, self.y, Map.TERRAIN_CLOUD) then self:removeEffect(self.EFF_SMOKE_CONCEALMENT) end
     end,
 }
 
