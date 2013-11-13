@@ -24,8 +24,16 @@ local Talents = require "engine.interface.ActorTalents"
 
 module(..., package.seeall, class.inherit(mod.class.ui.SimpleListDialog))
 
-function _M:init()
-    mod.class.ui.SimpleListDialog.init(self, "Debug Menu - Learn Technique")
+---Displays a list of techniques and allows the player to learn one.
+--
+-- If qi_only is true (the normal case), then learn a new qi technique.
+-- This currently ignores the per-level limit on number of techniques known.
+--
+-- If qi_only is false, then learn a non-qi talent.  This is normally illegal
+-- but is useful for testing.
+function _M:init(qi_only)
+    self.qi_only = qi_only
+    mod.class.ui.SimpleListDialog.init(self, qi_only and "Debug Menu - Learn Technique" or "Debug Menu - Test Talent")
 end
 
 function _M:useItem(item)
@@ -50,7 +58,8 @@ function _M:generateListContents()
     local list = {}
 
     for id, t in pairs(Talents.talents_def) do
-        if t.type[1]:startsWith("qi techniques/") or t.type[1]:startsWith("infernal qi/") then
+        local is_qi = t.type[1]:startsWith("qi techniques/") or t.type[1]:startsWith("infernal qi/")
+        if is_qi == self.qi_only then
             list[#list+1] = {name=t.name, id=id}
         end
     end

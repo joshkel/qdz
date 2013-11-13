@@ -24,6 +24,8 @@ newEntity{
     display = "!", color=colors.BLUE,
     encumber = 1,
     rarity = 5,
+    stacking = true,
+    use_verb = "Drink",
     desc = [[Potions may have a variety of effects.]]
 }
 

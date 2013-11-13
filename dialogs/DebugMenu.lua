@@ -32,9 +32,10 @@ function _M:useItem(item)
 
     if act == "reset_cooldowns" then game.player:resetTalentCooldowns() end
     if act == "full_heal" then game.player:resetToFull() game.player.changed = true end
-    if act == "learn_technique" then game:registerDialog(require("mod.dialogs.DebugLearnTechnique").new()) end
+    if act == "learn_technique" then game:registerDialog(require("mod.dialogs.DebugLearnTechnique").new(true)) end
     if act == "create_item" then game:registerDialog(require("mod.dialogs.DebugCreateItem").new()) end
     if act == "reload_ui" then self:reloadUI() end
+    if act == "test_talent" then game:registerDialog(require("mod.dialogs.DebugLearnTechnique").new(false)) end
 end
 
 --- Reload what we can of the UI, to test changes without reloading the whole
@@ -58,6 +59,7 @@ function _M:generateListContents()
     list[#list+1] = {name="Learn Qi Technique", action="learn_technique"}
     list[#list+1] = {name="Create Item", action="create_item"}
     list[#list+1] = {name="Reload UI", action="reload_ui"}
+    list[#list+1] = {name="Test Talent", action="test_talent"}
 
     return list
 end

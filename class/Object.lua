@@ -41,6 +41,17 @@ function _M:init(t, no_default)
     engine.interface.ActorTalents.init(self, t)
 end
 
+---Overrides engine.Object.getName to add pluralization.
+function _M:getName(t)
+    t = t or {}
+    local qty = self:getNumber()
+    local name = self.name
+
+    if (qty == 1 and not t.force_count) or t.no_count then return name
+    else return qty.." "..name:pluralize(qty)
+    end
+end
+
 function _M:tooltip(x, y)
     local color = GameUI.tooltipColor
     local text = GameUI:tooltipTitle(self:getDisplayString(), self.name)
