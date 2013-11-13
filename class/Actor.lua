@@ -693,7 +693,8 @@ local talent_absorb_type = {
     [Talents.T_OFF_HAND_ATTACK] = "lhand"
 }
 local action_absorb_type = {
-    attack = "rhand"
+    attack = "rhand",
+    use_object = "lhand",
 }
 
 --- Gets the type of qi technique to be absorbed (an index into Qi.slots_def),

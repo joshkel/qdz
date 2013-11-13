@@ -140,15 +140,48 @@ function _M:use(who, typ, inven, item)
     if not typ and #types == 1 then typ = types[1] end
 
     if typ == "use" then
-        local ret = {self:useObject(who, inven, item)}
-        if ret[1] then
+        who.last_action = 'use_object'
+
+        local ret = self:useObject(who, inven, item)
+        if ret.used then
             if self.use_sound then game:playSoundNear(who, self.use_sound) end
             if not self.use_no_energy then
                 -- FIXME: I don't think inven.use_speed does anything.  What *is* inven?
                 who:useEnergy(game.energy_to_act * (inven.use_speed or 1))
             end
         end
-        return unpack(ret)
+
+        who.last_action = nil
+
+        return ret
     end
+end
+
+-- Modify engine.interface.ObjectActivable.useObject to add the following:
+-- * Talent messages
+-- * Consumable talent items
+function _M:useObject(who, ...)
+	local reduce = 100 - util.bound(who:attr("use_object_cooldown_reduce") or 0, 0, 100)
+	local usepower = function(power) return math.ceil(power * reduce / 100) end
+
+    if self.use_talent then
+        if (self.talent_cooldown and not who:isTalentCoolingDown(self.talent_cooldown)) or (not self.talent_cooldown and (not self.use_talent.power or self.power >= usepower(self.use_talent.power))) then
+            local id = self.use_talent.id
+            local ab = self:getTalentFromId(id)
+            -- FIXME: Pull this and Actor.preUseTalent into an Actor.useTalentMessage function.
+            -- Consider completely replacing ObjectActivable.useObject.
+            if ab.message then
+                game.logSeen(who, "%s", who:useTalentMessage(ab))
+            end
+        end
+    end
+
+    local ret = engine.interface.ObjectActivable.useObject(self, who, ...)
+
+    if self.use_talent and self.use_talent.single_use then
+        ret.destroy = ret.used
+    end
+
+    return ret
 end
 
