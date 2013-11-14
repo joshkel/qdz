@@ -63,6 +63,29 @@ newEntity{
     color = colors.LIGHT_SLATE,
     cost = 5,
     --talent_cooldown = Talents.T_SMOKE_BOMB,
-    use_talent = { id = Talents.T_SMOKE_BOMB, level = 1, show_talent_message = true, single_use = true },
+    use_talent = { id = Talents.T_SMOKE_BOMB, show_talent_message = true, single_use = true },
+    desc = [[When thrown, this assassin's tool releases a thick cloud of smoke, obscuring sight.]]
+}
+
+newEntity{
+    define_as = "BASE_SCROLL",
+    type = "consumable", subtype="scroll",
+    display = "?", color=colors.WHITE,
+    encumber = 1,
+    rarity = 5,
+    stacking = true,
+    use_verb = "Read",
+    desc = [[A scroll containing a verse, invocation, or calligraphy. When read, it bursts into flame, releasing the power in its writing.]]
+}
+
+newEntity{
+    base = "BASE_SCROLL",
+    name = "meditation scroll",
+    level_range = {1, 50},
+    color = { r = 175, g = 175, b = 255 },
+    cost = 5,
+    use_talent = { id = Talents.T_FOCUS_QI, single_use = true },
+    use_no_energy = true,
+    desc = [[A section of verse penned by monks to aid in their meditations. When read, the echoes of their past meditations allow you to instantly focus your own qi.]],
 }
 

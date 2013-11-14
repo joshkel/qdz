@@ -197,7 +197,7 @@ function _M:useObject(who, ...)
 		
 			local id = self.use_talent.id
 			local ab = self:getTalentFromId(id)
-			local old_level = who.talents[id]; who.talents[id] = self.use_talent.level
+			local old_level = who.talents[id]; who.talents[id] = self.use_talent.level or 1
 
             if self.use_talent.show_talent_message and who.showTalentMessage then who:showTalentMessage(ab) end
 			local ret = ab.action(who, ab)
