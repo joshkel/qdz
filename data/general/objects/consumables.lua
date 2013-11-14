@@ -62,7 +62,7 @@ newEntity{
     level_range = {1, 10},
     color = colors.LIGHT_SLATE,
     cost = 5,
-    talent_cooldown = Talents.T_SMOKE_BOMB,
-    use_talent = { id = Talents.T_SMOKE_BOMB, level = 1, power = 0, single_use = true },
+    --talent_cooldown = Talents.T_SMOKE_BOMB,
+    use_talent = { id = Talents.T_SMOKE_BOMB, level = 1, show_talent_message = true, single_use = true },
 }
 

@@ -158,30 +158,71 @@ function _M:use(who, typ, inven, item)
 end
 
 -- Modify engine.interface.ObjectActivable.useObject to add the following:
--- * Talent messages
+-- * Optional talent messages
 -- * Consumable talent items
 function _M:useObject(who, ...)
+	-- Make sure the object is registered with the game, if need be
+	if not game:hasEntity(self) then game:addEntity(self) end
+
 	local reduce = 100 - util.bound(who:attr("use_object_cooldown_reduce") or 0, 0, 100)
 	local usepower = function(power) return math.ceil(power * reduce / 100) end
 
-    if self.use_talent then
-        if (self.talent_cooldown and not who:isTalentCoolingDown(self.talent_cooldown)) or (not self.talent_cooldown and (not self.use_talent.power or self.power >= usepower(self.use_talent.power))) then
-            local id = self.use_talent.id
-            local ab = self:getTalentFromId(id)
-            -- FIXME: Pull this and Actor.preUseTalent into an Actor.useTalentMessage function.
-            -- Consider completely replacing ObjectActivable.useObject.
-            if ab.message then
-                game.logSeen(who, "%s", who:useTalentMessage(ab))
-            end
-        end
-    end
+	if self.use_power then
+		if (self.talent_cooldown and not who:isTalentCoolingDown(self.talent_cooldown)) or (not self.talent_cooldown and self.power >= usepower(self.use_power.power)) then
+		
+			local ret = self.use_power.use(self, who, ...) or {}
+			local no_power = not ret.used or ret.no_power
+			if not no_power then 
+				if self.talent_cooldown then
+					who.talents_cd[self.talent_cooldown] = usepower(self.use_power.power)
+					local t = who:getTalentFromId(self.talent_cooldown)
+					if t.cooldownStart then t.cooldownStart(who, t, self) end
+				else
+					self.power = self.power - usepower(self.use_power.power)
+				end
+			end
+			return ret
+		else
+			if self.talent_cooldown or (self.power_regen and self.power_regen ~= 0) then
+				game.logPlayer(who, "%s is still recharging.", self:getName{no_count=true})
+			else
+				game.logPlayer(who, "%s can not be used anymore.", self:getName{no_count=true})
+			end
+			return {}
+		end
+	elseif self.use_simple then
+		return self.use_simple.use(self, who, ...) or {}
+	elseif self.use_talent then
+		if (self.talent_cooldown and not who:isTalentCoolingDown(self.talent_cooldown)) or (not self.talent_cooldown and (not self.use_talent.power or self.power >= usepower(self.use_talent.power))) then
+		
+			local id = self.use_talent.id
+			local ab = self:getTalentFromId(id)
+			local old_level = who.talents[id]; who.talents[id] = self.use_talent.level
 
-    local ret = engine.interface.ObjectActivable.useObject(self, who, ...)
+            if self.use_talent.show_talent_message and who.showTalentMessage then who:showTalentMessage(ab) end
+			local ret = ab.action(who, ab)
 
-    if self.use_talent and self.use_talent.single_use then
-        ret.destroy = ret.used
-    end
+			who.talents[id] = old_level
 
-    return ret
+			if ret then 
+				if self.talent_cooldown then
+					who.talents_cd[self.talent_cooldown] = usepower(self.use_talent.power)
+					local t = who:getTalentFromId(self.talent_cooldown)
+					if t.cooldownStart then t.cooldownStart(who, t, self) end
+				elseif not self.use_talent.single_use then
+					self.power = self.power - usepower(self.use_talent.power)
+				end
+			end
+
+			return {used=ret, destroy=ret and self.use_talent.single_use}
+		else
+			if self.talent_cooldown or (self.power_regen and self.power_regen ~= 0) then
+				game.logPlayer(who, "%s is still recharging.", self:getName{no_count=true})
+			else
+				game.logPlayer(who, "%s can not be used anymore.", self:getName{no_count=true})
+			end
+			return {}
+		end
+	end
 end
 

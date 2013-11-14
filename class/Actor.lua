@@ -431,18 +431,7 @@ function _M:preUseTalent(ab, silent, fake)
     end
 
     if not silent then
-        -- Allow for silent talents
-        if ab.message ~= nil then
-            if ab.message then
-                game.logSeen(self, "%s", self:useTalentMessage(ab))
-            end
-        elseif ab.mode == "sustained" and not self:isTalentActive(ab.id) then
-            game.logSeen(self, "%s activates %s.", self.name:capitalize(), ab.name)
-        elseif ab.mode == "sustained" and self:isTalentActive(ab.id) then
-            game.logSeen(self, "%s deactivates %s.", self.name:capitalize(), ab.name)
-        else
-            game.logSeen(self, "%s uses %s.", self.name:capitalize(), ab.name)
-        end
+        self:showTalentMessage(ab)
     end
 
     if not fake then
@@ -450,6 +439,21 @@ function _M:preUseTalent(ab, silent, fake)
     end
 
     return true
+end
+
+function _M:showTalentMessage(ab)
+    -- Allow for silent talents
+    if ab.message ~= nil then
+        if ab.message then
+            game.logSeen(self, "%s", self:useTalentMessage(ab))
+        end
+    elseif ab.mode == "sustained" and not self:isTalentActive(ab.id) then
+        game.logSeen(self, "%s activates %s.", self.name:capitalize(), ab.name)
+    elseif ab.mode == "sustained" and self:isTalentActive(ab.id) then
+        game.logSeen(self, "%s deactivates %s.", self.name:capitalize(), ab.name)
+    else
+        game.logSeen(self, "%s uses %s.", self.name:capitalize(), ab.name)
+    end
 end
 
 --- Called before a talent is used
