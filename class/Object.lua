@@ -41,6 +41,17 @@ function _M:init(t, no_default)
     engine.interface.ActorTalents.init(self, t)
 end
 
+---Overrides engine.Object.getName to add pluralization.
+function _M:getName(t)
+    t = t or {}
+    local qty = self:getNumber()
+    local name = self.name
+
+    if (qty == 1 and not t.force_count) or t.no_count then return name
+    else return qty.." "..name:pluralize(qty)
+    end
+end
+
 function _M:tooltip(x, y)
     local color = GameUI.tooltipColor
     local text = GameUI:tooltipTitle(self:getDisplayString(), self.name)
@@ -129,15 +140,89 @@ function _M:use(who, typ, inven, item)
     if not typ and #types == 1 then typ = types[1] end
 
     if typ == "use" then
-        local ret = {self:useObject(who, inven, item)}
-        if ret[1] then
+        who.last_action = 'use_object'
+
+        local ret = self:useObject(who, inven, item)
+        if ret.used then
             if self.use_sound then game:playSoundNear(who, self.use_sound) end
             if not self.use_no_energy then
                 -- FIXME: I don't think inven.use_speed does anything.  What *is* inven?
                 who:useEnergy(game.energy_to_act * (inven.use_speed or 1))
             end
         end
-        return unpack(ret)
+
+        who.last_action = nil
+
+        return ret
     end
+end
+
+-- Modify engine.interface.ObjectActivable.useObject to add the following:
+-- * Optional talent messages
+-- * Consumable talent items
+function _M:useObject(who, ...)
+	-- Make sure the object is registered with the game, if need be
+	if not game:hasEntity(self) then game:addEntity(self) end
+
+	local reduce = 100 - util.bound(who:attr("use_object_cooldown_reduce") or 0, 0, 100)
+	local usepower = function(power) return math.ceil(power * reduce / 100) end
+
+	if self.use_power then
+		if (self.talent_cooldown and not who:isTalentCoolingDown(self.talent_cooldown)) or (not self.talent_cooldown and self.power >= usepower(self.use_power.power)) then
+		
+			local ret = self.use_power.use(self, who, ...) or {}
+			local no_power = not ret.used or ret.no_power
+			if not no_power then 
+				if self.talent_cooldown then
+					who.talents_cd[self.talent_cooldown] = usepower(self.use_power.power)
+					local t = who:getTalentFromId(self.talent_cooldown)
+					if t.cooldownStart then t.cooldownStart(who, t, self) end
+				else
+					self.power = self.power - usepower(self.use_power.power)
+				end
+			end
+			return ret
+		else
+			if self.talent_cooldown or (self.power_regen and self.power_regen ~= 0) then
+				game.logPlayer(who, "%s is still recharging.", self:getName{no_count=true})
+			else
+				game.logPlayer(who, "%s can not be used anymore.", self:getName{no_count=true})
+			end
+			return {}
+		end
+	elseif self.use_simple then
+		return self.use_simple.use(self, who, ...) or {}
+	elseif self.use_talent then
+		if (self.talent_cooldown and not who:isTalentCoolingDown(self.talent_cooldown)) or (not self.talent_cooldown and (not self.use_talent.power or self.power >= usepower(self.use_talent.power))) then
+		
+			local id = self.use_talent.id
+			local ab = self:getTalentFromId(id)
+			local old_level = who.talents[id]; who.talents[id] = self.use_talent.level
+
+            if self.use_talent.show_talent_message and who.showTalentMessage then who:showTalentMessage(ab) end
+			local ret = ab.action(who, ab)
+
+			who.talents[id] = old_level
+
+			if ret then 
+				if self.talent_cooldown then
+					who.talents_cd[self.talent_cooldown] = usepower(self.use_talent.power)
+					local t = who:getTalentFromId(self.talent_cooldown)
+					if t.cooldownStart then t.cooldownStart(who, t, self) end
+				elseif not self.use_talent.single_use then
+					self.power = self.power - usepower(self.use_talent.power)
+				end
+			end
+
+			return {used=ret, destroy=ret and self.use_talent.single_use}
+		else
+			if self.talent_cooldown or (self.power_regen and self.power_regen ~= 0) then
+				game.logPlayer(who, "%s is still recharging.", self:getName{no_count=true})
+			else
+				game.logPlayer(who, "%s can not be used anymore.", self:getName{no_count=true})
+			end
+			return {}
+		end
+	end
 end
 

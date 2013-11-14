@@ -38,6 +38,7 @@ local ActorLevel = require "engine.interface.ActorLevel"
 local ActorTemporaryEffects = require "engine.interface.ActorTemporaryEffects"
 local ActorInventory = require "engine.interface.ActorInventory"
 local Birther = require "engine.Birther"
+local Map = require "engine.Map"
 
 local UIBase = require "engine.ui.Base"
 local GameUI = require "mod.class.ui.GameUI"
@@ -98,4 +99,7 @@ dofile("/mod/resolvers.lua")
 -- Birther descriptor
 Birther:loadDefinition("/data/birth/descriptors.lua")
 
-return {require "mod.class.Game" }
+-- Map additions - currently too minimal to go in their own file
+Map.TERRAIN_CLOUD = Map.TERRAIN + 3
+
+return { require "mod.class.Game" }

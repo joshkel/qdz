@@ -38,7 +38,7 @@ function _M:init(center_mouse, actor, object, item, inven, onuse)
     local w = self.font_bold:size(name)
     engine.ui.Dialog.init(self, name, 1, 1)
 
-    local list = List.new{width=math.max(w, self.max) + 10, nb_items=#self.list, list=self.list, fct=function(item) self:use(item) end}
+    local list = List.new{width=math.max(w, self.max) + 20, nb_items=#self.list, list=self.list, fct=function(item) self:use(item) end}
 
     self:loadUI{
         {left=0, top=0, ui=list},
@@ -75,10 +75,19 @@ function _M:use(item)
 end
 
 function _M:generateList()
+    local o = self.object
     local list = {}
+    local verb
 
-    if self.object:canUseObject() then list[#list+1] = {name="Use", action="use"} end
-    if self.inven == self.actor.INVEN_INVEN and self.object:wornInven() and self.actor:getInven(self.object:wornInven()) then list[#list+1] = {name="Wield/Wear", action="wear"} end
+    if o:canUseObject() then
+        verb = "Use"
+        if o.use_verb then verb = ("Use (%s)"):format(o.use_verb:lower()) end
+        list[#list+1] = {name=verb, action="use"}
+    end
+    if self.inven == self.actor.INVEN_INVEN and o:wornInven() and self.actor:getInven(o:wornInven()) then
+        local verb = (o.type == "weapon" or o.type == "tool" or o.type == "light") and "Wield" or "Wear"
+        list[#list+1] = {name=verb, action="wear"}
+    end
     if self.inven ~= self.actor.INVEN_INVEN and self.object:wornInven() then list[#list+1] = {name="Take off", action="takeoff"} end
     if self.inven == self.actor.INVEN_INVEN then list[#list+1] = {name="Drop", action="drop"} end
 

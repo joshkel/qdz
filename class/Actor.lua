@@ -144,6 +144,9 @@ function _M:act()
 
     if self:attr("prone") or self:attr("unconscious") then self.energy.value = self.energy.value - game.energy_to_act end
 
+    game.level.map:checkEntity(self.x, self.y, Map.TERRAIN, "on_stand", self)
+    game.level.map:checkEntity(self.x, self.y, Map.TERRAIN_CLOUD, "on_stand", self)
+
     -- Still enough energy to act ?
     if self.energy.value < game.energy_to_act then return false end
 
@@ -428,18 +431,7 @@ function _M:preUseTalent(ab, silent, fake)
     end
 
     if not silent then
-        -- Allow for silent talents
-        if ab.message ~= nil then
-            if ab.message then
-                game.logSeen(self, "%s", self:useTalentMessage(ab))
-            end
-        elseif ab.mode == "sustained" and not self:isTalentActive(ab.id) then
-            game.logSeen(self, "%s activates %s.", self.name:capitalize(), ab.name)
-        elseif ab.mode == "sustained" and self:isTalentActive(ab.id) then
-            game.logSeen(self, "%s deactivates %s.", self.name:capitalize(), ab.name)
-        else
-            game.logSeen(self, "%s uses %s.", self.name:capitalize(), ab.name)
-        end
+        self:showTalentMessage(ab)
     end
 
     if not fake then
@@ -447,6 +439,21 @@ function _M:preUseTalent(ab, silent, fake)
     end
 
     return true
+end
+
+function _M:showTalentMessage(ab)
+    -- Allow for silent talents
+    if ab.message ~= nil then
+        if ab.message then
+            game.logSeen(self, "%s", self:useTalentMessage(ab))
+        end
+    elseif ab.mode == "sustained" and not self:isTalentActive(ab.id) then
+        game.logSeen(self, "%s activates %s.", self.name:capitalize(), ab.name)
+    elseif ab.mode == "sustained" and self:isTalentActive(ab.id) then
+        game.logSeen(self, "%s deactivates %s.", self.name:capitalize(), ab.name)
+    else
+        game.logSeen(self, "%s uses %s.", self.name:capitalize(), ab.name)
+    end
 end
 
 --- Called before a talent is used
@@ -690,7 +697,8 @@ local talent_absorb_type = {
     [Talents.T_OFF_HAND_ATTACK] = "lhand"
 }
 local action_absorb_type = {
-    attack = "rhand"
+    attack = "rhand",
+    use_object = "lhand",
 }
 
 --- Gets the type of qi technique to be absorbed (an index into Qi.slots_def),

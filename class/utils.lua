@@ -111,6 +111,13 @@ function string.he(t)
     end
 end
 
+function string.him(t)
+    if t.male then return "him"
+    elseif t.female then return "her"
+    else return "it"
+    end
+end
+
 --- See also T-Engine's string.his_her_self.
 function string.himself(t)
     if t.male then return "himself"

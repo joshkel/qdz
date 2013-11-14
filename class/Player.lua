@@ -328,9 +328,9 @@ function _M:playerUseItem(object, item, inven)
                 else
                     local _, del = self:removeObject(self:getInven(inven), item)
                     if del then
-                        game.log("You have no more %s.", o:getName{no_count=true, do_color=true})
+                        game.log("You have no more %s.", string.pluralize(o:getName{no_count=true, do_color=true}))
                     else
-                        game.log("You have %s.", o:getName{do_color=true})
+                        game.log("You have %s left.", o:getName{force_count=true, do_color=true})
                     end
                     self:sortInven(self:getInven(inven))
                 end

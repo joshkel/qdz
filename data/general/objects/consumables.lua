@@ -18,12 +18,16 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+local Talents = require "engine.interface.ActorTalents"
+
 newEntity{
     define_as = "BASE_POTION",
     type = "consumable", subtype="potion",
     display = "!", color=colors.BLUE,
     encumber = 1,
     rarity = 5,
+    stacking = true,
+    use_verb = "Drink",
     desc = [[Potions may have a variety of effects.]]
 }
 
@@ -41,3 +45,24 @@ newEntity{
         end
     }
 }
+
+newEntity{
+    define_as = "BASE_THROWN_ITEM",
+    type = "consumable", subtype = "thrown item",
+    display = "°",
+    encumber = 1,
+    rarity = 5,
+    stacking = true,
+    use_verb = "Throw",
+}
+
+newEntity{
+    base = "BASE_THROWN_ITEM",
+    name = "smoke bomb",
+    level_range = {1, 10},
+    color = colors.LIGHT_SLATE,
+    cost = 5,
+    --talent_cooldown = Talents.T_SMOKE_BOMB,
+    use_talent = { id = Talents.T_SMOKE_BOMB, level = 1, show_talent_message = true, single_use = true },
+}
+
