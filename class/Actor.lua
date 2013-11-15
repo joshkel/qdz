@@ -370,6 +370,7 @@ end
 function _M:onStatChange(stat, v)
     if self.incomplete then return end
 
+    -- TODO: Modify current life / qi as well as max?
     if stat == self.STAT_STR then
         self:checkEncumbrance()
     elseif stat == self.STAT_CON then

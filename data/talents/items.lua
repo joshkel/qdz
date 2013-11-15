@@ -83,3 +83,23 @@ newTalent {
     end,
 }
 
+newTalent {
+    name = "Body Hardening",
+    type = {"basic/items", 1},
+    mode = "activated",
+    duration = 6,
+
+    getPower = function(self, t)
+        return self:talentDamage(self:getMnd(), 1, 2)
+    end,
+
+    action = function(self, t)
+        self:setEffect(self.EFF_BODY_HARDENING, t.duration, { power=t.getPower(self, t) })
+        return true
+    end,
+
+    info = function(self, t)
+        return ("Qi to flow through your physical body, making your skin hard enough to turn aside some attacks. This increases your life by %i for %i turns."):format(t.getPower(self, t), t.duration)
+    end,
+}
+

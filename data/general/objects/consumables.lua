@@ -82,10 +82,33 @@ newEntity{
     base = "BASE_SCROLL",
     name = "meditation scroll",
     level_range = {1, 50},
-    color = { r = 175, g = 175, b = 255 },
+    color = { r=175, g=175, b=255 },
     cost = 5,
-    use_talent = { id = Talents.T_FOCUS_QI, single_use = true },
-    use_no_energy = true,
-    desc = [[A section of verse penned by monks to aid in their meditations. When read, the echoes of their past meditations allow you to instantly focus your own qi.]],
+
+    -- Instant activation.  Compatible with Focus Qi, but incompatible with
+    -- other items.
+    -- use_talent = { id = Talents.T_FOCUS_QI, single_use = true },
+    -- use_no_energy = true,
+
+    -- Single turn activation.  Compatible with other items.
+    use_simple = {
+        name = "focus qi",
+        use = function(self, who)
+            who:setEffect(who.EFF_FOCUSED_QI, 1, {})
+            return {used = true, destroy = true}
+        end,
+    },
+
+    desc = [[A section of verse penned by monks to aid in their meditations. When read, the echoes of their past meditations allow you to immediately focus your own qi.]],
+}
+
+newEntity{
+    base = "BASE_SCROLL",
+    name = "scroll of body hardening",
+    level_range = {1, 30},
+    color = { r=255, g=175, b=175 },
+    cost = 5,
+    use_talent = { id = Talents.T_BODY_HARDENING, single_use = true },
+    desc = [[This piece of calligraphy causes qi to flow through your physical body, making your skin hard enough to turn aside some attacks. This temporarily increases your life.]],
 }
 
