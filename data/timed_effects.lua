@@ -77,7 +77,7 @@ newEffect{
     type = "physical",
     status = "beneficial",
 
-    -- This effect is based on D20's temporary hit points
+    -- This effect is based on D20's implementation of temporary hit points
     long_desc = function(self, eff) return ("%s's body is hardened by the flow of qi, adding %i temporary life. When this effect ends, %s life will drop back to %i (unless already reduced below that)."):format(self.name:capitalize(), eff.power, string.his(self), eff.start_life) end,
     on_gain = function(self, err) return "#Target#'s body hardens.", "+Body Hardening" end,
     on_lose = function(self, err) return "#Target#'s body returns to normal .", "-Body Hardening" end,
