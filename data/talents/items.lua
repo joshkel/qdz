@@ -26,9 +26,11 @@ newTalent {
     name = "Smoke Bomb",
     type = {"basic/items", 1},
     mode = "activated",
+    -- Item talent: no need for qi cost or cooldown
     range = 5,
     radius = 1,
     duration = 4,
+
     target = function(self, t) return {type="ball", range=self:getTalentRange(t), radius=self:getTalentRadius(t), nowarning=true, stop_block=true, talent=t, display={display='*', color=colors.LIGHT_GRAY}, name="smoke bomb"} end,
 
     message = function(self, t) return "@Source@ throws a smoke bomb." end,
@@ -87,6 +89,7 @@ newTalent {
     name = "Body Hardening",
     type = {"basic/items", 1},
     mode = "activated",
+    -- Item talent: no need for qi cost or cooldown
     duration = 6,
 
     getPower = function(self, t)
@@ -107,6 +110,7 @@ newTalent {
     name = "Explosive Tag",
     type = {"basic/items", 1},
     mode = "activated",
+    -- Item talent: no need for qi cost or cooldown
     range = 1,
     radius = 1,
 

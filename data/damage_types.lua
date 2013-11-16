@@ -27,7 +27,10 @@ local function getDamageFlash(src, target)
     end
 end
 
--- The basic stuff used to damage a grid
+-- The basic stuff used to damage a grid.
+-- Supported values for extra:
+-- * silent - if true, suppresses any log message
+-- * msg - a function(src, target, dam, dam_type) that returns a log message
 setDefaultProjector(function(src, x, y, type, dam, extra)
     local target = game.level.map(x, y, Map.ACTOR)
     if not target then return nil end
@@ -105,13 +108,13 @@ end)
 -- An alternate DamageType projector that does half damage on a reflex save.
 -- Should this print any message if an opponent succeeds on a reflex save?
 -- Probably not; it's probably too noisy.
-local function refHalf(src, x, y, typ, dam)
+local function refHalf(src, x, y, typ, dam, extra)
     local base_type = DamageType:get(typ).base_type
     local target = game.level.map(x, y, Map.ACTOR)
     if target and not src:skillCheck(src:talentPower(src:getSki()), target:refSave()) then
         dam = dam / 2
     end
-    return DamageType:get(base_type).projector(src, x, y, base_type, dam)
+    return DamageType:get(base_type).projector(src, x, y, base_type, dam, extra)
 end
 
 -- Special case: A damage type that wraps another damage type (indicated by
@@ -197,19 +200,18 @@ newDamageType{
         local target = game.level.map(x, y, Map.ACTOR)
         if not target then return end
 
+        local msg
         if target:canBe("knockback") then
             local old_x, old_y = target.x, target.y
             target:knockback(src.x, src.y, dam.distance)
-            target:setMoveAnim(old_x, old_y, 8, 5)
+            target:setMoveAnim(old_x, old_y, 8, 4)
 
-            game.logAnySeen({{x=old_x, y=old_y}, target}, getDamageFlash(src, target), "%s is knocked back and takes %s%i %s damage#LAST#!",
-                target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color, dam.dam, DamageType:get(DamageType.PHYSICAL).name)
+            msg = function(src, target, dam, dam_type) return ( "%s is knocked back and takes %s%i %s damage#LAST#!"):format(target.name:capitalize(), dam_type.text_color, dam, dam_type.name) end
         else
-            game.logSeen(target, getDamageFlash(src, target), "%s takes %s%i %s damage#LAST# but stands %s ground!",
-                target.name:capitalize(), DamageType:get(DamageType.PHYSICAL).text_color, dam.dam, DamageType:get(DamageType.PHYSICAL).name, string.his(target))
+            msg = function(src, target, dam, dam_type) return ( "%s takes %s%i %s damage#LAST# but stands %s ground!"):format(target.name:capitalize(), dam_type.text_color, dam, dam_type.name, string.his(target)) end
         end
  
-        return DamageType:get(DamageType.PHYSICAL).projector(src, target.x, target.y, DamageType.PHYSICAL, dam.dam, {silent=true} )
+        return DamageType:get(DamageType.PHYSICAL).projector(src, target.x, target.y, DamageType.PHYSICAL, dam.dam, {msg=msg} )
     end,
 }
 

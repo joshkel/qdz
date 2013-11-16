@@ -11,6 +11,14 @@ Not sure that dig speed is working right - monsters may get a free move afterwar
 What to do about fractional HP?  It stinks to think you do enough damage to kill a foe and find out you haven't...
 Monsters should probably not have flawless no-light vision of player
 
+Achivements:
+Fivefold Student
+Patient Student
+Impure Student
+Martial Pacifist (KO x enemies without killing them)
+Pickpocket x enemies
+something about turning enemies into allies
+
 To do a while later:
 Logo
 More artwork for startup screens?

@@ -98,7 +98,7 @@ newTalent{
                 -- TODO: Keep this "driven back a square" mechanic?
                 -- It implies that an immobile target can't dodge a tackle...
                 target:knockback(self.x, self.y, 1)
-                target:setMoveAnim(x, y, 8, 5)
+                target:setMoveAnim(x, y, 8, 4)
                 game.logSeen(target, ("%s is driven back!"):format(target.name:capitalize()))
             else
                 game.logSeen(target, ("%s stands %s ground!"):format(target.name:capitalize(), string.his(target)))

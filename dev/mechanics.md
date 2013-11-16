@@ -117,3 +117,8 @@ Undecided.  A character's strength depending on his equipment is in genre for ro
 
 If a player character's strength is gear-dependent, is it harder to balance against non-gear-dependent foes?
 
+Further Reading
+===============
+
+[ToME "Infinite" Scaling Design](http://forums.te4.org/viewtopic.php?f=36&t=38632)
+
