@@ -253,7 +253,9 @@ function _M:getSrcName()
     -- similar and thus have access to intermediate.  If not, it's harmless.
     local intermediate = Qi.getIntermediate(self)
 
+    local used_intermediate = false
     if intermediate ~= self and intermediate.damage_message_use_name then
+        used_intermediate = true
         if seen then
             name = ("%s's %s"):format(name, intermediate.name)
         else
@@ -261,14 +263,16 @@ function _M:getSrcName()
         end
     end
 
-    return name, seen
+    return name, seen, used_intermediate
 end
 
 --- Gets this actor's name, formatted for use in a damage or effect target message.
 --- See also getSrcName.
-function _M:getTargetName(src)
+function _M:getTargetName(src, used_intermediate)
     if src == self then
-        return string.himself(self)
+        -- used_intermediate means that we got a message like "Guy's bomb"
+        -- instead of "Guy," so "himself" would be ungrammatical.
+        return used_intermediate and string.him(self) or string.himself(self)
     else
         return self:getLogName()
     end

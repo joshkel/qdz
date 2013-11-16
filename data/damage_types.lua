@@ -52,7 +52,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     if extra.msg then
         game.logSeen2(src, target, getDamageFlash(src, target), extra.msg(src, target, dam, DamageType:get(type)))
     elseif not extra.silent then
-        local src_name = src:getSrcName()
+        local src_name, seen, used_intermediate = src:getSrcName()
         local intermediate = Qi.getIntermediate(src)
 
         local message
@@ -60,7 +60,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
             message = ("%s takes %s%i %s damage#LAST#."):format(target:getTargetName():capitalize(), DamageType:get(type).text_color, dam, DamageType:get(type).name)
             game.logSeen(target, getDamageFlash(src, target), message)
         else
-            message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target:getTargetName(src), DamageType:get(type).text_color, dam, DamageType:get(type).name)
+            message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target:getTargetName(src, used_intermediate), DamageType:get(type).text_color, dam, DamageType:get(type).name)
             game.logSeen2(src, target, getDamageFlash(src, target), message)
         end
     end
@@ -108,13 +108,31 @@ end)
 -- An alternate DamageType projector that does half damage on a reflex save.
 -- Should this print any message if an opponent succeeds on a reflex save?
 -- Probably not; it's probably too noisy.
+--
+-- typ is used to look up the base type (or it may already be the base type itself).
 local function refHalf(src, x, y, typ, dam, extra)
-    local base_type = DamageType:get(typ).base_type
+    local base_type = DamageType:get(typ).base_type or typ
     local target = game.level.map(x, y, Map.ACTOR)
     if target and not src:skillCheck(src:talentPower(src:getSki()), target:refSave()) then
         dam = dam / 2
     end
     return DamageType:get(base_type).projector(src, x, y, base_type, dam, extra)
+end
+
+-- A helper for DamageType projectors that applies knockback.
+-- Returns a msg function suitable for use in extra.
+--
+-- dam should have distance and optionally src_x and src_y.
+local function damageKnockback(src, target, dam)
+    if target:canBe("knockback") then
+        local old_x, old_y = target.x, target.y
+        target:knockback(dam.src_x or src.x, dam.src_y or src.y, dam.distance)
+        target:setMoveAnim(old_x, old_y, 8, 4)
+
+        return function(src, target, dam, dam_type) return ( "%s is knocked back and takes %s%i %s damage#LAST#!"):format(target.name:capitalize(), dam_type.text_color, dam, dam_type.name) end
+    else
+        return function(src, target, dam, dam_type) return ( "%s takes %s%i %s damage#LAST# but stands %s ground!"):format(target.name:capitalize(), dam_type.text_color, dam, dam_type.name, string.his(target)) end
+    end
 end
 
 -- Special case: A damage type that wraps another damage type (indicated by
@@ -200,16 +218,7 @@ newDamageType{
         local target = game.level.map(x, y, Map.ACTOR)
         if not target then return end
 
-        local msg
-        if target:canBe("knockback") then
-            local old_x, old_y = target.x, target.y
-            target:knockback(src.x, src.y, dam.distance)
-            target:setMoveAnim(old_x, old_y, 8, 4)
-
-            msg = function(src, target, dam, dam_type) return ( "%s is knocked back and takes %s%i %s damage#LAST#!"):format(target.name:capitalize(), dam_type.text_color, dam, dam_type.name) end
-        else
-            msg = function(src, target, dam, dam_type) return ( "%s takes %s%i %s damage#LAST# but stands %s ground!"):format(target.name:capitalize(), dam_type.text_color, dam, dam_type.name, string.his(target)) end
-        end
+        local msg = damageKnockback(src, target, dam)
  
         return DamageType:get(DamageType.PHYSICAL).projector(src, target.x, target.y, DamageType.PHYSICAL, dam.dam, {msg=msg} )
     end,
@@ -258,6 +267,25 @@ newDamageType{
         end
         return result
     end
+}
+
+-- Explosion is fire + physical + knockback, reflex half.
+-- dam should be a table containing elements dam and distance.
+newDamageType{
+    name = "explosion", type = "EXPLOSION",
+    projector = function(src, x, y, typ, dam)
+        -- TODO: Damage items / environment
+        local target = game.level.map(x, y, Map.ACTOR)
+        if not target then return end
+
+        local msg = damageKnockback(src, target, dam)
+ 
+        local result = DamageType:get(DamageType.FIRE_REF_HALF).projector(src, target.x, target.y, DamageType.FIRE_REF_HALF, dam.dam / 2)
+        if not target.dead then
+            result = result + refHalf(src, target.x, target.y, DamageType.PHYSICAL, dam.dam / 2, {msg=msg})
+        end
+        return result
+    end,
 }
 
 -- Assign default colors to any DamageTypes lacking an explicit color.

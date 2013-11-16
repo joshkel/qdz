@@ -21,6 +21,7 @@
 local Map = require "engine.Map"
 local Object = require "mod.class.Object"
 local Particles = require "engine.Particles"
+local Qi = require "mod.class.interface.Qi"
 
 newTalent {
     name = "Smoke Bomb",
@@ -121,7 +122,8 @@ newTalent {
     end,
 
     action = function(self, t)
-        local tg = {type="hit", range=self:getTalentRange(t)}
+        -- Setting a bomb at your feet is risky but legal, so nowarning.
+        local tg = {type="hit", range=self:getTalentRange(t), nowarning=true}
         local x, y, target = self:getTarget(tg)
 
         -- Hack: Targeting yourself returns nil for x, y.  Not sure why, but
@@ -144,6 +146,7 @@ newTalent {
         local e = Object.new{
             name = "explosive tag",
             duration = 1,
+            damage_message_passive = true,
 
             act = function(e)
                 e:useEnergy()
@@ -157,10 +160,15 @@ newTalent {
                 if e.target and not e.target.dead then x, y = e.target.x, e.target.y
                 else x, y = e.x, e.y end
 
+                game.logSeen({x=x, y=y}, "The tag explodes!")
+
+                -- FIXME: Particle effect for smoking tag
                 -- FIXME: Because we mess with start_x and start_y, bombing a wall can bleed through to either side of the wall.
-                -- FIXME: Finalize damage types, do knockback, etc.
+                -- FIXME: Double-hitting a monster is apparently possible
+                local saved = Qi.preCall(e)
                 self:project({type="ball", radius=self:getTalentRadius(t), talent=t, start_x=x, start_y=y},
-                    x, y, DamageType.FIRE, t.getDamage(self, t))
+                    x, y, DamageType.EXPLOSION, { dam=t.getDamage(self, t), distance=t.radius+1, src_x=x, src_y=y })
+                Qi.postCall(e, saved)
 
                 game.level.map:particleEmitter(x, y, self:getTalentRadius(t), "explosion", { radius=self:getTalentRadius(t) })
                 game.level:removeEntity(e, true)
@@ -175,11 +183,15 @@ newTalent {
         -- player a whole turn, but we also give most enemies a turn, so the
         -- player can't (e.g.) bomb an enemy then step away without giving the
         -- enemy a chance to follow.
+        --
+        -- FIXME: This isn't actually working right now.
         e.energy.value = game.energy_to_act / 2
 
         e.target = target
         e.x, e.y = x, y
         game.level:addEntity(e)
+
+        Qi.saveSourceInfo(self, e)
 
         return true
     end,
