@@ -82,7 +82,7 @@ newEntity{
     base = "BASE_SCROLL",
     name = "meditation scroll",
     level_range = {1, 50},
-    color = { r=175, g=175, b=255 },
+    color = { r=150, g=150, b=255 },
     cost = 5,
 
     -- Instant activation.  Compatible with Focus Qi, but incompatible with
@@ -99,7 +99,7 @@ newEntity{
         end,
     },
 
-    desc = [[A section of verse penned by monks to aid in their meditations. When read, the echoes of their past meditations allow you to immediately focus your own qi.]],
+    desc = [[A section of verse penned by monks to aid in their meditations. When read, the echoes of their past meditations allow you to immediately focus your own qi (as the Focus Qi technique).]],
 }
 
 newEntity{
@@ -109,6 +109,17 @@ newEntity{
     color = { r=255, g=175, b=175 },
     cost = 5,
     use_talent = { id = Talents.T_BODY_HARDENING, single_use = true },
-    desc = [[This piece of calligraphy causes qi to flow through your physical body, making your skin hard enough to turn aside some attacks. This temporarily increases your life.]],
+    -- No description needed; it's redundant with the talent use message
+    --desc = [[This piece of calligraphy causes qi to flow through your physical body, making your skin hard enough to turn aside some attacks. This temporarily increases your life.]],
+}
+
+newEntity{
+    base = "BASE_SCROLL",
+    name = "explosive tag",
+    level_range = {1, 30},
+    color = { r=225, g=125, b=5 }, -- based on colors in explosion.lua particle effect
+    cost = 5,
+    use_talent = { id = Talents.T_EXPLOSIVE_TAG, single_use = true },
+    desc = [[A paper tag with the character for “explode” written on it, prepared using a special assassin's technique.]],
 }
 

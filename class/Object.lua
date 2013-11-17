@@ -106,6 +106,11 @@ function _M:tooltip(x, y)
 
     if self.desc then text:add(true, true, color.text, self.desc) end
 
+    if self.use_talent then
+        local ab = self:getTalentFromId(self.use_talent.id)
+        text:add(true, true, color.caption, 'Use: ', color.text, ab.info(game.player, ab))
+    end
+
     if config.settings.cheat then
         text:add(true, true, color.caption, 'UID: ', color.text, tostring(self.uid))
     end
@@ -157,7 +162,8 @@ function _M:use(who, typ, inven, item)
     end
 end
 
--- Modify engine.interface.ObjectActivable.useObject to add the following:
+-- A copy-and-paste modification of engine.interface.ObjectActivable.useObject
+-- that adds the following:
 -- * Optional talent messages
 -- * Consumable talent items
 function _M:useObject(who, ...)

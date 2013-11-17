@@ -103,7 +103,7 @@ newTalent {
     end,
 
     info = function(self, t)
-        return ("Qi to flow through your physical body, making your skin hard enough to turn aside some attacks. This increases your life by %i (based on your Mind) for %i turns."):format(t.getPower(self, t), t.duration)
+        return ("Qi flows through your physical body, making your skin hard enough to turn aside some attacks. This increases your life by %i (based on your Mind) for %i turns."):format(t.getPower(self, t), t.duration)
     end,
 }
 
@@ -162,7 +162,12 @@ newTalent {
 
                 game.logSeen({x=x, y=y}, "The tag explodes!")
 
-                -- FIXME: Particle effect for smoking tag
+                if e.target then
+                    e.target:removeParticles(e.particles)
+                else
+                    game.level.map:removeParticleEmitter(e.particles)
+                end
+
                 -- FIXME: Because we mess with start_x and start_y, bombing a wall can bleed through to either side of the wall.
                 -- FIXME: Double-hitting a monster is apparently possible
                 local saved = Qi.preCall(e)
@@ -175,21 +180,22 @@ newTalent {
             end,
         }
 
-        -- This is a bit tricky.  If we don't mess with energy at all, then
-        -- the bomb's turns occur simultaneously with the player, so it's
-        -- semi-random whether they occur before or after.
-        --
-        -- By setting the bomb halfway through the turn, we always give the
-        -- player a whole turn, but we also give most enemies a turn, so the
-        -- player can't (e.g.) bomb an enemy then step away without giving the
-        -- enemy a chance to follow.
-        --
-        -- FIXME: This isn't actually working right now.
-        e.energy.value = game.energy_to_act / 2
-
         e.target = target
         e.x, e.y = x, y
-        game.level:addEntity(e)
+
+        e.particles = Particles.new("bomb_fuse", 1, {})
+        if e.target then
+            e.target:addParticles(e.particles)
+        else
+            e.particles.x, e.particles.y = x, y
+            game.level.map:addParticleEmitter(e.particles)
+        end
+
+        -- Add the bomb *after* the target (if any), to ensure that the target
+        -- gets two moves to respond.  This means that if, e.g., the player
+        -- tags an enemy then tries to step away, the enemy can follow before
+        -- the bomb detonates.
+        game.level:addEntity(e, target)
 
         Qi.saveSourceInfo(self, e)
 
@@ -197,8 +203,7 @@ newTalent {
     end,
 
     info = function(self, t)
-        return ("A paper containing the character for \"explode,\" when prepared using a special assassin's technique and charged with qi, creates an effective bomb. When activated, it can be attached to an opponent or the floor. After 1 turn, it detonates, dealing %i fire and physical damage (based on your Mind) and causing knockback in a %i radius."):format(t.getDamage(self, t), t.radius)
+        return ("Attaches an explosive tag to an adjacent opponent or terrain. After 1 turn, the tag detonates, dealing %i fire and physical damage (based on your Mind) and causing knockback in a %i radius."):format(t.getDamage(self, t), t.radius)
     end,
 }
-
 

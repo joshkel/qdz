@@ -18,21 +18,22 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
--- Based on ToME's creeping_dark.  See also bomb_fuse.
+-- Based on ToME's creeping_dark.  See also smoke_cloud.
+
+local nb = 0
 
 return { generator = function()
-    local size = 12
+    local size = 3
     local sizev = 0.3
-    local sizea = -0.05
-    local halfSize = size / 2
+    local xv = rng.float(-0.5, 0.5)
 
     return {
         trail = 1,
-        life = 35,
-        size = size, sizev = sizev, sizea = sizea,
+        life = 15,
+        size = size, sizev = sizev, sizea = 0,
 
-        x = rng.range(-engine.Map.tile_w * 0.5 - halfSize, engine.Map.tile_w * 0.5 - halfSize), xv = -sizev/2, xa = -sizea/2,
-        y = rng.range(-engine.Map.tile_h * 0.5 - halfSize, engine.Map.tile_h * 0.5 - halfSize), yv = -sizev/2, ya = -sizea/2,
+        x = 0, xv = xv + -sizev/2, xa = -xv / 20,
+        y = rng.float(0.2, 0.4) * engine.Map.tile_h / 2 - size/2, yv = -sizev/2 - 1, ya = 0,
 
         dir = 0, dirv = 0, dira = 0,
         vel = 0, velv = 0, vela = 0,
@@ -44,7 +45,9 @@ return { generator = function()
     }
 end, },
 function(self)
-    self.ps:emit(2)
+    if nb == 0 then self.ps:emit(1) end
+    nb = nb + 1
+    if nb == 3 then nb = 0 end
 end,
 100
 
