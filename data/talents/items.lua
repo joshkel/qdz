@@ -126,9 +126,11 @@ newTalent {
         local tg = {type="hit", range=self:getTalentRange(t), nowarning=true}
         local x, y, target = self:getTarget(tg)
 
+        -- Targeting self should actually plant the bomb at your feet.
+        --
         -- Hack: Targeting yourself returns nil for x, y.  Not sure why, but
         -- we'll support it rather than messing with tg parameters to change it.
-        -- Also check target == self in case that behavior ever changes.
+        -- We still check target == self in case that behavior ever changes.
         if (not x and not y and target) or target == self then
             x, y = target.x, target.y
             target = nil
@@ -161,7 +163,6 @@ newTalent {
                 else x, y = e.x, e.y end
 
                 game.logSeen({x=x, y=y}, "The tag explodes!")
-
                 if e.target then
                     e.target:removeParticles(e.particles)
                 else
@@ -169,10 +170,9 @@ newTalent {
                 end
 
                 -- FIXME: Because we mess with start_x and start_y, bombing a wall can bleed through to either side of the wall.
-                -- FIXME: Double-hitting a monster is apparently possible
                 local saved = Qi.preCall(e)
                 self:project({type="ball", radius=self:getTalentRadius(t), talent=t, start_x=x, start_y=y},
-                    x, y, DamageType.EXPLOSION, { dam=t.getDamage(self, t), distance=t.radius+1, src_x=x, src_y=y })
+                    x, y, DamageType.EXPLOSION, { dam=t.getDamage(self, t), distance=t.radius+1, src_x=x, src_y=y, alt_src_x=self.x, alt_src_y=self.y })
                 Qi.postCall(e, saved)
 
                 game.level.map:particleEmitter(x, y, self:getTalentRadius(t), "explosion", { radius=self:getTalentRadius(t) })

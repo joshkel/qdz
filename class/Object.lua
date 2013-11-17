@@ -106,8 +106,13 @@ function _M:tooltip(x, y)
 
     if self.desc then text:add(true, true, color.text, self.desc) end
 
-    if self.use_talent then
+    -- Usage effects
+    if self.use_message then
+        text:add(true, true, color.caption, 'Use: ', color.text, self.use_message)
+    elseif self.use_talent then
         local ab = self:getTalentFromId(self.use_talent.id)
+        -- Hack: We don't necessarily have an Actor, but tooltips are for the
+        -- player's benefit, so use the player.
         text:add(true, true, color.caption, 'Use: ', color.text, ab.info(game.player, ab))
     end
 

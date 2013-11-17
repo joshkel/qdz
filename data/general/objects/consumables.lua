@@ -43,7 +43,8 @@ newEntity{
             game.log(("%s's wounds heal."):format(who.name))
             return {used = true, destroy = true}
         end
-    }
+    },
+    use_message = [[Instantly heals 10 points of damage.]],
 }
 
 newEntity{
@@ -83,14 +84,15 @@ newEntity{
     name = "meditation scroll",
     level_range = {1, 50},
     color = { r=150, g=150, b=255 },
+    rarity = 10,
     cost = 5,
 
-    -- Instant activation.  Compatible with Focus Qi, but incompatible with
+    -- Instant activation.  Consistent with Focus Qi, but inconsistent with
     -- other items.
     -- use_talent = { id = Talents.T_FOCUS_QI, single_use = true },
     -- use_no_energy = true,
 
-    -- Single turn activation.  Compatible with other items.
+    -- Single turn activation.  Consistent with other items.
     use_simple = {
         name = "focus qi",
         use = function(self, who)
@@ -98,8 +100,9 @@ newEntity{
             return {used = true, destroy = true}
         end,
     },
+    use_message = [[As the Focus Qi technique, except that reading the scroll takes one turn, while focusing qi yourself is instantaneous.]],
 
-    desc = [[A section of verse penned by monks to aid in their meditations. When read, the echoes of their past meditations allow you to immediately focus your own qi (as the Focus Qi technique).]],
+    desc = [[A section of verse penned by monks to aid in their meditations. When read, the echoes of their past meditations allow you to immediately focus your own qi.]],
 }
 
 newEntity{

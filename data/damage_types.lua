@@ -122,11 +122,27 @@ end
 -- A helper for DamageType projectors that applies knockback.
 -- Returns a msg function suitable for use in extra.
 --
--- dam should have distance and optionally src_x and src_y.
+-- dam should have a dam value, distance, and optionally src_x and src_y.
+--
+-- alt_src_x and alt_src_y, if provided, are used in place of src_x and src_y
+-- *if* the knockback's source are the same as the target's x and y.  In other
+-- words, these are alternate values that can be used to ensure that the
+-- knockback actually moves the targe.
+--
+-- This function modifies dam by adding a tmp value for tracking targets that
+-- have already been hit.
 local function damageKnockback(src, target, dam)
+    dam.tmp = dam.tmp or {}
+    if dam.tmp[target] then return end
+    dam.tmp[target] = true
+
     if target:canBe("knockback") then
         local old_x, old_y = target.x, target.y
-        target:knockback(dam.src_x or src.x, dam.src_y or src.y, dam.distance)
+        local src_x, src_y = dam.src_x or src.x, dam.src_y or src.y
+        if src_x == old_x and src_y == old_y and dam.alt_src_x and dam.alt_src_y then
+            src_x, src_y = dam.alt_src_x, dam.alt_src_y
+        end
+        target:knockback(src_x, src_y, dam.distance)
         target:setMoveAnim(old_x, old_y, 8, 4)
 
         return function(src, target, dam, dam_type) return ( "%s is knocked back and takes %s%i %s damage#LAST#!"):format(target.name:capitalize(), dam_type.text_color, dam, dam_type.name) end
@@ -211,7 +227,8 @@ newDamageType{
     end,
 }
 
--- Physical damage plus knockback. dam should be a table containing elements dam and distance.
+-- Physical damage plus knockback.
+-- dam should be a table containing elements dam and distance et al.; see damageKnockback.
 newDamageType{
     name = "physical knockback", type = "PHYSICAL_KNOCKBACK",
     projector = function(src, x, y, typ, dam)
@@ -219,6 +236,7 @@ newDamageType{
         if not target then return end
 
         local msg = damageKnockback(src, target, dam)
+        if not msg then return end
  
         return DamageType:get(DamageType.PHYSICAL).projector(src, target.x, target.y, DamageType.PHYSICAL, dam.dam, {msg=msg} )
     end,
@@ -270,7 +288,7 @@ newDamageType{
 }
 
 -- Explosion is fire + physical + knockback, reflex half.
--- dam should be a table containing elements dam and distance.
+-- dam should be a table containing elements dam and distance et al.; see damageKnockback.
 newDamageType{
     name = "explosion", type = "EXPLOSION",
     projector = function(src, x, y, typ, dam)
@@ -279,6 +297,7 @@ newDamageType{
         if not target then return end
 
         local msg = damageKnockback(src, target, dam)
+        if not msg then return end
  
         local result = DamageType:get(DamageType.FIRE_REF_HALF).projector(src, target.x, target.y, DamageType.FIRE_REF_HALF, dam.dam / 2)
         if not target.dead then
