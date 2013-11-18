@@ -52,7 +52,7 @@ function _M:getName(t)
     end
 end
 
-function _M:tooltip(x, y)
+function _M:getDesc()
     local color = GameUI.tooltipColor
     local text = GameUI:tooltipTitle(self:getDisplayString(), self.name)
     local wielder = self.wielder or {}
@@ -115,6 +115,13 @@ function _M:tooltip(x, y)
         -- player's benefit, so use the player.
         text:add(true, true, color.caption, 'Use: ', color.text, ab.info(game.player, ab))
     end
+
+    return text
+end
+
+function _M:tooltip(x, y)
+    local color = GameUI.tooltipColor
+    local text = self:getDesc()
 
     if config.settings.cheat then
         text:add(true, true, color.caption, 'UID: ', color.text, tostring(self.uid))
