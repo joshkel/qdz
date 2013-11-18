@@ -63,6 +63,41 @@ function util.scoped_change(obj, t, f, ...)
     return result
 end
 
+-- Helper function: Munges the source coordinates of a projection from
+-- x, y to src_x, src_y so that they're valid.
+--
+-- This is useful to have the projection start and end at x, y if possible
+-- while handling the special case of x, y being a wall (in which case we
+-- need extra handling to ensure that the projection isn't centered on the
+-- wall, potentially bleeding through to either side).
+--
+-- Assumes that x, y and src_x, src_y are only one square apart.
+--
+-- This doesn't really belong in utils, but I don't know where it does belong.
+function util.mungeProjectSource(x, y, src_x, src_y)
+    local Map = require("engine.Map")
+    local is_valid = function(x, y) return not game.level.map:checkEntity(x, y, Map.TERRAIN, "block_move") or game.level.map:checkEntity(x, y, Map.TERRAIN, "pass_projectile") end
+
+    -- If destination coordinates are valid, then use those.
+    if is_valid(x, y) then return x, y end
+
+    -- Try to find source coordinates "far away" from the destination.
+    -- Check to the left and right of the source.
+    local coords = util.adjacentCoords(src_x, src_y)
+    local sides = util.dirSides(util.getDir(x, y, src_x, src_y), src_x, src_y)
+    local result = {}
+    for i, v in ipairs({'left', 'right'}) do
+        if is_valid(unpack(coords[sides[v]])) then table.insert(result, coords[sides[v]]) end
+    end
+    if #result ~= 0 then
+        result = rng.table(result)
+        return result[1], result[2]
+    end
+
+    -- Fall back to source coordinates if necessary.
+    return src_x, src_y
+end
+
 function string.describe_range(from, to, space)
     if from == to then
         return tostring(from)

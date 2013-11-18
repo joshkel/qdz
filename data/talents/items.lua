@@ -145,12 +145,34 @@ newTalent {
             game.logSeen(self, game.flash.NEUTRAL, "%s attaches an explosive tag to the %s.", self:getSrcName():capitalize(), game.level.map(x, y, Map.TERRAIN).name)
         end
 
+        -- The logic here gets confusing, because there are several coordinates
+        -- we're dealing with:
+        -- * The target x and y of the bomb. The bomb may be attached to a grid
+        --   (e.x and e.y are target x and y), or it may be attached to an
+        --   Actor (e.target gives the actor, so use e.target.x and e.target.y).
+        -- * The source (self) x and y when the bomb was set. This is used when
+        --   projecting the explosion. (If we don't use this, and if the bomb is
+        --   set on a wall, then it can bleed through to either side of the
+        --   wall.)
+        -- * The source (self) x and y when the bomb goes off. This is a hack to
+        --   ensure that the bomb causes knockback, even at its epicenter.
+        --   (Imagine it as the player setting a bomb on an enemy's chest; even
+        --   if the player then teleports to the other side of the enemy, the
+        --   enemy will turn to face, and the blast will knock the enemy away
+        --   from the player.)
+
         local e = Object.new{
             name = "explosive tag",
             duration = 1,
             damage_message_passive = true,
+            talent = t,
 
             act = function(e)
+                local DamageType = require "engine.DamageType"
+                local Qi = require "mod.class.interface.Qi"
+                local self = e.src
+                local t = e.talent
+
                 e:useEnergy()
 
                 if e.duration > 0 then
@@ -159,8 +181,10 @@ newTalent {
                 end
 
                 local x, y
-                if e.target and not e.target.dead then x, y = e.target.x, e.target.y
+                if e.target then x, y = e.target.x, e.target.y
                 else x, y = e.x, e.y end
+
+                local start_x, start_y = util.mungeProjectSource(x, y, e.src_orig_x, e.src_orig_y)
 
                 game.logSeen({x=x, y=y}, "The tag explodes!")
                 if e.target then
@@ -169,9 +193,8 @@ newTalent {
                     game.level.map:removeParticleEmitter(e.particles)
                 end
 
-                -- FIXME: Because we mess with start_x and start_y, bombing a wall can bleed through to either side of the wall.
                 local saved = Qi.preCall(e)
-                self:project({type="ball", radius=self:getTalentRadius(t), talent=t, start_x=x, start_y=y},
+                self:project({type="ball", radius=self:getTalentRadius(t), talent=t, start_x=start_x, start_y=start_y},
                     x, y, DamageType.EXPLOSION, { dam=t.getDamage(self, t), distance=t.radius+1, src_x=x, src_y=y, alt_src_x=self.x, alt_src_y=self.y })
                 Qi.postCall(e, saved)
 
@@ -182,7 +205,9 @@ newTalent {
 
         e.target = target
         e.x, e.y = x, y
+        e.src_orig_x, e.src_orig_y = self.x, self.y
 
+        -- TODO: Particles are too hard to see atop a wall grid, and there are no tooltips.
         e.particles = Particles.new("bomb_fuse", 1, {})
         if e.target then
             e.target:addParticles(e.particles)
@@ -195,6 +220,7 @@ newTalent {
         -- gets two moves to respond.  This means that if, e.g., the player
         -- tags an enemy then tries to step away, the enemy can follow before
         -- the bomb detonates.
+        -- FIXME: Not quite perfect. Putting a tag on terrain if no enemies have died gives you two turns???
         game.level:addEntity(e, target)
 
         Qi.saveSourceInfo(self, e)

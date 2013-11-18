@@ -50,10 +50,17 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     -- Display log message.
     extra = extra or {}
     if extra.msg then
-        game.logSeen2(src, target, getDamageFlash(src, target), extra.msg(src, target, dam, DamageType:get(type)))
+        -- Honoring damage_message_passive is probably the right thing to do,
+        -- even for custom messages?
+        --
+        -- If we don't do this, then an out-of-sight bomb can still display messages.
+        if Qi.getIntermediate(src).damage_message_passive then
+            game.logSeen(target, getDamageFlash(src, target), extra.msg(src, target, dam, DamageType:get(type)))
+        else
+            game.logSeen2(src, target, getDamageFlash(src, target), extra.msg(src, target, dam, DamageType:get(type)))
+        end
     elseif not extra.silent then
         local src_name, seen, used_intermediate = src:getSrcName()
-        local intermediate = Qi.getIntermediate(src)
 
         local message
         if Qi.getIntermediate(src).damage_message_passive then
@@ -145,9 +152,9 @@ local function damageKnockback(src, target, dam)
         target:knockback(src_x, src_y, dam.distance)
         target:setMoveAnim(old_x, old_y, 8, 4)
 
-        return function(src, target, dam, dam_type) return ( "%s is knocked back and takes %s%i %s damage#LAST#!"):format(target.name:capitalize(), dam_type.text_color, dam, dam_type.name) end
+        return function(src, target, dam, dam_type) return ( "%s is knocked back and takes %s%i %s damage#LAST#!"):format(target:getTargetName():capitalize(), dam_type.text_color, dam, dam_type.name) end
     else
-        return function(src, target, dam, dam_type) return ( "%s takes %s%i %s damage#LAST# but stands %s ground!"):format(target.name:capitalize(), dam_type.text_color, dam, dam_type.name, string.his(target)) end
+        return function(src, target, dam, dam_type) return ( "%s takes %s%i %s damage#LAST# but stands %s ground!"):format(target:getTargetName():capitalize(), dam_type.text_color, dam, dam_type.name, string.his(target)) end
     end
 end
 
