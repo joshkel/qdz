@@ -109,7 +109,7 @@ newEntity{
     base = "BASE_SCROLL",
     name = "scroll of body hardening",
     level_range = {1, 30},
-    color = colors.LIGHT_RED,
+    color = colors.DARK_RED,
     cost = 5,
     use_talent = { id = Talents.T_BODY_HARDENING, single_use = true },
     -- No description needed; it's redundant with the talent use message

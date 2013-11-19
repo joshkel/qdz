@@ -30,7 +30,7 @@ end
 -- The basic stuff used to damage a grid.
 -- Supported values for extra:
 -- * silent - if true, suppresses any log message
--- * msg - a function(src, target, dam, dam_type) that returns a log message
+-- * msg - a function(src, target, dam, dam_type) that displays any appropriate log message
 setDefaultProjector(function(src, x, y, type, dam, extra)
     local target = game.level.map(x, y, Map.ACTOR)
     if not target then return nil end
@@ -50,15 +50,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     -- Display log message.
     extra = extra or {}
     if extra.msg then
-        -- Honoring damage_message_passive is probably the right thing to do,
-        -- even for custom messages?
-        --
-        -- If we don't do this, then an out-of-sight bomb can still display messages.
-        if Qi.getIntermediate(src).damage_message_passive then
-            game.logSeen(target, getDamageFlash(src, target), extra.msg(src, target, dam, DamageType:get(type)))
-        else
-            game.logSeen2(src, target, getDamageFlash(src, target), extra.msg(src, target, dam, DamageType:get(type)))
-        end
+        extra.msg(src, target, dam, DamageType:get(type))
     elseif not extra.silent then
         local src_name, seen, used_intermediate = src:getSrcName()
 
@@ -144,6 +136,7 @@ local function damageKnockback(src, target, dam)
     dam.tmp[target] = true
 
     if target:canBe("knockback") then
+        local before_name, before_seen = target:getTargetName()
         local old_x, old_y = target.x, target.y
         local src_x, src_y = dam.src_x or src.x, dam.src_y or src.y
         if src_x == old_x and src_y == old_y and dam.alt_src_x and dam.alt_src_y then
@@ -151,10 +144,15 @@ local function damageKnockback(src, target, dam)
         end
         target:knockback(src_x, src_y, dam.distance)
         target:setMoveAnim(old_x, old_y, 8, 4)
+        local after_name, after_seen = target:getTargetName()
 
-        return function(src, target, dam, dam_type) return ( "%s is knocked back and takes %s%i %s damage#LAST#!"):format(target:getTargetName():capitalize(), dam_type.text_color, dam, dam_type.name) end
+        return function(src, target, dam, dam_type)
+            game.logSeen2({x=old_x, y=old_y}, target, ("%s is knocked back and takes %s%i %s damage#LAST#!"):format((before_seen and before_name or after_name):capitalize(), dam_type.text_color, dam, dam_type.name))
+        end
     else
-        return function(src, target, dam, dam_type) return ( "%s takes %s%i %s damage#LAST# but stands %s ground!"):format(target:getTargetName():capitalize(), dam_type.text_color, dam, dam_type.name, string.his(target)) end
+        return function(src, target, dam, dam_type)
+            game.logSeen(target, getDamageFlash(src, target), ("%s takes %s%i %s damage#LAST# but stands %s ground!"):format(target:getTargetName():capitalize(), dam_type.text_color, dam, dam_type.name, string.his(target)))
+        end
     end
 end
 
@@ -195,7 +193,8 @@ newDamageType{
         -- special handling for non-breathing creatures.
         return DamageType:get(DamageType.POISON).projector(src, x, y, DamageType.POISON, dam, {
             msg=function(src, target, dam, dam_type)
-                return ("%s takes %s%i %s damage#LAST# from the gas."):format(target.name:capitalize(), dam_type.text_color, dam, dam_type.name)
+                game.logSeen(target, getDamageFlash(src, target),
+                    ("%s takes %s%i %s damage#LAST# from the gas."):format(target:getTargetName():capitalize(), dam_type.text_color, dam, dam_type.name))
             end
         })
     end
