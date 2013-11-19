@@ -1,5 +1,4 @@
 To do:
-Bash should display a log message if it hits, even if target is unseen
 Off hand attack *really* needs a damage display
 Armor should apply to all physical attacks, not just melee
 Weird distortion when bashing a grid bug

@@ -140,7 +140,7 @@ newTalent {
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
         if target then
-            game.logSeen2(self, target, game.flash.NEUTRAL, "%s attaches an explosive tag to %s.", self:getSrcName():capitalize(), target:getTargetName(self))
+            game.logSeen({self, target}, game.flash.NEUTRAL, "%s attaches an explosive tag to %s.", self:getSrcName():capitalize(), target:getTargetName(self))
         else
             game.logSeen(self, game.flash.NEUTRAL, "%s attaches an explosive tag to the %s.", self:getSrcName():capitalize(), game.level.map(x, y, Map.TERRAIN).name)
         end

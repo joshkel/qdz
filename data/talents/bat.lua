@@ -222,9 +222,9 @@ newTalent {
             if not eff.blood_sip_message then
                 eff.blood_sip_message = true
                 if self.subtype == "bat" then
-                    game.logSeen2(self, target, "%s begins to feed on %s's blood.", self:getSrcName():capitalize(), target:getTargetName())
+                    game.logSeenAny({self, target}, "%s begins to feed on %s's blood.", self:getSrcName():capitalize(), target:getTargetName())
                 else
-                    game.logSeen2(self, target, "%s begins to draw vitality from %s's blood.", self:getSrcName():capitalize(), target:getTargetName())
+                    game.logSeenAny({self, target}, "%s begins to draw vitality from %s's blood.", self:getSrcName():capitalize(), target:getTargetName())
                 end
             end
         end

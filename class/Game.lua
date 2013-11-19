@@ -75,7 +75,7 @@ function _M:run()
 
     self.log = function(style, ...) if type(style) == "number" then self.logdisplay(...) self.flash(style, ...) else self.logdisplay(style, ...) self.flash(self.flash.NEUTRAL, style, ...) end end
     self.logSeen = function(e, style, ...) if logSee(e) then self.log(style, ...); return true end end
-    self.logSeen2 = function(e1, e2, style, ...) if logSee(e1) or logSee(e2) then self.log(style, ...); return true end end
+    self.logSeenAny = function(e, style, ...) for i, v in pairs(e) do if logSee(v) then self.log(style, ...); return true end end end
     self.logPlayer = function(e, style, ...) if e == self.player then self.log(style, ...) end end
 
     self.logAnySeen = function(e_list, style, ...)

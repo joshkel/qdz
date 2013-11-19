@@ -60,7 +60,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
             game.logSeen(target, getDamageFlash(src, target), message)
         else
             message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target:getTargetName(src, used_intermediate), DamageType:get(type).text_color, dam, DamageType:get(type).name)
-            game.logSeen2(src, target, getDamageFlash(src, target), message)
+            game.logSeenAny({src, target}, getDamageFlash(src, target), message)
         end
     end
 
@@ -135,6 +135,9 @@ local function damageKnockback(src, target, dam)
     if dam.tmp[target] then return end
     dam.tmp[target] = true
 
+    local seen = { target }
+    if not Qi.getIntermediate(src).damage_message_passive then table.insert(seen, src) end
+
     if target:canBe("knockback") then
         local before_name, before_seen = target:getTargetName()
         local old_x, old_y = target.x, target.y
@@ -146,12 +149,14 @@ local function damageKnockback(src, target, dam)
         target:setMoveAnim(old_x, old_y, 8, 4)
         local after_name, after_seen = target:getTargetName()
 
+        table.insert(seen, {x=old_x, y=old_y})
+
         return function(src, target, dam, dam_type)
-            game.logSeen2({x=old_x, y=old_y}, target, ("%s is knocked back and takes %s%i %s damage#LAST#!"):format((before_seen and before_name or after_name):capitalize(), dam_type.text_color, dam, dam_type.name))
+            game.logSeenAny(seen, ("%s is knocked back and takes %s%i %s damage#LAST#!"):format((before_seen and before_name or after_name):capitalize(), dam_type.text_color, dam, dam_type.name))
         end
     else
         return function(src, target, dam, dam_type)
-            game.logSeen(target, getDamageFlash(src, target), ("%s takes %s%i %s damage#LAST# but stands %s ground!"):format(target:getTargetName():capitalize(), dam_type.text_color, dam, dam_type.name, string.his(target)))
+            game.logSeenAny(seen, getDamageFlash(src, target), ("%s takes %s%i %s damage#LAST# but stands %s ground!"):format(target:getTargetName():capitalize(), dam_type.text_color, dam, dam_type.name, string.his(target)))
         end
     end
 end
