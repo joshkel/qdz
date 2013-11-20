@@ -74,9 +74,12 @@ def write_team(mod_base_dir, team_filename):
     
     Note: Changes the current directory.
     """
+
+    error_to_catch = getattr(__builtins__,'FileNotFoundError', IOError)
+
     try:
         os.remove(team_filename)
-    except FileNotFoundError:
+    except error_to_catch:
         pass
 
     team_file = ZipFile(team_filename, 'w')

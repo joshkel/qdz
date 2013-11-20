@@ -3,7 +3,6 @@ Off hand attack *really* needs a damage display
 Armor should apply to all physical attacks, not just melee
 Weird distortion when bashing a grid bug
 
-Clean up monkey patches that are no longer necessary in 1.0.5
 Consolidate references to 25% miss chance for concealment, 50% miss chance for blind-fighting
 Why do I get an "offline" error message, even after uploading?
 Basic game mechanics: shields
