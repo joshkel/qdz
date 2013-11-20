@@ -43,7 +43,7 @@ newTalent{
 
 If you kill an opponent while focused, you may absorb a portion of the opponent's qi, granting you a new technique or an experience bonus.
 
-The type of technique absorbed depends on how you deal the killing blow: whether with a right hand (or two handed) weapon, left hand (or ranged) weapon, bash, kick, or qi technique.]]
+The type of technique absorbed depends on how you deal the killing blow: whether with a right hand (or two handed) weapon, left hand (or ranged) weapon (or other item), bash, kick, or qi technique.]]
     end
 }
 

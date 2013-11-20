@@ -1,7 +1,6 @@
 To do:
 Off hand attack *really* needs a damage display
 Armor should apply to all physical attacks, not just melee
-Weird distortion when bashing a grid bug
 
 Consolidate references to 25% miss chance for concealment, 50% miss chance for blind-fighting
 Why do I get an "offline" error message, even after uploading?

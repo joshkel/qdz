@@ -178,7 +178,7 @@ function _M:drawDialog(kind)
             local absorb_count = #table.keys(player.can_absorb)
             local slots = {
                 { 'rhand', 'R.hand', 'Killing this creature with a right-handed or two-handed attack while focused lets you learn ' },
-                { 'lhand', 'L.hand', 'Killing this creature with a left-handed attack or ranged weapon while focused lets you learn ' },
+                { 'lhand', 'L.hand', 'Killing this creature with a left-handed attack, ranged weapon, or special item while focused lets you learn ' },
                 { 'chest', 'Chest ', 'Killing this creature with a bash while focused lets you learn ' },
                 { 'feet',  'Feet  ', 'Killing this creature with a kick while focused lets you learn ' },
                 { 'head',  'Head  ', 'Killing this creature with a qi technique while focused lets you learn ' }

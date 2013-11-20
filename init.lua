@@ -38,7 +38,7 @@ allow_userchat = true
 show_funfacts = true
 load_tips = {
     { image="/data/gfx/characters/right-red.png", text=[[Right-hand techniques are useful in hand-to-hand combat. To learn a right-hand technique, focus qi, then kill an enemy with a normal melee attack.]] },
-    { image="/data/gfx/characters/left-blue.png", text=[[Left-hand techniques are useful for ranged and indirect attacks. To learn a left-hand technique, focus qi, then kill an enemy with an off-hand melee attack or normal ranged attack.]] },
+    { image="/data/gfx/characters/left-blue.png", text=[[Left-hand techniques are useful for ranged and indirect attacks. To learn a left-hand technique, focus qi, then kill an enemy with an off-hand melee attack, ranged weapon, or special item.]] },
     { image="/data/gfx/characters/chest-yellow.png", text=[[Chest techniques provide defense and enhancement. To learn a chest technique, focus qi, then kill an enemy with a bash.]] },
     { image="/data/gfx/characters/foot-green.png", text=[[Foot techniques grant movement and mobility. To learn a foot technique, focus qi, then kill an enemy with a kick.]] },
     { image="/data/gfx/characters/head-grey.png", text=[[Head techniques can have a variety of effects. To learn a head technique, focus qi, then kill an enemy with another qi technique.]] },
