@@ -99,6 +99,12 @@ end
 --- "block_move"), so be careful what it does.
 function _M:bumpInto(target)
     local reaction = self:reactionToward(target)
+
+    -- Walk past unconscious foes instead of continuing to brutalize them.
+    if self:isTalentActive(self.T_BLESSING_VIRTUE) and not self:getTalentFromId(self.T_BLESSING_VIRTUE).canKill(self, target) and target:hasEffect(target.EFF_UNCONSCIOUS) then
+        reaction = 0
+    end
+
     if reaction < 0 or (self:attr("confused") and rng.percent(self.confused)) then
         -- FIXME: Need more detail (lhand versus rhand)
         self.last_action = 'attack'
@@ -348,5 +354,32 @@ function _M:getInvenCombat(inven, allow_unarmed)
     end
 
     return nil
+end
+
+--- Is the actor wielding a weapon two-handed?
+function _M:isInvenTwoHanded()
+    if not self:getInven(self.INVEN_RHAND) then return false end
+    for i, o in ipairs(self:getInven(self.INVEN_RHAND)) do
+        if o.slot_forbid == "LHAND" then return o end
+    end
+    return false
+end
+
+--- Similar to getInvenCombat, but contains logic specific to the
+-- OFF_HAND_ATTACK talent.
+function _M:getOffHandCombat()
+    -- TODO: This will need to be reworked if we ever permit the main weapon to be wielded in the left hand
+    -- TODO: Shield jab?
+    local combat, obj = self:getInvenCombat(self.INVEN_LHAND, true)
+
+    -- Special case: opposite end of a double weapon
+    if not obj then
+        local r_combat, r_obj = self:getInvenCombat(self.INVEN_RHAND, false)
+        if r_obj and r_obj.traits.double then
+            return r_combat, r_obj
+        end
+    end
+
+    return combat, obj
 end
 

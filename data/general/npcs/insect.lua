@@ -77,7 +77,7 @@ newEntity{ base = "BASE_NPC_INSECT",
     stats = { str=8, ski=10, con=10, agi=8, mnd=4 },
 
     level_range = {1, 4}, exp_worth = 1,
-    rarity = 4,
+    rarity = 6,
     max_life = resolvers.rngavg(4,6),
     max_qi = resolvers.rngavg(4,6),
     combat = {

@@ -36,6 +36,14 @@ newTalent{
     sustain_qi = 5,
     cooldown = 30,
 
+    message = function(self, ab)
+        if self:isTalentActive(ab.id) then
+            return "@Source@'s virtuous tranquility is broken."
+        else
+            return ("%s purges %s mind of killing intent."):format(self.name:capitalize(), string.his(self))
+        end
+    end,
+
     combat_atk_bonus = 2,
     combat_dam_bonus = 2,
 

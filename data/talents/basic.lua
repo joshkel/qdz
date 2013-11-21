@@ -55,22 +55,43 @@ newTalent{
     requires_target = true,
     range = 1,
     speed = 2.0,
+
     action = function(self, t)
-        -- TODO: This will need to be reworked if we ever permit the main weapon to be wielded in the left hand
         local tg = {type="hit", range=self:getTalentRange(t)}
         local x, y, target = self:getTarget(tg)
         if not x or not y or not target then return nil end
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
-        local combat = self:getInvenCombat(self.INVEN_LHAND, true)
+        local combat, obj = self:getOffHandCombat(self, t)
+
         self:attackTargetWith(target, self:combatMod(combat, {attack=2}), nil, nil, self:getOffHandMult(combat))
         return true
     end,
-    info = function(self, t)
-        -- TODO: It'd be nice to describe which exactly it is, based on current equipment.  Also need damage numbers.
-        return [[A quick, unexpected attack with your off-hand weapon, or a quick shield jab, or a quick unarmed strike with your left hand, as appropriate.
 
-This is weaker than a normal attack (dealing off-hand damage or half of regular unarmed damage) but can be performed twice as quickly and has +2 to Attack.]]
+    info = function(self, t)
+        local function obj_name(obj) return obj.unique and obj.name or "your "..obj.name end
+
+        local combat, obj = self:getOffHandCombat(self, t)
+        local mult = self:getOffHandMult(combat)
+
+        local msg
+        if obj then
+            if obj.traits.double then
+                msg = ("strike with the opposite end of %s"):format(obj_name(obj))
+            else
+                msg = ("strike with %s"):format(obj_name(obj))
+            end
+        else
+            msg = "unarmed strike with your left hand"
+        end
+
+        local dam_min, dam_max = self:combatDamageRange(combat)
+        dam_min = math.round(dam_min * mult)
+        dam_max = math.round(dam_max * mult)
+
+        return ([[A quick, unexpected %s.
+
+This is weaker than a normal attack (dealing %s damage) but can be performed twice as quickly and has +2 to Attack.]]):format(msg, string.describe_range(dam_min, dam_max))
     end,
 }
 

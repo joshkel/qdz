@@ -278,7 +278,7 @@ function _M:drawDialog(kind)
             for i, o in ipairs(player:getInven(player.INVEN_RHAND)) do
                 local combat = player:getObjectCombat(o, "rhand")
                 if combat then
-                    h = self:drawCombatBlock(s, w, h, o.name:capitalize(), "Right Hand", combat)
+                    h = self:drawCombatBlock(s, w, h, o.name:capitalize(), player:isInvenTwoHanded() and "Two Handed" or "Right Hand", combat)
                 end
             end
         end

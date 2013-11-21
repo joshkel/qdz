@@ -28,6 +28,7 @@ newEntity{
     encumber = 4,
     rarity = 5,
     combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
+    traits = { double = true },
     desc = [[A staff.]],
 }
 
