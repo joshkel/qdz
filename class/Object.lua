@@ -82,6 +82,16 @@ function _M:getDesc()
     add('Defense', wielder.combat_def)
     add('Armor', wielder.combat_armor)
 
+    -- Traits
+    local traits = {}
+    if self.slot_forbid == "LHAND" then table.insert(traits, {'two-handed'}) end
+    if self.traits.double then table.insert(traits, {'double weapon', 'can be used with Off-Hand Attack'}) end
+    if self.type == 'weapon' and self.offslot == 'LHAND' then table.insert(traits, {'light weapon', 'can be used in either hand'}) end
+    for i, v in ipairs(traits) do
+        if i == 1 then text:add(true, color.caption, 'Traits: ', color.text, v[1]:capitalize()) else text:add(', ', v[1]) end
+        if v[2] then text:add(' #{italic}#(', v[2], ')#{normal}#') end
+    end
+
     -- Modifiers
     if self.wielder then
         local delim = true
@@ -95,12 +105,15 @@ function _M:getDesc()
         end
     end
 
-    -- Requirements.  TODO: Highlight requirements not met in red (?)
+    -- Requirements
     if self.require and type(self.require) == "table" and self.require.stat then
         local delim = ''
         text:add(true, color.caption, 'Requires: ', color.text)
         for k, v in pairs(self.require.stat) do
-            text:add(delim, tostring(v), ' ', Stats.stats_def[k].name)
+            -- Highlight unmet requirements (i.e., unmet from the perspective
+            -- of the player) in red
+            local c = game.player:getStat(k) < v and color.bad or color.text
+            text:add(delim, c, tostring(v), ' ', Stats.stats_def[k].name)
             delim = ', '
         end
     end

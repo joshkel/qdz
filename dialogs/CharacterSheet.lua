@@ -373,6 +373,7 @@ function _M:dump()
 end
 
 function _M:drawCombatBlock(s, w, h, desc1, desc2, combat, mult)
+    -- TODO: Add tooltips - explain about left hand damage penalty, where unarmed damage is used
     local player = self.actor
     mult = mult or 1
 
@@ -381,11 +382,9 @@ function _M:drawCombatBlock(s, w, h, desc1, desc2, combat, mult)
     self:drawString(s, "Attack : #00ff00# "..player:combatAttack(combat), w, h,
         GameUI:tooltipTitle('Attack'):merge{true, "Accuracy in combat. Against an evenly matched opponent, +1 Attack increases the chance to hit by roughly 5%."}) h = h + self.font_h
 
-    local dam_min, dam_max = player:combatDamageRange(combat)
-    dam_min = math.round(dam_min * mult)
-    dam_max = math.round(dam_max * mult)
+    local dam_min, dam_max = player:combatDamageRange(combat, mult)
     self:drawString(s, "Damage : #00ff00# "..string.describe_range(dam_min, dam_max, true), w, h,
-        GameUI:tooltipTitle('Damage'):merge{true, "The damage range of this attack."}) h = h + self.font_h
+        GameUI:tooltipTitle('Damage'):merge{true, "The damage range of this attack, before the opponent's armor is applied."}) h = h + self.font_h
 
     h = h + self.font_h
     return h

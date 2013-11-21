@@ -72,7 +72,6 @@ newTalent{
         local function obj_name(obj) return obj.unique and obj.name or "your "..obj.name end
 
         local combat, obj = self:getOffHandCombat(self, t)
-        local mult = self:getOffHandMult(combat)
 
         local msg
         if obj then
@@ -85,13 +84,10 @@ newTalent{
             msg = "unarmed strike with your left hand"
         end
 
-        local dam_min, dam_max = self:combatDamageRange(combat)
-        dam_min = math.round(dam_min * mult)
-        dam_max = math.round(dam_max * mult)
-
         return ([[A quick, unexpected %s.
 
-This is weaker than a normal attack (dealing %s damage) but can be performed twice as quickly and has +2 to Attack.]]):format(msg, string.describe_range(dam_min, dam_max))
+This is weaker than a normal attack (dealing %s damage) but can be performed twice as quickly and has +2 to Attack.]]):format(
+            msg, string.describe_range(self:combatDamageRange(combat, self:getOffHandMult(combat))))
     end,
 }
 
