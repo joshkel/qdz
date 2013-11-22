@@ -17,9 +17,6 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
---
--- Nicolas Casalini "DarkGod"
--- darkgod@te4.org
 
 rm, rM = rm or 0.8, rM or 1
 gm, gM = gm or 0.8, gM or 1

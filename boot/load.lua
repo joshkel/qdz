@@ -1,3 +1,7 @@
+-- Qi Daozei
+-- Copyright (C) 2013 Josh Kelley
+--
+-- based on
 -- ToME - Tales of Middle-Earth
 -- Copyright (C) 2009, 2010, 2011, 2012 Nicolas Casalini
 --
@@ -24,9 +28,30 @@ local UIBase = require "engine.ui.Base"
 local n = core.noise.new(2)
 _2DNoise = n:makeTexture2D(64, 64)
 
+-- Customize the UI - copied from QDZ's load.lua and GameUI.lua
+UIBase.font = core.display.newFont("/data/font/DroidSans.ttf", 14)
+UIBase.font_h = UIBase.font:lineSkip()
+UIBase.font_mono = core.display.newFont("/data/font/DroidSansMono.ttf", 14)
+UIBase.font_mono_w = UIBase.font_mono:size(" ")
+UIBase.font_mono_h = UIBase.font_mono:lineSkip()
+UIBase.font_bold = core.display.newFont("/data/font/DroidSans-Bold.ttf", 14)
+UIBase.font_bold_h = UIBase.font_bold:lineSkip()
+
 UIBase:setTextShadow(0.6)
 
 -- Usefull keybinds
 KeyBind:load("move,hotkeys,inventory,actions,interface,debug")
+
+local VideoOptions = require("engine.dialogs.VideoOptions")
+local old_generateList = VideoOptions.generateList
+VideoOptions.generateList = function(self)
+    old_generateList(self)
+    for i, v in pairs(self.list) do
+        if string.match(v.name:toString(), "Censor boot") then
+            table.remove(self.list, i)
+            return
+        end
+    end
+end
 
 return {require "mod.class.Game" }

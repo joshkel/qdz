@@ -1,6 +1,7 @@
 -- Qi Daozei
 -- Copyright (C) 2013 Josh Kelley
 --
+-- based on
 -- TE4 - T-Engine 4
 -- Copyright (C) 2009, 2010, 2011, 2012, 2013 Nicolas Casalini
 --
@@ -16,9 +17,6 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
---
--- Nicolas Casalini "DarkGod"
--- darkgod@te4.org
 
 require "engine.class"
 local Module = require "engine.Module"

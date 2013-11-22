@@ -1,6 +1,7 @@
 -- Qi Daozei
 -- Copyright (C) 2013 Josh Kelley
 --
+-- based on
 -- ToME - Tales of Maj'Eyal
 -- Copyright (C) 2009, 2010, 2011, 2012, 2013 Nicolas Casalini
 --
@@ -16,9 +17,6 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
---
--- Nicolas Casalini "DarkGod"
--- darkgod@te4.org
 
 -- Based on ToME's flameshock.lua, modified mostly for our different starting
 -- location (range 1 instead of starting at player).

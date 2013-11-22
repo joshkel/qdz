@@ -27,6 +27,7 @@ require("mod.class.patch.Astar")
 require("mod.class.patch.Dialog")
 require("mod.class.patch.DirectPath")
 require("mod.class.patch.Entity")
+require("mod.class.patch.VideoOptions")
 
 local KeyBind = require "engine.KeyBind"
 local DamageType = require "engine.DamageType"

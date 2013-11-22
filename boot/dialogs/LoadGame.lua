@@ -167,7 +167,7 @@ end
 function _M:deleteSave()
 	if not self.save_sel then return end
 
-	Dialog:yesnoPopup("Delete savefile", "Really delete #{bold}##GOLD#"..self.cur_sel.name.."#WHITE##{normal}#", function(ret)
+	Dialog:yesnoPopup("Delete savefile", "Really delete #{bold}##GOLD#"..self.cur_sel.name.."#WHITE##{normal}#?", function(ret)
 		if ret then
 			local base = Module:setupWrite(self.save_sel.mod)
 			local save = Savefile.new(self.save_sel.base_name)
