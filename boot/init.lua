@@ -34,4 +34,4 @@ Bootmenu!
 ]]
 starter = "mod.load"
 loading_wait_ticks = 1600
-background_name = {"module"}
+background_name = {"peach_festival"}

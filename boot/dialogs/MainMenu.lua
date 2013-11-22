@@ -28,7 +28,10 @@ local Separator = require "engine.ui.Separator"
 module(..., package.seeall, class.inherit(Dialog))
 
 function _M:init()
-    Dialog.init(self, "Main Menu", 250, 400, math.floor((game.w - 300)), 50)
+    -- Right-aligned menu
+    --Dialog.init(self, "Main Menu", 250, 400, math.floor((game.w - 300)), 50)
+    -- Left-aligned menu
+    Dialog.init(self, "Main Menu", 300, 400, 450, 50)
     self.__showup = false
     self.absolute = true
 

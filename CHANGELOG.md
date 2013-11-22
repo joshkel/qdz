@@ -1,9 +1,10 @@
 Version Next
 ============
 
- * Staffs are now classified as a double weapon and so can be used with Off-Hand Attack.  (Currently, double weapons _only_ help with Off-Hand Attack; rumors exist of fighting styles that take full advantage of double weapons, but the techniques cannot be found this early in the dungeon...)
+ * Boot screen
+ * Staffs are now classified as double weapons and so can be used with Off-Hand Attack.  (Currently, double weapons _only_ help with Off-Hand Attack; rumors exist of fighting styles that take full advantage of double weapons, but such techniques cannot be found this early in the dungeon...)
+ * Off-Hand Attack's tooltip now gives more information, to help you know whether or not it can deal the finishing blow.
  * You can now step past unconscious opponents who you've chosen not to kill.
- * Various UI improvements.  In particular, Off-Hand Attack's tooltip now gives more information, to help you know whether or not you can deal the finishing blow with it.
 
 Version 0.3.0, "A Warrior's Tools" (2013-11-18)
 ===============================================

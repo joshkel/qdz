@@ -27,6 +27,7 @@ require "engine.KeyBind"
 
 local Module = require "engine.Module"
 local Dialog = require "engine.ui.Dialog"
+local Tooltip = require "engine.Tooltip"
 local MainMenu = require "mod.dialogs.MainMenu"
 local Shader = require "engine.Shader"
 
@@ -41,13 +42,13 @@ function _M:init()
     engine.GameEnergyBased.init(self, engine.KeyBind.new(), 100, 100)
     self.profile_font = core.display.newFont("/data/font/DroidSerif-Italic.ttf", 14)
 
-    local background_name = {"module"}
-    
-    self.background = core.display.loadImage("/data/gfx/background/"..util.getval(background_name)..".png")
+    self.background = core.display.loadImage("/data/gfx/background/peach_festival.png")
     if self.background then
         self.background_w, self.background_h = self.background:getSize()
         self.background, self.background_tw, self.background_th = self.background:glTexture()
     end
+
+    self.tooltip = Tooltip.new(nil, 14, nil, colors.DARK_GREY, 400)
 
     self.normal_key = self.key
     core.game.setRealtime(0)
@@ -77,6 +78,21 @@ function _M:run()
 
     -- Run the current music if any
     self:playMusic("whatever.ogg")
+
+    --if not self.news then
+        self.news = {
+            title = "Welcome to Qi Daozei",
+            text = [[This is #GOLD#"Qi Daozei,"#WHITE# a T-Engine game. You can find more T-Engine games, including the epic and fantastic #GOLD#"Tales of Maj'Eyal,"#WHITE# by going to #LIGHT_BLUE#http://te4.org/#WHITE#. You can also find there more information about the T-Engine, which is an excellent platform for making roguelikes or other tile-based games.
+
+When inside the game you can press Escape to bring up a menu to change keybindings, resolution and other options.
+
+Now go play!]],
+            --link = "http://te4.org/",
+        }
+
+        --self:serverNews()
+        self:updateNews()
+    --end
 
     if not self.firstrunchecked then
         -- Check first time run for online profile
@@ -109,6 +125,20 @@ function _M:getPlayer()
     return {}
 end
 
+function _M:updateNews()
+    if self.news.link then
+        self.tooltip:set("#AQUAMARINE#%s#WHITE#\n---\n%s\n---\n#LIGHT_BLUE##{underline}#%s#LAST##{normal}#", self.news.title, self.news.text, self.news.link)
+    else
+        self.tooltip:set("#AQUAMARINE#%s#WHITE#\n---\n%s", self.news.title, self.news.text)
+    end
+
+    if self.news.link then
+        self.mouse:registerZone(5, self.tooltip.h - 30, self.tooltip.w, 30, function(button)
+            if button == "left" then util.browserOpenUrl(self.news.link) end
+        end, {button=true})
+    end
+end
+
 function _M:tick()
     engine.Game.tick(self)
     return true
@@ -132,6 +162,10 @@ function _M:display(nb_keyframes)
         end
         self.background:toScreenFull(x, y, w, h, w * self.background_tw / self.background_w, h * self.background_th / self.background_h)
     end
+
+    self.tooltip:display()
+    self.tooltip:toScreen(5, 5)
+
     engine.GameEnergyBased.display(self, nb_keyframes)
     if self.full_fbo then self.full_fbo:use(false) self.full_fbo:toScreen(0, 0, self.w, self.h, self.full_fbo_shader.shad) end
 end
