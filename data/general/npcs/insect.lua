@@ -38,7 +38,7 @@ newEntity{ base = "BASE_NPC_INSECT",
     display = "x", color=colors.PURPLE,
     desc = [[A strange, four-legged alien insectoid creature. It advances towards you in odd zig-zag motions, electricity crackling over its body.]],
 
-    stats = { str=1, ski=14, con=6, agi=10, mnd=4 },
+    stats = { str=2, ski=15, con=7, agi=11, mnd=5 },
 
     level_range = {1, 4}, exp_worth = 1,
     rarity = 4,
@@ -67,16 +67,15 @@ newEntity{ base = "BASE_NPC_INSECT",
     }
 }
 
--- TODO: Fire ants are tougher than grid bugs, should be worth more exp, once I figure all that out
 newEntity{ base = "BASE_NPC_INSECT",
     name = "fire ant",
     type = "insect", subtype = "fire ant",
     display = "a", color=colors.FIREBRICK,
     desc = [[An enormous ant, not much smaller than a human. Heat shimmers over its carapace and smoke escapes from its mandibles.]],
 
-    stats = { str=8, ski=10, con=10, agi=8, mnd=4 },
+    stats = { str=10, ski=12, con=12, agi=10, mnd=6 },
 
-    level_range = {1, 4}, exp_worth = 1,
+    level_range = {1, 4}, exp_worth = 2,
     rarity = 6,
     max_life = resolvers.rngavg(4,6),
     max_qi = resolvers.rngavg(4,6),
@@ -87,7 +86,7 @@ newEntity{ base = "BASE_NPC_INSECT",
         }
     },
     resists = {
-        [DamageType.FIRE] = 2, -- TODO: Higher value here?  Or less drop-off for stacking resistances?
+        [DamageType.FIRE] = 2,
     },
     combat_natural_armor = 4,
 

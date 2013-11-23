@@ -217,8 +217,21 @@ newTalent {
         if not x or not y or not target then return nil end
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
-        self:attackTarget(target, DamageType.PHYSICAL_BLEEDING,
+        local _, hit = self:attackTarget(target, DamageType.PHYSICAL_BLEEDING,
             { power=t.getPower(self, t), duration=t.getDuration(self, t) })
+
+        -- Trigger on_bleed now, to make the talent more attractive.
+        if hit then
+            if target:hasEffect(target.EFF_BLEEDING) then
+                t.on_bleed(self, t, target:hasEffect(target.EFF_BLEEDING), target)
+            elseif target:canBe("cut") and target.dead then
+                -- Hack / special case: If we killed the enemy, then do a one-time bleed.
+                self:heal(t.getPower(self, t) * t.absorb_amount, self)
+                game.level.map:particleEmitter(self.x, self.y, 1, "absorb_blood")
+                game.logSeenAny({self, target}, "%s draws vitality from %s's blood.", self:getSrcName():capitalize(), target:getTargetName())
+            end
+        end
+
         return true
     end,
 
@@ -244,7 +257,7 @@ newTalent {
             flavor = flavor .. " Your use of the bat's qi lets you absorb vitality directly from your foes' exposed blood."
         end
         return flavorText(("Performs a normal melee attack against an adjacent enemy. "..
-            "If it hits, a bleeding wound is inflicted, dealing %i%% of your weapon damage for %i turns.\n\n"..
+            "If it hits, a bleeding wound is inflicted, dealing %i%% of your weapon damage each turn for %i turns.\n\n"..
             "As a passive effect, whenever an adjacent enemy takes bleeding damage from a wound you inflicted, "..
             "you gain %i%% that damage as health."):format(t.getPower(self, t) * 100, t.getDuration(self, t), t.absorb_amount * 100), flavor)
     end,
@@ -372,6 +385,7 @@ newTalent {
     end,
 
     info = function(self, t)
+        -- FIXME: Replace "flat miss chance" with actual percentage
         return flavorText("Adds +1 to your blindsense radius. " .. GameUI.extra_stat_desc.blindsense ..
            "\n\nAlso grants blind-fighting, which negates the flat miss chance for attacking an opponent you can't see.",
            "Despite darkness and their nearly blind vision, bats have a mysterious ability to navigate their surroundings.")

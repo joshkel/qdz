@@ -22,7 +22,7 @@ Stat magnitudes are based loosely on D20:
 
 * An "average" character starts with 10 in each stat (50 points total).
 * An "elite" character (including PCs) start with 61 points, divided as desired (average 12 each).  (A D20 elite array is 15, 14, 13, 12, 10, 8.  Multiplying this by 5/6, since we have one less stat, gives approximately 61.)
-* Add a tier for mook / critter characters with average stats of 8?
+* Add a tier for mook / critter characters with average stats of 8 (40 points total).
 
 Each technique absorbed increments one stat by one point. Max stats will therefore depend on number of techniques permitted.  See below.  For comparison, D20 has a practical stat maximum around 36 (before temporary bonuses like rage) and D&D 4e has a rough max of 30.
 
@@ -30,7 +30,7 @@ Ideas for tier names:
 
 * critter / average / elite / boss (ToME)
 * terrestrial / celestial / ??? / infernal
-* meek / mundane / elite or exalted or enlightened / mythical
+* meek / mundane / elite or exalted or enlightened or heroic / mythical
 * lead / iron / gold / jade
 * local or familial / district or provincial / imperial?
 * novice / practitioner / master / grand master
@@ -61,14 +61,14 @@ Should a vampire be shown as level 10 just because he appears at a dungeon depth
 
 Should a rat at a dungeon depth for a level 10 player automatically be level 10?  Probably not, but some level scaling should be good.
 
-TO DO: How should monsters level up, given that player characters' levels and stats are so dependent on absorbing techniques?  I could hand-wave it as creatures' native qi or training gives them comparable abilities.
+How should monsters level up, given that player characters' levels and stats are so dependent on absorbing techniques?  For simplicity of design and balancing, monsters will probably follow the same rules; I can hand-wave it as creatures' native qi or training gives them comparable abilities.
 
 Techniques
 ==========
 
 Number of techniques known:
 
-* [Soren Johnson says](http://gamasutra.com/view/news/193428/Seven_Deadly_Sins_of_strategy_game_design.php) that 12 is "a good rule-of-thumb for how many different options a player can keep in his or her mind before everything turns to mush."
+* [Soren Johnson says](http://gamasutra.com/view/news/193428/Seven_Deadly_Sins_of_strategy_game_design.php) that 12 is "a good rule-of-thumb for how many different options a player can keep in his or her mind before everything turns to mush."  (His advice is mostly for strategy games; does it apply equally to a roguelike?)
 * Multiply by 2.5 or more to allow for passive, triggered, and sustained abilities?  Additional considerations:
     * Situational and out-of-combat abilities wouldn't count against the limit.
     * Allowing weaker active abilities to give passive boosts to other abilities (à la Diablo II's patch 1.10 skill synergy bonuses) would let me further increase this.

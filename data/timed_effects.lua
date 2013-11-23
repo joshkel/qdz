@@ -142,6 +142,7 @@ newEffect{
     on_lose = function(self, err) return "#Target#'s bleeding stops.", "-Bleeding" end,
     on_timeout = function(self, eff)
         local saved = Qi.preCall(eff)
+        -- FIXME: Needs to ignore armor
         DamageType:get(DamageType.PHYSICAL).projector(eff.src or self, self.x, self.y, DamageType.PHYSICAL, eff.power)
 
         if eff.src and eff.src:knowTalent(eff.src.T_BLOOD_SIP) then

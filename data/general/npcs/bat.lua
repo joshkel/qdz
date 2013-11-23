@@ -25,13 +25,13 @@ newEntity{
     type = "animal", subtype = "bat",
     display = "b", color=colors.UMBER,
     desc = [[A bat.]],
+    blind_fight = 1,
 
     -- To quote Angband, bats move somewhat erratically, and quickly.
     global_speed = 1.25,
     random_move = 50,
 
     ai = "dumb_talented_simple", ai_state = { talent_in=3, },
-    stats = { str=4, ski=14, con=6, agi=15, mnd=7 },
     combat_armor = 0
 }
 
@@ -41,10 +41,10 @@ newEntity{ base = "BASE_NPC_BAT",
     name = "forest bat",
     level_range = {1, 4}, exp_worth = 1,
     rarity = 5,
+    stats = { str=2, ski=13, con=5, agi=14, mnd=6 },
     max_life = resolvers.rngavg(4,6),
     max_qi = resolvers.rngavg(4,6),
     combat = { dam=3 },
-    blind_fight = 1,
 
     desc = [[A common forest-dwelling bat. Forest bats are associated with positive qi and are a symbol of good fortune and happiness. A drawing of five bats symbolizes the Five Blessings: virtue, wealth, health, longevity, and a natural death.]],
 
@@ -64,14 +64,18 @@ newEntity{ base = "BASE_NPC_BAT",
 newEntity{ base = "BASE_NPC_BAT",
     name = "cave bat",
     color=colors.GREY,
-    level_range = {2, 6}, exp_worth = 1,
+    level_range = {2, 6}, exp_worth = 2,
     rarity = 5,
+    stats = { str=4, ski=15, con=7, agi=16, mnd=8 },
     max_life = resolvers.rngavg(4,8),
     max_qi = resolvers.rngavg(4,8),
     combat = { dam=4 },
-    blind_fight = 1,
 
-    desc = [[A deep cave-dwelling bat, rarely seen by surface dwellers. Gloom bats are associated with negative qi and are considered a bad omen. They feed on the blood of humans, mammals, and birds.]],
+    desc = [[A deep cave-dwelling bat, rarely seen by surface dwellers. Also known as gloom bats, they're associated with negative qi and are considered a bad omen. They feed on the blood of humans, mammals, and birds.]],
+
+    resolvers.talents{
+        [Talents.T_BLOOD_SIP]={base=1},
+    },
 
     can_absorb = {
         rhand = Talents.T_BLOOD_SIP,

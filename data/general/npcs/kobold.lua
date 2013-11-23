@@ -31,13 +31,13 @@ newEntity{
     desc = [[A small, ugly humanoid. Dog-head men are cunning miners and trapsmiths.]],
 
     ai = "dumb_talented_simple", ai_state = { talent_in=3, },
-    stats = { str=6, ski=12, con=8, agi=11, mnd=9 },
+    stats = { str=7, ski=14, con=8, agi=12, mnd=9 },
     combat_armor = 0
 }
 
 newEntity{ base = "BASE_NPC_KOBOLD",
     name = "dog-head man", color=colors.GREEN,
-    level_range = {1, 6}, exp_worth = 1,
+    level_range = {1, 6}, exp_worth = 2,
     rarity = 4,
     max_life = resolvers.rngavg(5,9),
     max_qi = resolvers.rngavg(4,6),
