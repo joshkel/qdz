@@ -20,7 +20,7 @@
 
 local Map = require("engine.Map")
 local Target = require("engine.Target")
-local GameUI = require("mod.class.ui.GameUI")
+local GameRules = require("mod.class.GameRules")
 
 -- Consolidates logic for whether or not someone under the effects of
 -- BLESSING_VIRTUE can kill the target.
@@ -386,7 +386,7 @@ newTalent {
 
     info = function(self, t)
         -- FIXME: Replace "flat miss chance" with actual percentage
-        return flavorText("Adds +1 to your blindsense radius. " .. GameUI.extra_stat_desc.blindsense ..
+        return flavorText("Adds +1 to your blindsense radius. " .. GameRules.extra_stat_desc.blindsense ..
            "\n\nAlso grants blind-fighting, which negates the flat miss chance for attacking an opponent you can't see.",
            "Despite darkness and their nearly blind vision, bats have a mysterious ability to navigate their surroundings.")
     end,

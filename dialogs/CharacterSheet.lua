@@ -27,6 +27,7 @@ local SurfaceZone = require "engine.ui.SurfaceZone"
 local Separator = require "engine.ui.Separator"
 local Stats = require "mod.class.interface.ActorStats"
 local Textzone = require "engine.ui.Textzone"
+local GameRules = require "mod.class.GameRules"
 local GameUI = require "mod.class.ui.GameUI"
 local DamageType = require "engine.DamageType"
 
@@ -235,7 +236,7 @@ function _M:drawDialog(kind)
             GameUI:tooltipTitle('Light Radius'):merge{true, "The area which you illuminate (due to your lantern, various techniques, etc.)."}) h = h + self.font_h
         if player.blindsense ~= 0 then
             self:drawString(s, ("Blindsense   : #00ff00# %2i"):format(player.blindsense), w, h,
-                GameUI:tooltipTitle('Blindsense'):merge{true, GameUI.extra_stat_desc.blindsense}) h = h + self.font_h
+                GameUI:tooltipTitle('Blindsense'):merge{true, GameRules.extra_stat_desc.blindsense}) h = h + self.font_h
         end
 
         h = h + self.font_h
@@ -244,7 +245,7 @@ function _M:drawDialog(kind)
         end
         if player:attr("blind_fight") then
             self:drawString(s, "Blind-Fighting", w, h,
-                GameUI:tooltipTitle('Blind-Fighting'):merge{true, "You have learned how to use senses other than sight in combat. You no longer suffer the flat 50% miss chance for attacking an unseen opponent or the flat 25% miss chance for attacking a concealed opponent."}) h = h + self.font_h
+                GameUI:tooltipTitle('Blind-Fighting'):merge{true, "You have learned how to use senses other than sight in combat. You no longer suffer the flat ", tostring(GameRules.blind_miss), "% miss chance for attacking an unseen opponent or the flat ", tostring(GameRules.concealment_miss), "% miss chance for attacking a concealed opponent."}) h = h + self.font_h
         end
 
         -- Fourth column: Effects and sustains

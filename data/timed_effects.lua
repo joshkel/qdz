@@ -22,6 +22,7 @@ local Map = require "engine.Map"
 local Stats = require "mod.class.interface.ActorStats"
 local Particles = require "engine.Particles"
 local Qi = require "mod.class.interface.Qi"
+local GameRules = require "mod.class.GameRules"
 
 local function merge_pow_dur(old_eff, new_eff)
     local old_dam = old_eff.power * old_eff.dur
@@ -54,7 +55,7 @@ newEffect{
 
     decrease = 0,
 
-    long_desc = function(self, eff) return ("Smoke obscures %s's vision and others' view of %s, granting a 25%% miss chance on attacks by or against %s."):format(self.name:capitalize(), string.him(self), string.him(self)) end,
+    long_desc = function(self, eff) return ("Smoke obscures %s's vision and others' view of %s, granting a %i%% miss chance on attacks by or against %s."):format(self.name:capitalize(), string.him(self), GameRules.concealment_miss, string.him(self)) end,
     on_gain = function(self, err) return "#Target# is concealed by the smoke.", "+Concealment" end,
     on_lose = function(self, err) return "#Target# is no longer concealed by the smoke.", "-Concealment" end,
     activate = function(self, eff)

@@ -10,7 +10,7 @@ Version Next
     * You can now step past unconscious opponents who you've chosen not to kill.
     * Pickpocketing an unconscious creature always succeeds.
     * Creatures who've regained consciousness are still groggy and unable to act for one turn.
-* Various tweaks to creatures
+* Various tweaks to creatures.  In particular:
     * Fire ants are rarer.
     * Cave bats know Blood Sip.
 * Bugfixes
