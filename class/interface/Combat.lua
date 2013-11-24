@@ -24,6 +24,7 @@ local Map = require "engine.Map"
 local Target = require "engine.Target"
 local Talents = require "engine.interface.ActorTalents"
 local Qi = require "mod.class.interface.Qi"
+local GameRules = require "mod.class.GameRules"
 
 --- Interface to add ToME combat system
 module(..., package.seeall, class.make)
@@ -185,9 +186,9 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     if not Qi.isFocused(self) then
         local miss          -- Message to display on melee miss; doubles as a boolean flag
         local missile_miss  -- Custom message to display on missile miss, if any
-        if not (self:canReallySee(target) or self:attr("blind_fight") or rng.percent(50)) then
+        if not (self:canReallySee(target) or self:attr("blind_fight") or rng.percent(GameRules.blind_miss)) then
             miss = "%s attacks blindly and misses %s."
-        elseif not self:attr("blind_fight") and (self:attr("concealment_attack") or target:attr("concealment")) and not rng.percent(25) then
+        elseif not self:attr("blind_fight") and (self:attr("concealment_attack") or target:attr("concealment")) and not rng.percent(GameRules.concealment_miss) then
             -- NOTE that we assume that concealment is always due to smoke.
             miss = "%s misses %s in the smoke."
             missile_miss = miss
