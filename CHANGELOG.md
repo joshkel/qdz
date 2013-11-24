@@ -5,7 +5,7 @@ Version Next
 * Changes to Off-Hand Attack make learning left hand techniques easier:
     * Staffs are now classified as double weapons and so can be used with Off-Hand Attack.  (Currently, double weapons _only_ help with Off-Hand Attack; rumors exist of fighting styles that take full advantage of double weapons, but such techniques cannot be found this early in the dungeon...)
     * Off-Hand Attack's tooltip now gives more information, to help you know whether or not it can deal the finishing blow.
-* Various tweaks to techniques
+* Various other tweaks to techniques
     * Blood Sip heals on hit as well as on each turn.
     * You can now step past unconscious opponents who you've chosen not to kill.
     * Pickpocketing an unconscious creature always succeeds.
@@ -22,7 +22,7 @@ Version 0.3.0, "A Warrior's Tools" (2013-11-18)
 * New items: meditation scrolls, scrolls of body hardening, smoke bombs, and explosive tags. Explosive tags are particularly fun to play with.
 * AI fixes: dog-head men no longer shoot each other in the back, fire ants no longer try to slash you from across the room, and so on.
 * Various other improvements, such as a random name generator and updated particle effects
- * Compatible with T-Engine 1.0.5
+* Compatible with T-Engine 1.0.5
 
 Version 0.2.0 (2013-10-12)
 ==========================
