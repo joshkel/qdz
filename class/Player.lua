@@ -203,7 +203,12 @@ end
 
 --- Tries to get a target from the user
 function _M:getTarget(typ)
-    return game:targetGetForPlayer(typ)
+    local x, y, entity = game:targetGetForPlayer(typ)
+
+    -- Workaround for http://forums.te4.org/viewtopic.php?f=42&t=39355
+    if not x and not y and entity == self then x, y = self.x, self.y end
+
+    return x, y, entity
 end
 
 --- Sets the current target

@@ -223,7 +223,7 @@ newTalent {
     end,
 
     info = function(self, t)
-        return ("Turns your weapon (or body part) into pure flame and attacks, dealing %i%% of weapon damage as fire damage. Even if the attack misses, the intense heat will deal %i%% of weapon damage as fire damage."):format(t.hit_mult * 100, t.miss_mult * 100)
+        return ("Turns your weapon (or body part) into solid flame and attacks, dealing %i%% of weapon damage as fire damage. Even if the attack misses, the intense heat will deal %i%% of weapon damage as fire damage."):format(t.hit_mult * 100, t.miss_mult * 100)
     end,
 }
 
@@ -238,6 +238,7 @@ newTalent {
     radius = 1,
     target = function(self, t) return {type="cone", range=self:getTalentRange(t), radius=self:getTalentRadius(t), selffire=true, talent=t} end,
     getDamage = function(self, t) return self:talentDamage(self:getMnd(), 3) end,
+    self_damage = 0.25,
 
     action = function(self, t)
         local tg = self:getTalentTarget(t)
@@ -245,7 +246,7 @@ newTalent {
         if not x or not y then return nil end
 
         if x == self.x and y == self.y then
-            self:project(tg, x, y, DamageType.FIRE, t.getDamage(self, t) / 4)
+            self:project(tg, x, y, DamageType.FIRE, t.getDamage(self, t) * t.self_damage)
             game.level.map:particleEmitter(self.x, self.y, tg.radius, "burn_self")
         else
             self:project(tg, x, y, DamageType.FIRE_REF_HALF, t.getDamage(self, t))
@@ -256,7 +257,7 @@ newTalent {
     end,
 
     info = function(self, t)
-        return ("Emits a short-range cone of fire doing %i damage (based on your Mind). It does 50%% damage if the opponent succeeds on a Reflex save against your Skill and 25%% damage if it's aimed at yourself."):format(t.getDamage(self, t))
+        return ("Emits a short-range cone of fire doing %i damage (based on your Mind). It does 50%% damage if the opponent succeeds on a Reflex save against your Skill and %i%% damage if it's aimed at yourself."):format(t.getDamage(self, t), t.self_damage * 100)
     end,
 }
 

@@ -127,12 +127,7 @@ newTalent {
         local x, y, target = self:getTarget(tg)
 
         -- Targeting self should actually plant the bomb at your feet.
-        --
-        -- Hack: Targeting yourself returns nil for x, y.  Not sure why, but
-        -- we'll support it rather than messing with tg parameters to change it.
-        -- We still check target == self in case that behavior ever changes.
-        if (not x and not y and target) or target == self then
-            x, y = target.x, target.y
+        if target == self then
             target = nil
         end
 
