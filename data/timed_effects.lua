@@ -208,7 +208,12 @@ newEffect{
     on_timeout = function(self, eff)
         -- Requiring life 2 means ~8 turns unconsciousness for default life regen.
         -- That's probably about right for the Blessing: Virtue talent.
-        if self.life >= 2 then self:removeEffect(self.EFF_UNCONSCIOUS) end
+        if self.life >= 2 then
+            self:removeEffect(self.EFF_UNCONSCIOUS)
+            -- It's implausible for a creature to spring up and jump back into
+            -- combat.
+            self.energy.value = self.energy.value - game.energy_to_act
+        end
     end,
 }
 

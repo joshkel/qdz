@@ -82,7 +82,7 @@ newTalent{
         --local success = self:skillCheck(self.level / 2 + self:getSki() / 2 + self:getTalentLevel(t), target.level / 2 + target:getMnd() / 2)
 
         -- Flat percentage check
-        local success = rng.percent(t.chanceOfSuccess(self, t))
+        local success = target:attr("combat_def_zero") or rng.percent(t.chanceOfSuccess(self, t))
 
         if not success then
             game.logSeen(self, ("%s tries to pick %s's pockets but fails."):format(

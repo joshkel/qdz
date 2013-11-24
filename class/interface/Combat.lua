@@ -290,7 +290,7 @@ function _M:combatAttack(combat)
 end
 
 function _M:combatDefense()
-    if self.combat_def_zero then
+    if self:attr("combat_def_zero") then
         return 0
     else
         return math.floor(self:getAgi() / 2 + self.level / 2) + (self.combat_def or 0)
