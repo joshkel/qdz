@@ -32,3 +32,14 @@ _M.extra_stat_desc = {
 _M.concealment_miss = 25
 _M.blind_miss = 50
 
+-- Base life scales expontially with level.
+-- Every point of Con modifies the base by 5%.
+_M.life_level_mod = 1.1
+function _M:lifeConMod(con)
+    return 1 + (con - 10) * 0.05
+end
+
+-- Qi scales linearly with level and Mind.
+_M.qi_per_level = 1
+_M.qi_per_mnd = 1
+

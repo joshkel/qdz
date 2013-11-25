@@ -110,6 +110,13 @@ Alternate idea: Health and damage scale exponentially (so that, e.g., a characte
 Sample implementation: +10% per level, +2 stat = +5% current
 * HP for an elite character is 30 * 1.1 ^ (Level - 1) * (1 + (Con - 10) / 2 * .05)
 
+Qi
+==
+
+Qi scales linearly with level and Mnd.
+
+This is subject to change.  For example, scaling by Mnd only would help ensure that Mnd and qi limits remain relevant even at the endgame.
+
 Equipment
 =========
 

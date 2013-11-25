@@ -29,7 +29,8 @@ newBirthDescriptor{
 
     copy = {
         max_level = 30,
-        max_life = 10,
+        max_life = 30,
+        base_life = 30,
         max_qi = 10,
 
         move_others = true,
