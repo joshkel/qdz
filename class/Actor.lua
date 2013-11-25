@@ -96,6 +96,17 @@ function _M:init(t, no_default)
     engine.interface.ActorFOV.init(self, t)
 end
 
+function _M:onEntityMerge(a)
+    -- Remove stats to make new stats work.  This is necessary for stats on a
+    -- derived NPC (like kobold in the example module) to override the base
+    -- define_as NPC.
+    for i, s in ipairs(_M.stats_def) do
+        if a.stats[i] then
+            a.stats[s.short_name], a.stats[i] = a.stats[i], nil
+        end
+    end
+end
+
 function _M:resetToFull()
     if self.dead then return end
     self.life = self.max_life

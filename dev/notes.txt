@@ -14,29 +14,6 @@ What to do about fractional HP?  It stinks to think you do enough damage to kill
 Monsters should probably not have flawless no-light vision of player
 "Something misses grid bug in the smoke."  What was attacking???  Verify that smoke bombs + LoS work as expected.
 
-Achivements for learning:
-Fivefold Student (learn 5 techniques - at once or across characters?)
-Patient Student (absorb qi after your own focus has ended)
-Impure Student (absorb infernal qi)
-Resourceful Student (absorb a technique with an item kill)
-Student of Arms / Weaponry / Martial Student (experience N critical weapon effects)
-Skillful Student (learn N proficiencies)
-
-Achievements for specific talents:
-Martial Pacifist (KO x enemies without killing them)
-Pickpocket x enemies
-something about turning enemies into allies
-something regarding explosive tags
-
-Achievements for learning techniques:
-Foe Flyer???
-Pet Pamphlet???
-Beast Booklet
-Monster Manual
-Creature Compendium
-Enemy Encyclopedia
-Legend Library
-
 To do a while later:
 Logo
 More artwork for startup screens?

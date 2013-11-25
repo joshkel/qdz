@@ -73,7 +73,7 @@ newEntity{ base = "BASE_NPC_INSECT",
     display = "a", color=colors.FIREBRICK,
     desc = [[An enormous ant, not much smaller than a human. Heat shimmers over its carapace and smoke escapes from its mandibles.]],
 
-    stats = { str=10, ski=12, con=12, agi=10, mnd=6 },
+    stats = { str=12, ski=10, con=12, agi=10, mnd=6 },
 
     level_range = {1, 4}, exp_worth = 2,
     rarity = 6,

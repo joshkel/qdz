@@ -248,6 +248,7 @@ newTalent {
         if x == self.x and y == self.y then
             self:project(tg, x, y, DamageType.FIRE, t.getDamage(self, t) * t.self_damage)
             game.level.map:particleEmitter(self.x, self.y, tg.radius, "burn_self")
+            -- TODO: Cauterize wounds?
         else
             self:project(tg, x, y, DamageType.FIRE_REF_HALF, t.getDamage(self, t))
             game.level.map:particleEmitter(self.x, self.y, tg.radius, "burning_hand", {radius=self:getTalentRadius(t), tx=x-self.x, ty=y-self.y})
