@@ -134,7 +134,7 @@ newTalent {
     requires_target = true,
     range = 5,
     getCombat = function(self, t) return {dam=3, type="thrown"} end,
-    getPower = function(self, t) return self:talentDamage(self:getSki(), 1, 0.3) end,
+    getPower = function(self, t) return self:talentDamage(self:getSki(), 10, 0.3) end,
     getDuration = function(self, t) return 3 end,
     message = function(self, t) return "@Source@ throws a poisoned dart." end,
     target = function(self, t)

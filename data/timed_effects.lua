@@ -118,7 +118,7 @@ newEffect{
     type = "physical",
     status = "detrimental",
     parameters = { power=1, damage_message_passive=true },
-    long_desc = function(self, eff) return ("%s is poisoned, taking %.1f damage per turn."):format(self.name:capitalize(), eff.power) end,
+    long_desc = function(self, eff) return ("%s is poisoned, taking %i damage per turn."):format(self.name:capitalize(), eff.power) end,
     on_gain = function(self, err) return "#Target# is poisoned!", "+Poison" end,
     on_lose = function(self, err) return "#Target# recovers from the poison.", "-Poison" end,
     on_timeout = function(self, eff)

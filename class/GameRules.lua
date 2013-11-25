@@ -34,10 +34,18 @@ _M.blind_miss = 50
 
 -- Base life scales expontially with level.
 -- Every point of Con modifies the base by 5%.
-_M.life_level_mod = 1.1
-function _M:lifeConMod(con)
-    return 1 + (con - 10) * 0.05
+_M.dam_level_mod = 1.1
+function _M:damStatMod(stat)
+    return 1 + (stat - 10) * 0.05
 end
+
+function _M:damScale(level, stat)
+    return math.pow(dam_level_mod, level - 1) * (stat and self:damStatMod(stat) or 1)
+end
+
+-- Approximate amount by which *base* damage and armor (before dam_level_mod)
+-- is expected to scale per level.
+_M.item_dam_per_level = 0.5
 
 -- Qi scales linearly with level and Mind.
 _M.qi_per_level = 1

@@ -5,11 +5,14 @@ Version Next
 * Changes to Off-Hand Attack make learning left hand techniques easier:
     * Staffs are now classified as double weapons and so can be used with Off-Hand Attack.  (Currently, double weapons _only_ help with Off-Hand Attack; rumors exist of fighting styles that take full advantage of double weapons, but such techniques cannot be found this early in the dungeon...)
     * Off-Hand Attack's tooltip now gives more information, to help you know whether or not it can deal the finishing blow.
-* Various other tweaks to techniques
+* Various other tweaks to techniques:
     * Blood Sip heals on hit as well as on each turn.
     * You can now step past unconscious opponents who you've chosen not to kill.
     * Pickpocketing an unconscious creature always succeeds.
     * Creatures who've regained consciousness are still groggy and unable to act for one turn.
+    * Poisoned Dart's poison is more dangerous.
+    * Charged Bolt is more accurate.
+    * Increase damage on Explosive Tags.
 * Various tweaks to creatures.  In particular:
     * Fire ants are rarer.
     * Cave bats know Blood Sip.

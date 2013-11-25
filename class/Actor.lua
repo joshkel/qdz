@@ -121,7 +121,7 @@ end
 function _M:resolveLevel()
     engine.interface.ActorLevel.resolveLevel(self)
 
-    self.max_life = math.floor(self.max_life * GameRules:lifeConMod(self:getCon()))
+    self.max_life = math.floor(self.max_life * GameRules:damStatMod(self:getCon()))
     self.max_qi = self.max_qi + self:getMnd() * GameRules.qi_per_mnd
     self:resetToFull()
     self.incomplete = nil
@@ -378,7 +378,7 @@ end
 -- way to avoid roundoff errors is to just recalculate it.
 function _M:updateMaxLife(level_change, con_change)
     local function baseLife(level, con)
-        return math.floor(self.base_life * math.pow(GameRules.life_level_mod, level - 1) * GameRules:lifeConMod(con))
+        return math.floor(self.base_life * GameRules:damScale(level, con))
     end
     self.max_life = self.max_life - baseLife(self.level - level_change, self:getCon() - con_change) + baseLife(self.level, self:getCon())
 end

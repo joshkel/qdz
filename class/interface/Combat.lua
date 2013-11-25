@@ -308,9 +308,10 @@ function _M:combatDamage(combat)
 end
 
 function _M:combatDamageRange(combat, mult)
-    local bonus = math.round(self:getStr() / 2) + (self.combat_dam or 0)
-    local min, max = (combat.min_dam or 1) + bonus, combat.dam + bonus
-    return math.round(min * (mult or 1)), math.round(max * (mult or 1))
+    local scale = GameRules:damScale(self.level, self:getStr())
+    local min = combat.dam + (self.combat_dam or 0)
+    local max = min + (combat.damrange or combat.dam / 2)
+    return math.round(min * scale * (mult or 1)), math.round(max * scale * (mult or 1))
 end
 
 function _M:combatArmor()
@@ -319,8 +320,9 @@ function _M:combatArmor()
 end
 
 function _M:combatArmorRange()
+    local scale = GameRules:damScale(self.level)
     -- Natural armor is more reliable than untrained external armor.
-    return (self.combat_natural_armor or 0) / 2, (self.combat_natural_armor or 0) + (self.combat_armor or 0)
+    return math.round((self.combat_natural_armor or 0) / 2 * scale), math.round(((self.combat_natural_armor or 0) + (self.combat_armor or 0)) * scale)
 end
 
 --- Gets a "talent power", in the same scale as values used for combatAttack,
@@ -329,11 +331,10 @@ function _M:talentPower(stat)
     return math.floor(stat / 2 + self.level / 2)
 end
 
--- Determines the damage for a talent
--- TODO: This will need tweaking during development; for now, I'm going to try
--- scaling by level, since it won't get equipment bonuses like weapons.
+-- Determines the damage for a talent.  pow should use the same range as a
+-- weapon damage.
 function _M:talentDamage(stat, pow, mult)
-    return math.round((stat / 2 + self.level / 2 + pow) * (mult or 1))
+    return math.round(pow * GameRules:damScale(self.level, stat) * (mult or 1))
 end
 
 function _M:getOffHandMult(combat, mult)
