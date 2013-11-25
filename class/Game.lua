@@ -433,9 +433,9 @@ function _M:setupCommands()
         end,
 
         -- Debug menu
-        DEBUG_MENU = function()
+        DEBUG_MODE = function()
             if config.settings.cheat then
-                self:registerDialog(require("mod.dialogs.DebugMenu").new())
+                self:registerDialog(require("mod.dialogs.debug.DebugMenu").new())
             end
         end,
 

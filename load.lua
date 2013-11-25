@@ -57,9 +57,9 @@ UIBase.font_bold_h = UIBase.font_bold:lineSkip()
 KeyBind:load("move,hotkeys,inventory,actions,interface,debug")
 KeyBind:defineAction{
     default = { "sym:_d:true:false:false:false" },
-    type = "DEBUG_MENU",
+    type = "DEBUG_MODE",
     group = "debug",
-    name = "Show Debug Menu",
+    name = "Debug Mode",
     only_on_cheat = true,
 }
 
