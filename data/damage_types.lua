@@ -18,6 +18,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+local GameRules = require "mod.class.GameRules"
 local Qi = require "mod.class.interface.Qi"
 
 local function getDamageFlash(src, target)
@@ -215,7 +216,7 @@ newDamageType{
         local realdam = DamageType.defaultProjector(src, x, y, typ, dam)
         local target = game.level.map(x, y, Map.ACTOR)
         if target then
-            target:incQi(-math.min(realdam, target:getQi()))
+            target:incQi(-math.min(realdam / math.pow(GameRules.dam_level_mod, src.level - 1), target:getQi()))
         end
         return realdam
     end
@@ -291,7 +292,7 @@ newDamageType{
                 -- Need a message here?  Nothing seems appropriate.
                 --game.logSeen(target, "%s is not seriously injured.", target.name:capitalize())
             else
-                target:setEffect(target.EFF_BLEEDING, dam.duration or 5, {src=src, power=math.max(result * dam.power)})
+                target:setEffect(target.EFF_BLEEDING, dam.duration or 5, {src=src, power=math.ceil(result * dam.power)})
             end
         end
         return result

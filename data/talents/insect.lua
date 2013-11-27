@@ -31,7 +31,7 @@ newTalent {
         return 0.5 * GameRules:damScale(self.level)
     end,
     getMaxCharge = function(self, t)
-        return self:talentDamage(self:getCon(), 4 + math.floor(GameRules.item_dam_per_level * self.level))
+        return self:talentDamage(self:getCon(), 6 + math.floor(GameRules.item_dam_per_level * self.level))
     end,
 
     do_turn = function(self, t)

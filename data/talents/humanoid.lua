@@ -70,6 +70,7 @@ newTalent {
         else
             dam = dam / 4
         end
+        -- FIXME: Scale damage, and include mastery
         dam = dam + self:getTalentLevel(self.T_MINING)
         return dam
     end,

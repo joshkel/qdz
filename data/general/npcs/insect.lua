@@ -88,7 +88,7 @@ newEntity{ base = "BASE_NPC_INSECT",
     resists = {
         [DamageType.FIRE] = 2,
     },
-    combat_natural_armor = 4,
+    combat_natural_armor = 3,
 
     resolvers.talents{
         [Talents.T_FIRE_SLASH]={base=1},
