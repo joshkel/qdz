@@ -38,6 +38,7 @@ newEntity{ base = "BASE_STAFF",
     cost = 1,
     combat = {
         dam = 6,
+        damrange = 3,
     },
     desc = [[A simple wooden staff, useful for self defense.  Staffs are known as “the grandfather of all weapons.”]]
 }
@@ -62,6 +63,7 @@ newEntity{ base = "BASE_HALBERD",
     cost = 5,
     combat = {
         dam = 10,
+        damrange = 5,
     },
     desc = [[A polearm with a spear head for thrusting, a single crescent-shaped blade below the spear head for sweeping and cutting, and a red horsehair tassel tied just below the blade.]]
 }
@@ -84,6 +86,7 @@ newEntity{ base = "BASE_SABER",
     cost = 5,
     combat = {
         dam = 7,
+        damrange = 3,
     },
     desc = [[A slightly curved, single-edged sword, made for slashing and chopping. As one of the most common weapons in the Imperial army, it's known as “the general of all weapons.”]]
 }
@@ -107,6 +110,7 @@ newEntity{ base = "BASE_SWORD",
     cost = 5,
     combat = {
         dam = 8,
+        damrange = 4,
     },
     desc = [[A straight, narrow, double-edged sword. Considered an elegant and refined weapon, it's known as “the gentleman of all weapons.”]]
 }
@@ -129,7 +133,8 @@ newEntity{ base = "BASE_DAGGER",
     level_range = {1, 10},
     cost = 5,
     combat = {
-        dam = 3,
+        dam = 4,
+        damrange = 2,
     },
 }
 

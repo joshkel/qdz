@@ -18,6 +18,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+local GameRules = require "mod.class.GameRules"
 local Qi = require "mod.class.interface.Qi"
 
 local function getDamageFlash(src, target)
@@ -35,7 +36,18 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     local target = game.level.map(x, y, Map.ACTOR)
     if not target then return nil end
 
+    local damtype = DamageType:get(type)
     local init_dam = dam
+
+    -- Apply armor.
+    if type == DamageType.PHYSICAL then
+        if Qi.isFocused(src) then
+            dam = dam - target:combatArmorRange()
+        else    
+            dam = dam - target:combatArmor()
+        end
+        dam = math.max(0, math.round(dam))
+    end
 
     -- Apply resistances.
     if target.resists then
@@ -43,23 +55,23 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
         dam = math.round((dam - sub) * mult)
         dam = math.max(dam, 0)
         if dam ~= init_dam then
-            print(("%s resistance reduced %i damage to %i"):format(DamageType:get(type).name, init_dam, dam))
+            print(("%s resistance reduced %i damage to %i"):format(damtype.name, init_dam, dam))
         end
     end
 
     -- Display log message.
     extra = extra or {}
     if extra.msg then
-        extra.msg(src, target, dam, DamageType:get(type))
+        extra.msg(src, target, dam, damtype)
     elseif not extra.silent then
         local src_name, seen, used_intermediate = src:getSrcName()
 
         local message
         if Qi.getIntermediate(src).damage_message_passive then
-            message = ("%s takes %s%i %s damage#LAST#."):format(target:getTargetName():capitalize(), DamageType:get(type).text_color, dam, DamageType:get(type).name)
+            message = ("%s takes %s%i %s damage#LAST#."):format(target:getTargetName():capitalize(), damtype.text_color, dam, damtype.name)
             game.logSeen(target, getDamageFlash(src, target), message)
         else
-            message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target:getTargetName(src, used_intermediate), DamageType:get(type).text_color, dam, DamageType:get(type).name)
+            message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target:getTargetName(src, used_intermediate), damtype.text_color, dam, damtype.name)
             game.logSeenAny({src, target}, getDamageFlash(src, target), message)
         end
     end
@@ -174,6 +186,12 @@ newDamageType{
     name = "physical", type = "PHYSICAL",
 }
 
+-- Similar to physical; kept separate so that it ignores armor.
+-- Should T_BLOOD_SIP's on_bleed be called here instead of from timed_effects.lua?
+newDamageType{
+    name = "bleeding", type = "BLEEDING",
+}
+
 newDamageType{
     name = "fire", type = "FIRE", text_color = "#RED#",
 }
@@ -215,7 +233,7 @@ newDamageType{
         local realdam = DamageType.defaultProjector(src, x, y, typ, dam)
         local target = game.level.map(x, y, Map.ACTOR)
         if target then
-            target:incQi(-math.min(realdam, target:getQi()))
+            target:incQi(-math.min(realdam / math.pow(GameRules.dam_level_mod, src.level - 1), target:getQi()))
         end
         return realdam
     end
@@ -291,7 +309,7 @@ newDamageType{
                 -- Need a message here?  Nothing seems appropriate.
                 --game.logSeen(target, "%s is not seriously injured.", target.name:capitalize())
             else
-                target:setEffect(target.EFF_BLEEDING, dam.duration or 5, {src=src, power=math.max(result * dam.power)})
+                target:setEffect(target.EFF_BLEEDING, dam.duration or 5, {src=src, power=math.ceil(result * dam.power)})
             end
         end
         return result

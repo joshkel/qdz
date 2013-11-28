@@ -70,6 +70,7 @@ newTalent {
         else
             dam = dam / 4
         end
+        -- FIXME: Scale damage, and include mastery
         dam = dam + self:getTalentLevel(self.T_MINING)
         return dam
     end,
@@ -129,12 +130,12 @@ newTalent {
 newTalent {
     name = "Poisoned Dart",
     type = {"qi techniques/left hand", 1},
-    cooldown = 6,
+    cooldown = 5,
     qi = 2,
     requires_target = true,
     range = 5,
     getCombat = function(self, t) return {dam=3, type="thrown"} end,
-    getPower = function(self, t) return self:talentDamage(self:getSki(), 1, 0.3) end,
+    getPower = function(self, t) return self:talentDamage(self:getSki(), 10, 0.3) end,
     getDuration = function(self, t) return 3 end,
     message = function(self, t) return "@Source@ throws a poisoned dart." end,
     target = function(self, t)

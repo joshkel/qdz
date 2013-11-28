@@ -67,7 +67,7 @@ newTalent{
     end,
 
     info = function(self, t)
-        return flavorText(("Adds %i to your Attack and %i to your normal attacks' damage. Your normal attacks will knock creatures unconscious instead of killing them. Causing the death of a creature will cancel this technique.\n\nThere are two exceptions. First, when attacking profoundly unnatural or evil opponents, such as undead or infernals, you will strike to kill without penalty. Second, focusing your qi gives you sufficient discipline to kill without malice and without disrupting this technique."):format(t.combat_atk_bonus, t.combat_dam_bonus),
+        return flavorText(("Adds %i to your Attack and %i to your normal attacks' damage. Your normal attacks will knock creatures unconscious instead of killing them. Causing the death of a creature will cancel this technique.\n\nThere are two exceptions. First, when attacking profoundly unnatural or evil opponents, such as undead or infernals, you will strike to kill without penalty. Second, focusing your qi gives you sufficient discipline to kill without malice and without disrupting this technique."):format(t.combat_atk_bonus, t.combat_dam_bonus * GameRules:damScale(self.level)),
             "The first of the Five Blessings is love of virtue. By purging your mind of killing intent, you can fight with clarity and strength of purpose.")
     end
 }

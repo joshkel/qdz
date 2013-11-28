@@ -35,7 +35,7 @@ newEntity{ base = "BASE_LIGHT_ARMOR",
     encumber = 10,
     wielder = {
         combat_def = 1,
-        combat_armor = 2,
+        combat_armor = 1,
     },
     desc = [[Armor made from quilted cotton. Although relatively weak, it's cheap and easy to produce.]],
 }
@@ -48,7 +48,7 @@ newEntity{ base = "BASE_LIGHT_ARMOR",
     encumber = 15,
     wielder = {
         combat_def = 1,
-        combat_armor = 3,
+        combat_armor = 2,
     },
     desc = [[A lightweight suit of leather armor, boiled to harden it.]],
 }

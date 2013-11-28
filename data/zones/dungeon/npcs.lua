@@ -41,7 +41,7 @@ newEntity{
         }
     },
     stats = { str=18, ski=16, con=18, agi=16, mnd=8 },
-    combat_armor = 4,
+    combat_armor = 3,
 
     can_absorb = {
         any = Talents.T_INFERNAL_POWER

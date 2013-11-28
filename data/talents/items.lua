@@ -94,7 +94,7 @@ newTalent {
     duration = 6,
 
     getPower = function(self, t)
-        return self:talentDamage(self:getMnd(), 1, 2)
+        return self:talentDamage(self:getMnd(), 10)
     end,
 
     action = function(self, t)
@@ -118,7 +118,7 @@ newTalent {
     message = function(self, t) return "@Source@ reads an explosive tag. The tag begins to smoke." end,
 
     getDamage = function(self, t)
-        return self:talentDamage(self:getMnd(), 4)
+        return self:talentDamage(self:getMnd(), 12)
     end,
 
     action = function(self, t)

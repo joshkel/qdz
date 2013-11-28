@@ -118,7 +118,7 @@ newEffect{
     type = "physical",
     status = "detrimental",
     parameters = { power=1, damage_message_passive=true },
-    long_desc = function(self, eff) return ("%s is poisoned, taking %.1f damage per turn."):format(self.name:capitalize(), eff.power) end,
+    long_desc = function(self, eff) return ("%s is poisoned, taking %i damage per turn."):format(self.name:capitalize(), eff.power) end,
     on_gain = function(self, err) return "#Target# is poisoned!", "+Poison" end,
     on_lose = function(self, err) return "#Target# recovers from the poison.", "-Poison" end,
     on_timeout = function(self, eff)
@@ -143,8 +143,7 @@ newEffect{
     on_lose = function(self, err) return "#Target#'s bleeding stops.", "-Bleeding" end,
     on_timeout = function(self, eff)
         local saved = Qi.preCall(eff)
-        -- FIXME: Needs to ignore armor
-        DamageType:get(DamageType.PHYSICAL).projector(eff.src or self, self.x, self.y, DamageType.PHYSICAL, eff.power)
+        DamageType:get(DamageType.BLEEDING).projector(eff.src or self, self.x, self.y, DamageType.BLEEDING, eff.power)
 
         if eff.src and eff.src:knowTalent(eff.src.T_BLOOD_SIP) then
             local t = eff.src:getTalentFromId(eff.src.T_BLOOD_SIP)

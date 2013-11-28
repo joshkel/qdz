@@ -42,7 +42,7 @@ newEntity{ base = "BASE_NPC_INSECT",
 
     level_range = {1, 4}, exp_worth = 1,
     rarity = 4,
-    max_life = resolvers.rngavg(4,6),
+    max_life = resolvers.rngavg(18,22),
     max_qi = resolvers.rngavg(4,6),
     combat = {
         dam=1,
@@ -77,7 +77,7 @@ newEntity{ base = "BASE_NPC_INSECT",
 
     level_range = {1, 4}, exp_worth = 2,
     rarity = 6,
-    max_life = resolvers.rngavg(4,6),
+    max_life = resolvers.rngavg(23,27),
     max_qi = resolvers.rngavg(4,6),
     combat = {
         dam=2,
@@ -88,7 +88,7 @@ newEntity{ base = "BASE_NPC_INSECT",
     resists = {
         [DamageType.FIRE] = 2,
     },
-    combat_natural_armor = 4,
+    combat_natural_armor = 3,
 
     resolvers.talents{
         [Talents.T_FIRE_SLASH]={base=1},

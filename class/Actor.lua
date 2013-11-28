@@ -35,6 +35,7 @@ local Map = require "engine.Map"
 local Talents = require "engine.interface.ActorTalents"
 local Qi = require "mod.class.interface.Qi"
 local GameUI = require "mod.class.ui.GameUI"
+local GameRules = require "mod.class.GameRules"
 
 module(..., package.seeall, class.inherit(
     engine.Actor,
@@ -65,6 +66,8 @@ function _M:init(t, no_default)
     self.combat_dam = 0
     self.global_speed = 1
     self.movement_speed = 1
+
+    t.base_life = t.base_life or t.max_life
 
     -- Default regen
     t.qi_regen = t.qi_regen or 0.25
@@ -118,8 +121,8 @@ end
 function _M:resolveLevel()
     engine.interface.ActorLevel.resolveLevel(self)
 
-    self.max_life = self.max_life + self:getCon()
-    self.max_qi = self.max_qi + self:getMnd()
+    self.max_life = math.floor(self.max_life * GameRules:damStatMod(self:getCon()))
+    self.max_qi = self.max_qi + self:getMnd() * GameRules.qi_per_mnd
     self:resetToFull()
     self.incomplete = nil
 end
@@ -371,10 +374,19 @@ function _M:die(src)
     return true
 end
 
-function _M:levelup()
-    self.max_life = self.max_life + 2
+---Updates maximum life for the given changes in level and Con.  The easiest
+-- way to avoid roundoff errors is to just recalculate it.
+function _M:updateMaxLife(level_change, con_change)
+    local function baseLife(level, con)
+        return math.floor(self.base_life * GameRules:damScale(level, con))
+    end
+    self.max_life = self.max_life - baseLife(self.level - level_change, self:getCon() - con_change) + baseLife(self.level, self:getCon())
+end
 
-    self:incMaxQi(2)
+function _M:levelup()
+    self:updateMaxLife(1, 0)
+
+    self:incMaxQi(GameRules.qi_per_level)
 
     -- Heal upon new level.  TODO: Keep doing this?
     self.life = self.max_life
@@ -389,9 +401,9 @@ function _M:onStatChange(stat, v)
     if stat == self.STAT_STR then
         self:checkEncumbrance()
     elseif stat == self.STAT_CON then
-        self.max_life = self.max_life + 1 * v
+        self:updateMaxLife(0, v)
     elseif stat == self.STAT_MND then
-        self.max_qi = self.max_qi + 1 * v
+        self.max_qi = self.max_qi + v * GameRules.qi_per_mnd
     end
 end
 

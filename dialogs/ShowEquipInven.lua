@@ -83,7 +83,7 @@ function _M:init(title, actor, filter, action, on_select)
             if self.focus_ui and self.focus_ui.ui == self.c_inven then list = self.c_inven.list
             elseif self.focus_ui and self.focus_ui.ui == self.c_equip then list = self.c_equip.list
             end
-            if list and list.chars[c] then
+            if list and list.chars and list.chars[c] then
                 self:use(list[list.chars[c]])
             end
         end,

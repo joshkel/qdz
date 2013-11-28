@@ -271,7 +271,7 @@ function _M:drawDialog(kind)
         end
 
     elseif kind=="attack" then
-        local COL_WIDTH = 0.15
+        local COL_WIDTH = 0.2
         w = 0
 
         h = 0

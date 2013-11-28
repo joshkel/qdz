@@ -18,6 +18,8 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+local GameRules = require("mod.class.GameRules")
+
 newTalent {
     name = "Capacitive Appendage",
     type = {"qi techniques/right hand", 1},
@@ -25,9 +27,11 @@ newTalent {
     sustain_qi = 5,
     cooldown = 5,
 
-    per_turn = 0.5,
+    getPerTurn = function(self, t)
+        return 0.5 * GameRules:damScale(self.level)
+    end,
     getMaxCharge = function(self, t)
-        return self:talentDamage(self:getCon(), 1)
+        return self:talentDamage(self:getCon(), 6 + math.floor(GameRules.item_dam_per_level * self.level))
     end,
 
     do_turn = function(self, t)
@@ -35,7 +39,7 @@ newTalent {
         if not eff then
             self:setEffect(self.EFF_CHARGED, 1, { power=0 })
         else
-            self.tempeffect_def[self.EFF_CHARGED].add_power(self, eff, t.per_turn, t.getMaxCharge(self, t))
+            self.tempeffect_def[self.EFF_CHARGED].add_power(self, eff, t.getPerTurn(self, t), t.getMaxCharge(self, t))
         end
     end,
     activate = function(self, t)
@@ -47,7 +51,7 @@ newTalent {
     end,
 
     info = function(self, t)
-        return ("Allows you to build an electrical charge in your right hand. Each turn you do not hit in melee, you build half a point of charge, up to a maximum of %i points (based on your Constitution). When you successfully hit in melee, any charge is converted to lightning damage."):format(t.getMaxCharge(self, t))
+        return ("Allows you to build an electrical charge in your right hand. Each turn you do not hit in melee, you build up charge, up to a maximum of %i points (based on your Constitution). When you successfully hit in melee, any charge is converted to lightning damage."):format(t.getMaxCharge(self, t))
     end,
 }
 
@@ -62,20 +66,15 @@ newTalent {
     range = 10,
     proj_speed = 2,
 
-    damage_per_bolt = 4,
-    base_spread = 3,
+    base_spread = 2,
     spread_divisor = 4,
 
-    getTotalDamage = function(self, t) return self:talentDamage(self:getMnd(), 1) end,
+    getDamage = function(self, t) return self:talentDamage(self:getMnd(), 4) end,
 
     getDetails = function(self, t)
-        -- Returns full details: damage per bolt, number of bolts, damage for last bolt
-        local dam = t.getTotalDamage(self, t)
-        if dam % t.damage_per_bolt == 0 then
-            return t.damage_per_bolt, dam / t.damage_per_bolt, t.damage_per_bolt
-        else
-            return t.damage_per_bolt, math.ceil(dam / t.damage_per_bolt), dam % t.damage_per_bolt
-        end
+        -- Returns full details: damage per bolt, number of bolts
+		-- TODO: Is double scaling on Mind too powerful at high levels?
+        return t.getDamage(self, t), math.floor(self:getMnd() / 5)
     end,
     radius = function(self, t)
         local _, count, _ = t.getDetails(self, t)
@@ -94,14 +93,14 @@ newTalent {
         local x, y, target = self:getTarget(tg)
         if not x or not y then return nil end
 
-        local dam, count, last_dam = t.getDetails(self, t)
+        local dam, count = t.getDetails(self, t)
         local spread = t.base_spread
 
         for i = 1, count do
             local this_x, this_y = x, y
             this_x = math.round(this_x + rng.range(-spread, spread) / t.spread_divisor)
             this_y = math.round(this_y + rng.range(-spread, spread) / t.spread_divisor)
-            local this_dam = i == count and last_dam or dam
+            local this_dam = rng.range(dam * 0.9, dam * 1.1)
             self:projectile(t.singleTarget(self, t), this_x, this_y, DamageType.LIGHTNING, this_dam, {type="charged_bolt_hit"})
             spread = spread + 1
         end
@@ -237,7 +236,7 @@ newTalent {
     range = 1,
     radius = 1,
     target = function(self, t) return {type="cone", range=self:getTalentRange(t), radius=self:getTalentRadius(t), selffire=true, talent=t} end,
-    getDamage = function(self, t) return self:talentDamage(self:getMnd(), 3) end,
+    getDamage = function(self, t) return self:talentDamage(self:getMnd(), 6) end,
     self_damage = 0.25,
 
     action = function(self, t)
@@ -248,7 +247,7 @@ newTalent {
         if x == self.x and y == self.y then
             self:project(tg, x, y, DamageType.FIRE, t.getDamage(self, t) * t.self_damage)
             game.level.map:particleEmitter(self.x, self.y, tg.radius, "burn_self")
-            -- TODO: Cauterize wounds?
+            -- TODO: Cauterize wounds?  Update description for targeting self.
         else
             self:project(tg, x, y, DamageType.FIRE_REF_HALF, t.getDamage(self, t))
             game.level.map:particleEmitter(self.x, self.y, tg.radius, "burning_hand", {radius=self:getTalentRadius(t), tx=x-self.x, ty=y-self.y})
@@ -269,7 +268,7 @@ newTalent {
 
     resist_fire_bonus = 2,
     getArmorBonus = function(self, t)
-        return self:talentDamage(self:getCon(), 1, 0.3)
+        return math.floor(self:getCon() / 5)
     end,
     getDuration = function(self, t)
         return math.floor(self:getCon() / 2)
