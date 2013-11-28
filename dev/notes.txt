@@ -1,7 +1,7 @@
 To do:
 Armor should apply to all physical attacks, not just melee
-Update damage for Bash and Kick
 
+Scale life regen (and qi regen?) as you gain levels
 Cancel button / option for birther
 Split act base from act
 Why do I get an "offline" error message, even after uploading?

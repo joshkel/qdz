@@ -88,7 +88,9 @@ end
 function _M:combatMod(combat, mod)
     local result = table.clone(combat)
     for k, v in pairs(mod) do
-        result[k] = (result[k] or 0) + v
+        if type(v) == 'number' then 
+            result[k] = (result[k] or 0) + v
+        end
     end
     return result
 end
@@ -262,14 +264,13 @@ function _M:getObjectCombat(o, kind)
     if kind == "rhand" then return o.combat end
     if kind == "lhand" then return o.combat end
 
-    -- Bash damage is based on unarmed damage, subtract basic punch damage but modify by constitution.
+    -- Bash damage is based on unarmed damage modified by constitution.
     -- (The bigger you are, the more it hurts someone when you run into them.)
     -- TODO: Add damage-on-hit
-    if kind == "bash" then return self:combatMod(self:getObjectCombat(nil, "unarmed"), { dam= -self.BASE_UNARMED_DAMAGE + math.round(self:getCon() / 2) }) end
+    if kind == "bash" then return self:combatMod(self:getObjectCombat(nil, "unarmed"), { dam = (self:getCon() - 10) / 2 }) end
 
     -- Kick damage is unarmed damage modified by agility.
-    -- TODO: Probably actually want to do str * .5 + agi * .5 + unarmed, or something like that...
-    if kind == "kick" then return self:combatMod(self:getObjectCombat(nil, "unarmed"), { dam= math.round(self:getAgi() / 3) }) end
+    if kind == "kick" then return self:combatMod(self:getObjectCombat(nil, "unarmed"), { dam = 2, dammod = {str=0.5, agi=0.5}}) end
 
     return nil
 end
@@ -307,8 +308,18 @@ function _M:combatDamage(combat)
     end
 end
 
+function _M:combatStat(dammod)
+    if not dammod then return self:getStr() end
+
+    local stat = 0
+    for k, v in pairs(dammod) do
+        stat = stat + self:getStat(k) * v
+    end
+    return stat
+end
+
 function _M:combatDamageRange(combat, mult)
-    local scale = GameRules:damScale(self.level, self:getStr())
+    local scale = GameRules:damScale(self.level, self:combatStat(combat.dammod))
     local min = combat.dam + (self.combat_dam or 0)
     local max = min + (combat.damrange or combat.dam / 2)
     return math.round(min * scale * (mult or 1)), math.round(max * scale * (mult or 1))

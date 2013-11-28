@@ -130,7 +130,7 @@ newTalent {
 newTalent {
     name = "Poisoned Dart",
     type = {"qi techniques/left hand", 1},
-    cooldown = 6,
+    cooldown = 5,
     qi = 2,
     requires_target = true,
     range = 5,
