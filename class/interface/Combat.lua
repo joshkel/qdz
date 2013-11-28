@@ -208,12 +208,6 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     end
 
     local dam = self:combatDamage(combat) * mult
-    if Qi.isFocused(self) then
-        dam = dam - target:combatArmorRange()
-    else    
-        dam = dam - target:combatArmor() -- TODO? As implemented, this armor ignores damtype - should it?
-    end
-    dam = math.max(0, math.round(dam))
 
     if damargs then
         damargs.dam = dam
