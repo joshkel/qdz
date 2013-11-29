@@ -131,37 +131,46 @@ function _M:bumpInto(target)
     end
 end
 
+--- Iterates over combat methods (weapons)
+function _M:iterCombat()
+    -- TODO: Cleaner iteration method (coroutines)?
+    local result = {}
+
+    if self:getInven(self.INVEN_RHAND) then
+        for i, o in ipairs(self:getInven(self.INVEN_RHAND)) do
+            if o.combat then
+                table.insert(result, { o.combat, 1 })
+            end
+        end
+    end
+    if self:getInven(self.INVEN_RHAND) then
+        for i, o in ipairs(self:getInven(self.INVEN_LHAND)) do
+            if o.combat then
+                table.insert(result, { o.combat, self:getOffHandMult(o.combat) })
+            end
+        end
+    end
+
+    if next(result) == nil then
+        table.insert(result, { self.combat, 1 })
+    end
+
+    local i = 0
+    local n = #result
+    return function()
+        i = i + 1
+        if i <= n then return result[i][1], result[i][2] end
+    end
+end
+
 --- Makes the death happen!
 function _M:attackTarget(target, damtype, damargs, mult)
     local speed
     local hit
 
-    -- TODO: Too much duplication, both in the following code and in alternate methods of attack (kick, bash, ...)
-
-    if not speed then
-        if self:getInven(self.INVEN_RHAND) then
-            for i, o in ipairs(self:getInven(self.INVEN_RHAND)) do
-                if o.combat and not target.dead then
-                    local s, h = self:attackTargetWith(target, o.combat, damtype, damargs, mult)
-                    speed = math.max(speed or 0, s)
-                    hit = hit or h
-                end
-            end
-        end
-        if self:getInven(self.INVEN_LHAND) then
-            for i, o in ipairs(self:getInven(self.INVEN_LHAND)) do
-                if o.combat and not target.dead then
-                    local s, h = self:attackTargetWith(target, o.combat, damtype, damargs, (mult or 1) * self:getOffHandMult(o.combat))
-                    speed = math.max(speed or 0, s)
-                    hit = hit or h
-                end
-            end
-        end
-    end
-
-    if not speed then
-        if self.combat and not target.dead then
-            local s, h = self:attackTargetWith(target, self.combat, damtype, damargs, mult)
+    for combat, combat_mult in self:iterCombat() do
+        if not target.dead then
+            local s, h = self:attackTargetWith(target, combat, damtype, damargs, (mult or 1) * combat_mult)
             speed = math.max(speed or 0, s)
             hit = hit or h
         end

@@ -1,6 +1,5 @@
 To do:
-Armor should apply to all physical attacks, not just melee
-
+"nothing to pickup"
 Scale life regen (and qi regen?) as you gain levels
 Cancel button / option for birther
 Split act base from act

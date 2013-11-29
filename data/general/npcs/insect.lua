@@ -27,6 +27,8 @@ newEntity{
 
     ai = "dumb_talented_simple", ai_state = { talent_in=3, },
 
+    combat = { desc="bite" },
+
     body_parts = {
         skin = "exoskeleton",
     },

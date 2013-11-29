@@ -274,6 +274,7 @@ function _M:drawDialog(kind)
         local COL_WIDTH = 0.2
         w = 0
 
+        -- FIXME: Damage on hit?
         h = 0
         if player:getInven(player.INVEN_RHAND) then
             for i, o in ipairs(player:getInven(player.INVEN_RHAND)) do
@@ -295,7 +296,7 @@ function _M:drawDialog(kind)
         if h ~= 0 then w = w + self.w * COL_WIDTH end
 
         h = 0
-        self:drawCombatBlock(s, w, h, "Unarmed", "", player.combat)
+        self:drawCombatBlock(s, w, h, player.combat.desc and player.combat.desc:capitalize() or "Unarmed", "", player.combat)
 
     elseif kind=="defense" then
         -- First column: Basic / physical defenses

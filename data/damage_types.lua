@@ -50,6 +50,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     end
 
     -- Apply resistances.
+    -- FIXME: Consider reworking these to resemble armor (with scaling) instead of percentage
     if target.resists then
         local sub, mult = target:combatResist(type)
         dam = math.round((dam - sub) * mult)

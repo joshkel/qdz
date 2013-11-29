@@ -310,8 +310,21 @@ function _M:tooltip()
         delim = { color.caption, ' / ' }
     end
 
-    -- TODO: Find equipped item instead of self.combat?  Display damage?
-    text:add(true, color.caption, 'Attack: ', color.text, tostring(self:combatAttack(self.combat)))
+    delim = nil
+    local attack, dam attack, dam = tstring{}, tstring{}
+    for combat, combat_mult in self:iterCombat() do
+        util.inspect(combat)
+        attack:add(delim, tostring(self:combatAttack(combat)))
+        -- FIXME: Damage on hit?
+        dam:add(delim, string.describe_range(self:combatDamageRange(combat, combat_mult)))
+        delim = ' / '
+    end
+    if delim then
+        text:add(true, color.caption, 'Attack: ', color.text)
+        text:merge(attack)
+        text:add(true, color.caption, 'Damage: ', color.text)
+        text:merge(dam)
+    end
 
     text:add(true, color.caption, 'Defense: ', color.text, tostring(self:combatDefense()))
     local armor_min, armor_max = self:combatArmorRange()

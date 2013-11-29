@@ -26,6 +26,7 @@ newEntity{
     display = "b", color=colors.UMBER,
     desc = [[A bat.]],
     blind_fight = 1,
+    combat = { desc="bite" },
 
     -- To quote Angband, bats move somewhat erratically, and quickly.
     global_speed = 1.25,
