@@ -277,9 +277,8 @@ function _M:drawDialog(kind)
         h = 0
         if player:getInven(player.INVEN_RHAND) then
             for i, o in ipairs(player:getInven(player.INVEN_RHAND)) do
-                local combat = player:getObjectCombat(o, "rhand")
-                if combat then
-                    h = self:drawCombatBlock(s, w, h, o.name:capitalize(), player:isInvenTwoHanded() and "Two Handed" or "Right Hand", combat)
+                if o.combat then
+                    h = self:drawCombatBlock(s, w, h, o.name:capitalize(), player:isInvenTwoHanded() and "Two Handed" or "Right Hand", o.combat)
                 end
             end
         end
@@ -288,16 +287,15 @@ function _M:drawDialog(kind)
         h = 0
         if player:getInven(player.INVEN_LHAND) then
             for i, o in ipairs(player:getInven(player.INVEN_LHAND)) do
-                local combat = player:getObjectCombat(o, "lhand")
-                if combat then
-                    h = self:drawCombatBlock(s, w, h, o.name:capitalize(), "Left Hand", combat, player:getOffHandMult(combat))
+                if o.combat then
+                    h = self:drawCombatBlock(s, w, h, o.name:capitalize(), "Left Hand", o.combat, player:getOffHandMult(o.combat))
                 end
             end
         end
         if h ~= 0 then w = w + self.w * COL_WIDTH end
 
         h = 0
-        self:drawCombatBlock(s, w, h, "Unarmed", "", player:getObjectCombat(nil, "unarmed"))
+        self:drawCombatBlock(s, w, h, "Unarmed", "", player.combat)
 
     elseif kind=="defense" then
         -- First column: Basic / physical defenses

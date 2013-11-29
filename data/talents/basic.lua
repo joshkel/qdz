@@ -101,6 +101,13 @@ newTalent{
     getDistance = function(self, t)
         return (self:getStr() + self:getCon()) / 5
     end,
+    getCombat = function(self, t)
+        -- Bash damage is based on unarmed damage modified by constitution.
+        -- (The bigger you are, the more it hurts someone when you run into them.)
+        -- TODO: Add damage-on-hit
+        return self:combatMod(self.combat, { dam = (self:getCon() - 10) / 2 })
+    end,
+
     action = function(self, t)
         -- TODO? This block is duplicated throughout basic.lua and other talents - can it be cleaned up?
         local tg = {type="hit", range=self:getTalentRange(t)}
@@ -108,7 +115,7 @@ newTalent{
         if not x or not y or not target then return nil end
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
-        local speed, hit = self:attackTargetWith(target, self:getObjectCombat(nil, "bash"),
+        local speed, hit = self:attackTargetWith(target, t.getCombat(self, t),
             DamageType.PHYSICAL_KNOCKBACK, { distance = t.getDistance(self, t) })
         if not hit then
             if target:canBe("knockback") then
@@ -123,10 +130,11 @@ newTalent{
         end
         return true
     end,
+
     info = function(self, t)
         return ([[Bashes into an enemy with a shoulder tackle, dealing %s damage and knocking it back %i squares. Damage and knockback distance are determined by your Strength and Constitution. Even if your opponent manages to dodge, it will be driven back one square.
 
-If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your chest.]]):format(string.describe_range(self:combatDamageRange(self:getObjectCombat(nil, "bash"))), t.getDistance(self, t))
+If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your chest.]]):format(string.describe_range(self:combatDamageRange(t.getCombat(self, t))), t.getDistance(self, t))
     end,
 }
 
@@ -136,13 +144,17 @@ newTalent{
     cooldown = 6,
     requires_target = true,
     range = 1,
+    getCombat = function(self, t)
+        -- Kick damage is unarmed damage modified by agility.
+        return self:combatMod(self.combat, { dam = 2, dammod = {str=0.5, agi=0.5}})
+    end,
     action = function(self, t)
         local tg = {type="hit", range=self:getTalentRange(t)}
         local x, y, target = self:getTarget(tg)
         if not x or not y or not target then return nil end
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
-        local combat = self:getObjectCombat(nil, "kick")
+        local combat = t.getCombat(self, t)
         local speed, hit = self:attackTargetWith(target, combat)
         if hit and not target.dead then
             if not target:canBe("knockback") then
@@ -157,7 +169,7 @@ newTalent{
     info = function(self, t)
         return ([[Kicks an enemy, dealing %s damage and possibly knocking it prone. A prone enemy's turn is delayed and is easier to hit. Damage and knockdown chance are determined by your Strength and Agility.
 
-If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your feet.]]):format(string.describe_range(self:combatDamageRange(self:getObjectCombat(nil, "kick"))))
+If this kills an enemy while your qi is focused, you may absorb a portion of the enemy's qi and bind it to your feet.]]):format(string.describe_range(self:combatDamageRange(t.getCombat(self, t))))
     end,
 }
 

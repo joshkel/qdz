@@ -141,9 +141,8 @@ function _M:attackTarget(target, damtype, damargs, mult)
     if not speed then
         if self:getInven(self.INVEN_RHAND) then
             for i, o in ipairs(self:getInven(self.INVEN_RHAND)) do
-                local combat = self:getObjectCombat(o, "rhand")
-                if combat and not target.dead then
-                    local s, h = self:attackTargetWith(target, combat, damtype, damargs, mult)
+                if o.combat and not target.dead then
+                    local s, h = self:attackTargetWith(target, o.combat, damtype, damargs, mult)
                     speed = math.max(speed or 0, s)
                     hit = hit or h
                 end
@@ -151,9 +150,8 @@ function _M:attackTarget(target, damtype, damargs, mult)
         end
         if self:getInven(self.INVEN_LHAND) then
             for i, o in ipairs(self:getInven(self.INVEN_LHAND)) do
-                local combat = self:getObjectCombat(o, "lhand")
-                if combat and not target.dead then
-                    local s, h = self:attackTargetWith(target, combat, damtype, damargs, (mult or 1) * self:getOffHandMult(combat))
+                if o.combat and not target.dead then
+                    local s, h = self:attackTargetWith(target, o.combat, damtype, damargs, (mult or 1) * self:getOffHandMult(o.combat))
                     speed = math.max(speed or 0, s)
                     hit = hit or h
                 end
@@ -162,9 +160,8 @@ function _M:attackTarget(target, damtype, damargs, mult)
     end
 
     if not speed then
-        local combat = self:getObjectCombat(o, "unarmed")
-        if combat and not target.dead then
-            local s, h = self:attackTargetWith(target, combat, damtype, damargs, mult)
+        if self.combat and not target.dead then
+            local s, h = self:attackTargetWith(target, self.combat, damtype, damargs, mult)
             speed = math.max(speed or 0, s)
             hit = hit or h
         end
@@ -251,22 +248,6 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     end
 
     return 1, true
-end
-
-function _M:getObjectCombat(o, kind)
-    if kind == "unarmed" then return self.combat end
-    if kind == "rhand" then return o.combat end
-    if kind == "lhand" then return o.combat end
-
-    -- Bash damage is based on unarmed damage modified by constitution.
-    -- (The bigger you are, the more it hurts someone when you run into them.)
-    -- TODO: Add damage-on-hit
-    if kind == "bash" then return self:combatMod(self:getObjectCombat(nil, "unarmed"), { dam = (self:getCon() - 10) / 2 }) end
-
-    -- Kick damage is unarmed damage modified by agility.
-    if kind == "kick" then return self:combatMod(self:getObjectCombat(nil, "unarmed"), { dam = 2, dammod = {str=0.5, agi=0.5}}) end
-
-    return nil
 end
 
 function _M:fortSave()
@@ -357,7 +338,7 @@ function _M:getInvenCombat(inven, allow_unarmed)
     end
 
     if allow_unarmed then
-        return self:getObjectCombat(nil, "unarmed")
+        return self.combat
     end
 
     return nil
