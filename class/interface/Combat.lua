@@ -200,7 +200,7 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
             -- NOTE that we assume that concealment is always due to smoke.
             miss = "%s misses %s in the smoke."
             missile_miss = miss
-        elseif not target:attr("force_crit") and not self:skillCheck(atk, def) then
+        elseif not self:attr("force_crit") and not target:attr("take_crit") and not self:skillCheck(atk, def) then
             miss = "%s misses %s."
         end
         if miss then

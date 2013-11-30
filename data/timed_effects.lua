@@ -53,16 +53,66 @@ newEffect{
     desc = "Off Balance",
     type = "other",  -- ???
     status = "detrimental",
-    long_desc = function(self, eff) return ("#Target# is off balance. The next attack against %s will do critical damage."):format(string.him(self)) end,
+    long_desc = function(self, eff) return ("%s is off balance. Proper movement is impossible, and the next attack against %s will do critical damage."):format(self.name:capitalize(), string.him(self)) end,
     on_gain = function(self, err) return "#Target# is knocked off balance!", "+Off balance" end,
     on_lose = function(self, err) return ("#Target# regains balance."):format(string.his(self)), "-Off balance" end,
     activate = function(self, eff)
-        -- Next hit is guaranteed (barring flat miss chance) and will force
-        -- a critical effect.
-        self:effectTemporaryValue(eff, "force_crit", 1)
+        -- Next hit received is guaranteed (barring flat miss chance) and will
+        -- force a critical effect.
+        self:effectTemporaryValue(eff, "take_crit", 1)
+
+        -- No fair just stepping out of the way of an incoming crit.  :-)
+        self:effectTemporaryValue(eff, "never_move", 1)
     end,
     deactivate = function(self, eff)
     end,
+}
+
+newEffect{
+    name = "DESPERATION",
+    desc = "Desperation",
+    type = "other",  -- ???
+    status = "beneficial",
+    long_desc = function(self, eff) return ("%s's desperation fuels %s actions. %s next attack will do critical damage."):format(self.name:capitalize(), string.his(self), string.his(self):capitalize()) end,
+
+    -- Player:onTakeHit's "LOW HEALTH!" should suffice here.
+    on_gain = function(self, err) return "#Target# is desperate!", "+Desperation" end,
+    on_lose = function(self, err) return "#Target#'s desperation subsides.", "-Desperation" end,
+
+    activate = function(self, eff)
+        -- Next attack is guaranteed (barring flat miss chance) and will force
+        -- a critical effect.
+        if not eff.tmpid then eff.tmpid = self:addTemporaryValue("force_crit", 1) end
+    end,
+    deactivate = function(self, eff)
+        self:removeTemporaryValue("force_crit", eff.tmpid)
+        self:setEffect(self.EFF_FATIGUED, 1, {})
+    end,
+    on_merge = function(self, old_eff, new_eff)
+        return old_eff
+    end
+}
+
+newEffect{
+    name = "FATIGUED",
+    desc = "Fatigued",
+    type = "other", --- TODO: Should probably be physical, but shouldn't be covered by Blessing: Health
+    status = "detrimental",
+    long_desc = function(self, eff) return ("%s is fatigued after the rush of adrenaline. Desperation cannot be triggered again until health rises above 50%%."):format(self.name:capitalize()) end,
+    on_gain = function(self, err) return "#Target# is fatigued.", "+Fatigued" end,
+    on_lose = function(self, err) return "#Target# is no longer fatigued.", "-Fatigued" end,
+
+    decrease = 0,
+
+    activate = function(self, eff)
+        self:effectTemporaryValue(eff, "fatigued", 1)
+    end,
+    deactivate = function(self, eff)
+    end,
+
+    on_timeout = function(self, eff)
+        if self.life / self.max_life >= 0.50 then self:removeEffect(self.EFF_FATIGUED) end
+    end
 }
 
 newEffect{

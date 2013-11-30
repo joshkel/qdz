@@ -44,7 +44,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     -- Handle critical hits.
     -- This may need changing.  E.g., ToME has physicalCrit et al. in
     -- Combat.lua, so it can handle different weapons, backstab, etc.
-    if target:attr("force_crit") and damtype.can_crit ~= false and not Qi.getIntermediate(src).damage_message_passive then
+    if (src:attr("force_crit") or target:attr("take_crit")) and damtype.can_crit ~= false and not Qi.getIntermediate(src).damage_message_passive then
         -- TODO: Damage type-specific effects (caught on fire, debilitating poison, etc.)
         dam = dam * 1.5
         adverb, punct = "critically ", "!"

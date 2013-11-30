@@ -301,10 +301,12 @@ function _M:tooltip()
 
     local text = GameUI:tooltipTitle(self:getDisplayString(), self.name)
 
+    -- Basic tooltips
     text:add(true, color.caption, 'Type: ', color.text, tostring(self.type))
     text:add(true, color.caption, 'Level: ', color.text, tostring(self.level))
     text:add(true, color.caption, 'Life: ', color.health, ("%d (%d%%)"):format(self.life, self.life * 100 / self.max_life))
 
+    -- Stats
     delim = {}
     text:add(true, color.caption, 'Stats: ')
     for i, v in ipairs({self:getStr(), self:getSki(), self:getCon(), self:getAgi(), self:getMnd()}) do
@@ -313,10 +315,10 @@ function _M:tooltip()
         delim = { color.caption, ' / ' }
     end
 
+    -- Attack, damage
     delim = nil
     local attack, dam attack, dam = tstring{}, tstring{}
     for combat, combat_mult in self:iterCombat() do
-        util.inspect(combat)
         attack:add(delim, tostring(self:combatAttack(combat)))
         -- FIXME: Damage on hit?
         dam:add(delim, string.describe_range(self:combatDamageRange(combat, combat_mult)))
@@ -329,10 +331,12 @@ function _M:tooltip()
         text:merge(dam)
     end
 
+    -- Defense, armor
     text:add(true, color.caption, 'Defense: ', color.text, tostring(self:combatDefense()))
     local armor_min, armor_max = self:combatArmorRange()
     text:add(true, color.caption, 'Armor: ', color.text, string.describe_range(armor_min, armor_max))
 
+    -- Temporary effects
     for tid, act in pairs(self.sustain_talents) do
         if act then text:add(true, color.text, ' - ', color.good, self:getTalentFromId(tid).name) end
     end
@@ -356,6 +360,13 @@ end
 
 function _M:onTakeHit(value, src)
     self:checkAngered(src)
+
+    if self.desperation_threshold and not self:attr("fatigued") and self.life / self.max_life <= self.desperation_threshold then
+        -- TODO: Possible improvements / changes:
+        -- More than 1 turn, but end as soon as you attack?
+        -- Boost move speed as well?  (That would require that it time out based on base, not actor turns.)
+        self:setEffect(self.EFF_DESPERATION, 1, {})
+    end
 
     return value
 end
@@ -429,6 +440,7 @@ end
 
 function _M:heal(value, src)
     engine.interface.ActorLife.heal(self, value, src)
+
     -- Friends' healing is green, enemies is red.
     -- Use base reactionToward to ignore EFF_CALM_AURA.
     local sx, sy = game.level.map:getTileToScreen(self.x, self.y)
