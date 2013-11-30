@@ -221,6 +221,10 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
         damargs = dam
     end
 
+    if rng.percent(self.combat_crit) then
+        game:addCrit(target)
+    end
+
     -- Special case: First Blessing: Virtue (part 1)
     local prev_on_kill = self.on_kill
     local blessing_virtue_active = self:isTalentActive(self.T_BLESSING_VIRTUE) and not self:getTalentFromId(self.T_BLESSING_VIRTUE).canKill(self, target)

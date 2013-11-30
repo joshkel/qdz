@@ -78,9 +78,9 @@ function _M:getDesc()
         end
     end
     add('Attack', wielder.combat_atk)
-    add('Damage', combat.dam)
+    add('Damage', combat.dam) -- FIXME: Show scaled values
     add('Defense', wielder.combat_def)
-    add('Armor', wielder.combat_armor)
+    add('Armor', wielder.combat_armor) -- FIXME: Show scaled values
 
     -- Traits
     local traits = {}

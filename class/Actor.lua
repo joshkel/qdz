@@ -64,6 +64,7 @@ function _M:init(t, no_default)
     self.combat_atk = 0
     self.combat_def = 0
     self.combat_dam = 0
+    self.combat_crit = 5
     self.global_speed = 1
     self.movement_speed = 1
 
@@ -129,6 +130,8 @@ end
 
 function _M:act()
     if not engine.Actor.act(self) then return end
+
+    game:processCrit()
 
     self.changed = true
 

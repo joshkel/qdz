@@ -196,6 +196,8 @@ function _M:changeLevel(lev, zone)
         self.player:move(self.level.default_down.x, self.level.default_down.y, true)
     end
     self.level:addEntity(self.player)
+
+    self.level.delayed_crit = {}
 end
 
 function _M:getPlayer()
@@ -222,11 +224,42 @@ end
 --- Called every game turns
 -- Does nothing, you can override it
 function _M:onTurn()
+    self:processCrit()
+
     -- The following happens only every 10 game turns (once for every turn of 1 mod speed actors)
     if self.turn % 10 ~= 0 then return end
 
     -- Process overlay effects
     self.level.map:processEffects()
+end
+
+---Adds e to the list of entities / actors that have been knocked off balance
+-- to receive a critical hit.
+function _M:addCrit(e)
+    -- If e is already scheduled for a delayed crit, apply the crit now.
+    for i, v in ipairs(self.level.delayed_crit) do
+        if v == e then
+            e:setEffect(e.EFF_OFF_BALANCE, 1, {})
+            table.remove(self.level.delayed_crit, i)
+            return
+        end
+    end
+
+    table.insert(self.level.delayed_crit, e)
+end
+
+---Applies any off balance effects.
+-- We do this as a separate routine to delay its effects; we want to give the
+-- player a chance to choose their critical effect.
+function _M:processCrit()
+    if self.level then
+        for i, v in ipairs(self.level.delayed_crit) do
+            if not v.dead then
+                v:setEffect(v.EFF_OFF_BALANCE, 1, {})
+            end
+        end
+        self.level.delayed_crit = {}
+    end
 end
 
 function _M:display(nb_keyframe)
