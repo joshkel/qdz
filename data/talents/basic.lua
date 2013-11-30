@@ -64,6 +64,7 @@ newTalent{
 
         local combat, obj = self:getOffHandCombat(self, t)
 
+        -- FIXME: Use speed?
         self:attackTargetWith(target, self:combatMod(combat, {attack=2}), nil, nil, self:getOffHandMult(combat))
         return true
     end,
@@ -115,6 +116,7 @@ newTalent{
         if not x or not y or not target then return nil end
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
+        -- FIXME: Use speed
         local speed, hit = self:attackTargetWith(target, t.getCombat(self, t),
             DamageType.PHYSICAL_KNOCKBACK, { distance = t.getDistance(self, t) })
         if not hit then
@@ -155,12 +157,13 @@ newTalent{
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
         local combat = t.getCombat(self, t)
+        -- FIXME: Use speed
         local speed, hit = self:attackTargetWith(target, combat)
         if hit and not target.dead then
             if not target:canBe("knockback") then
                 game.logSeen(target, ("%s stands its ground!"):format(target.name:capitalize()))
             elseif self:skillCheck(self:combatAttack(combat), target:combatDefense()) then
-                -- TODO: Replace that skillCheck with some kind of combat maneuver check or saving throw
+                -- TODO: Replace that skillCheck with some kind of combat maneuver check or saving throw.  Ditto for Sweep.
                 target:setEffect(target.EFF_PRONE, 1, {})
             end
         end

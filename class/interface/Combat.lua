@@ -139,40 +139,54 @@ function _M:iterCombat()
     if self:getInven(self.INVEN_RHAND) then
         for i, o in ipairs(self:getInven(self.INVEN_RHAND)) do
             if o.combat then
-                table.insert(result, { o.combat, 1 })
+                table.insert(result, { o.combat, 1, o })
             end
         end
     end
     if self:getInven(self.INVEN_RHAND) then
         for i, o in ipairs(self:getInven(self.INVEN_LHAND)) do
             if o.combat then
-                table.insert(result, { o.combat, self:getOffHandMult(o.combat) })
+                table.insert(result, { o.combat, self:getOffHandMult(o.combat), o })
             end
         end
     end
 
     if next(result) == nil then
-        table.insert(result, { self.combat, 1 })
+        table.insert(result, { self.combat, 1, nil })
     end
 
     local i = 0
     local n = #result
     return function()
         i = i + 1
-        if i <= n then return result[i][1], result[i][2] end
+        if i <= n then return result[i][1], result[i][2], result[i][3] end
     end
 end
 
+-- Finds the first combat method for which f(combat, obj) returns true.
+function _M:findCombat(f)
+    for combat, combat_mult, obj in self:iterCombat() do
+        if f(combat, obj) then return combat end
+    end
+    return nil
+end
+
 --- Makes the death happen!
-function _M:attackTarget(target, damtype, damargs, mult)
+function _M:attackTarget(target, damtype, damargs, mult, can_crit)
     local speed
     local hit
 
     for combat, combat_mult in self:iterCombat() do
         if not target.dead then
-            local s, h = self:attackTargetWith(target, combat, damtype, damargs, (mult or 1) * combat_mult)
-            speed = math.max(speed or 0, s)
-            hit = hit or h
+            if combat.crit and self:isCrit(target) and can_crit ~= false then
+                self:forceUseTalent(combat.crit, { ignore_energy=true, ignore_cd=true, force_target=target })
+                -- HACK: Assume crits always hit.  Assume normal speed.
+                speed, hit = 1, true
+            else
+                local s, h = self:attackTargetWith(target, combat, damtype, damargs, (mult or 1) * combat_mult)
+                speed = math.max(speed or 0, s)
+                hit = hit or h
+            end
         end
     end
 
@@ -180,7 +194,8 @@ function _M:attackTarget(target, damtype, damargs, mult)
 end
 
 ---Attempts to attack target using the given combat information.
----Returns speed, hit
+-- This is a lower-level method and so does NOT apply any special critical effects.
+-- Returns speed, hit
 function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     damtype = damtype or DamageType.PHYSICAL
     mult = mult or 1
@@ -200,7 +215,7 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
             -- NOTE that we assume that concealment is always due to smoke.
             miss = "%s misses %s in the smoke."
             missile_miss = miss
-        elseif not self:attr("force_crit") and not target:attr("take_crit") and not self:skillCheck(atk, def) then
+        elseif not self:isCrit(target) and not self:skillCheck(atk, def) then
             miss = "%s misses %s."
         end
         if miss then
@@ -261,6 +276,10 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     end
 
     return 1, true
+end
+
+function _M:isCrit(target)
+    return self:attr("force_crit") or target:attr("take_crit")
 end
 
 function _M:fortSave()

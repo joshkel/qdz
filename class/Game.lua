@@ -240,6 +240,7 @@ function _M:addCrit(e)
     -- (*and* leave the delayed crit, so we don't rob the player of a crit).
     for i, v in ipairs(self.level.delayed_crit) do
         if v == e then
+            -- FIXME: This is awkward, since the check isn't done until crits are partially evaluated
             e:setEffect(e.EFF_OFF_BALANCE, 1, {})
             --table.remove(self.level.delayed_crit, i)
             return

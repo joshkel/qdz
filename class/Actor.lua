@@ -656,7 +656,10 @@ function _M:canBe(what)
     if what == "fear" and rng.percent(100 * (self:attr("fear_immune") or 0)) then return false end
 
     -- Note that knockback also covers knockdown.
-    if what == "knockback" and (rng.percent(100 * (self:attr("knockback_immune") or 0)) or self:attr("never_move")) then return false end
+    -- FIXME: Clean up never_move confusion.  A truly immobile enemy cannot be knocked down or back;
+    -- a stunned or off balance enemy can.
+    if what == "knockback" and rng.percent(100 * (self:attr("knockback_immune") or 0)) then return false end
+    --if what == "knockback" and (rng.percent(100 * (self:attr("knockback_immune") or 0)) or self:attr("never_move")) then return false end
 
     if what == "instakill" and rng.percent(100 * (self:attr("instakill_immune") or 0)) then return false end
 

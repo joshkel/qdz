@@ -18,6 +18,8 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+local Talents = require("engine.interface.ActorTalents")
+
 -- Long staff.  Known in China as "gun."
 newEntity{
     define_as = "BASE_STAFF",
@@ -27,7 +29,7 @@ newEntity{
     display = "\\", color=colors.UMBER,
     encumber = 4,
     rarity = 5,
-    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
+    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", crit = Talents.T_SWEEP },
     traits = { double = true },
     desc = [[A staff.]],
 }

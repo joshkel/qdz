@@ -44,7 +44,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     -- Handle critical hits.
     -- This may need changing.  E.g., ToME has physicalCrit et al. in
     -- Combat.lua, so it can handle different weapons, backstab, etc.
-    if (src:attr("force_crit") or target:attr("take_crit")) and damtype.can_crit ~= false and not Qi.getIntermediate(src).damage_message_passive then
+    if src:isCrit(target) and damtype.can_crit ~= false and not Qi.getIntermediate(src).is_passive then
         -- TODO: Damage type-specific effects (caught on fire, debilitating poison, etc.)
         dam = dam * 1.5
         adverb, punct = "critically ", "!"
@@ -81,7 +81,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
         local src_name, seen, used_intermediate = src:getSrcName()
 
         local message
-        if Qi.getIntermediate(src).damage_message_passive then
+        if Qi.getIntermediate(src).is_passive then
             message = ("%s takes %s%i %s damage#LAST#."):format(target:getTargetName():capitalize(), damtype.text_color, dam, damtype.name)
             game.logSeen(target, getDamageFlash(src, target), message)
         else
@@ -162,7 +162,7 @@ local function damageKnockback(src, target, dam)
     dam.tmp[target] = true
 
     local seen = { target }
-    if not Qi.getIntermediate(src).damage_message_passive then table.insert(seen, src) end
+    if not Qi.getIntermediate(src).is_passive then table.insert(seen, src) end
 
     if target:canBe("knockback") then
         local before_name, before_seen = target:getTargetName()

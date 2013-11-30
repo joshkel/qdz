@@ -55,7 +55,7 @@ newEffect{
     status = "detrimental",
     long_desc = function(self, eff) return ("%s is off balance. Proper movement is impossible, and the next attack against %s will do critical damage."):format(self.name:capitalize(), string.him(self)) end,
     on_gain = function(self, err) return "#Target# is knocked off balance!", "+Off balance" end,
-    on_lose = function(self, err) return ("#Target# regains balance."):format(string.his(self)), "-Off balance" end,
+    on_lose = function(self, err) return ("#Target# regains %s balance."):format(string.his(self)), "-Off balance" end,
     activate = function(self, eff)
         -- Next hit received is guaranteed (barring flat miss chance) and will
         -- force a critical effect.
@@ -164,7 +164,7 @@ newEffect{
     desc = "Burning from acid",
     type = "physical",
     status = "detrimental",
-    parameters = { power=1, damage_message_passive=true },
+    parameters = { power=1, is_passive=true },
     on_gain = function(self, err) return "#Target# is covered in acid!", "+Acid" end,
     on_lose = function(self, err) return "#Target# is free from the acid.", "-Acid" end,
     on_timeout = function(self, eff)
@@ -180,7 +180,7 @@ newEffect{
     desc = "Poisoned",
     type = "physical",
     status = "detrimental",
-    parameters = { power=1, damage_message_passive=true },
+    parameters = { power=1, is_passive=true },
     long_desc = function(self, eff) return ("%s is poisoned, taking %i damage per turn."):format(self.name:capitalize(), eff.power) end,
     on_gain = function(self, err) return "#Target# is poisoned!", "+Poison" end,
     on_lose = function(self, err) return "#Target# recovers from the poison.", "-Poison" end,
@@ -197,7 +197,7 @@ newEffect{
     desc = "Bleeding",
     type = "physical",
     status = "detrimental",
-    parameters = { power=1, damage_message_passive=true },
+    parameters = { power=1, is_passive=true },
     long_desc = function(self, eff) return ("%s is bleeding, taking %.1f damage per turn."):format(self.name:capitalize(), eff.power) end,
     on_gain = function(self, err) return ("#Target# bleeds from %s injuries."):format(string.his(self)), "+Bleeding" end,
     on_lose = function(self, err) return "#Target#'s bleeding stops.", "-Bleeding" end,
@@ -221,7 +221,7 @@ newEffect{
     type = "physical",
     status = "detrimental",
     on_gain = function(self, err) return "#Target# is knocked down!", "+Prone" end,
-    on_lose = function(self, err) return "#Target# stands up.", "-Prone" end,
+    on_lose = function(self, err) return "#Target# stands up.", "-Prone" end,   -- FIXME: Alt. message (or immunity???) for flyers
     on_merge = function(self, old_eff, new_eff)
         -- Merging has no effect, to prevent repeated knockdowns from stunlocking
         -- a creature.

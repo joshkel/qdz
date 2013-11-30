@@ -159,7 +159,7 @@ newTalent {
         local e = Object.new{
             name = "explosive tag",
             duration = 1,
-            damage_message_passive = true,
+            is_passive = true,  -- FIXME: How should bombs interact with crits?  As is, they ignore them, because of this attribute.
             talent = t,
 
             act = function(e)
