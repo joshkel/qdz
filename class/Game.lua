@@ -236,11 +236,12 @@ end
 ---Adds e to the list of entities / actors that have been knocked off balance
 -- to receive a critical hit.
 function _M:addCrit(e)
-    -- If e is already scheduled for a delayed crit, apply the crit now.
+    -- If e is already scheduled for a delayed crit, apply the crit now
+    -- (*and* leave the delayed crit, so we don't rob the player of a crit).
     for i, v in ipairs(self.level.delayed_crit) do
         if v == e then
             e:setEffect(e.EFF_OFF_BALANCE, 1, {})
-            table.remove(self.level.delayed_crit, i)
+            --table.remove(self.level.delayed_crit, i)
             return
         end
     end

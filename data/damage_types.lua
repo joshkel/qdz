@@ -38,6 +38,19 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
 
     local damtype = DamageType:get(type)
     local init_dam = dam
+    local adverb, punct
+    adverb, punct = "", "."
+
+    -- Handle critical hits.
+    -- This may need changing.  E.g., ToME has physicalCrit et al. in
+    -- Combat.lua, so it can handle different weapons, backstab, etc.
+    if target:attr("force_crit") and damtype.can_crit ~= false and not Qi.getIntermediate(src).damage_message_passive then
+        -- TODO: Damage type-specific effects (caught on fire, debilitating poison, etc.)
+        dam = dam * 1.5
+        adverb, punct = "critically ", "!"
+        -- TODO: Force-expire the off-balance effect at the end of this action,
+        -- instead of waiting for beginning of target's next turn?
+    end
 
     -- Apply armor.
     if type == DamageType.PHYSICAL then
@@ -72,7 +85,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
             message = ("%s takes %s%i %s damage#LAST#."):format(target:getTargetName():capitalize(), damtype.text_color, dam, damtype.name)
             game.logSeen(target, getDamageFlash(src, target), message)
         else
-            message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target:getTargetName(src, used_intermediate), damtype.text_color, dam, damtype.name)
+            message = ("%s %shits %s for %s%i %s damage#LAST#%s"):format(src_name:capitalize(), adverb, target:getTargetName(src, used_intermediate), damtype.text_color, dam, damtype.name, punct)
             game.logSeenAny({src, target}, getDamageFlash(src, target), message)
         end
     end
@@ -212,6 +225,7 @@ newDamageType{
 
 newDamageType{
     name = "poison gas", type = "POISON_GAS", text_color = "#GREEN#",
+    can_crit = false,
     projector = function(src, x, y, typ, dam)
         -- For now, treat poison gas as poison.  A later version may add
         -- special handling for non-breathing creatures.

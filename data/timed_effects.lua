@@ -57,6 +57,8 @@ newEffect{
     on_gain = function(self, err) return "#Target# is knocked off balance!", "+Off balance" end,
     on_lose = function(self, err) return ("#Target# regains balance."):format(string.his(self)), "-Off balance" end,
     activate = function(self, eff)
+        -- Next hit is guaranteed (barring flat miss chance) and will force
+        -- a critical effect.
         self:effectTemporaryValue(eff, "force_crit", 1)
     end,
     deactivate = function(self, eff)
