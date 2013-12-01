@@ -25,14 +25,8 @@ newTalent{
     requires_target = true,
     range = 1,
     message = function(self, t) return ("@Source@ sweeps %s staff."):format(string.his(self)) end,
-    action = meleeTalent(function(self, t, target)
-        local combat = self:findCombat(function(combat, o) return o.subtype == "staff" end)
-        if not combat then
-            game.logPlayer(self, "You can only use Sweep with a staff equipped.")
-            return nil
-        end
 
-        -- FIXME: Use speed
+    attack = function(self, t, target, combat, mult)
         local speed, hit = self:attackTargetWith(target, combat)
         if hit and not target.dead then
             if not target:canBe("knockback") then
@@ -42,8 +36,20 @@ newTalent{
                 target:setEffect(target.EFF_PRONE, 1, {})
             end
         end
+        return speed, hit
+    end,
+    action = meleeTalent(function(self, t, target)
+        local combat = self:findCombat(function(combat, o) return o.subtype == "staff" end)
+        if not combat then
+            game.logPlayer(self, "You can only use Sweep with a staff equipped.")
+            return nil
+        end
+
+        -- FIXME: Use speed
+        t.attack(self, t, target, combat)
         return true
     end),
+
     info = function(self, t)
         return [[Sweeps your staff, doing normal damage and attempting to knock the enemy down. (With a critical hit, knockdown is guaranteed.)]]
     end,

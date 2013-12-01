@@ -53,7 +53,7 @@ newEffect{
     desc = "Off Balance",
     type = "other",  -- ???
     status = "detrimental",
-    long_desc = function(self, eff) return ("%s is off balance. Proper movement is impossible, and the next attack against %s will do critical damage."):format(self.name:capitalize(), string.him(self)) end,
+    long_desc = function(self, eff) return ("%s is off balance - too unsteady to move, and the next attack against %s will be a critical hit."):format(self.name:capitalize(), string.him(self)) end,
     on_gain = function(self, err) return "#Target# is knocked off balance!", "+Off balance" end,
     on_lose = function(self, err) return ("#Target# regains %s balance."):format(string.his(self)), "-Off balance" end,
     activate = function(self, eff)
@@ -73,10 +73,10 @@ newEffect{
     desc = "Desperation",
     type = "other",  -- ???
     status = "beneficial",
-    long_desc = function(self, eff) return ("%s's desperation fuels %s actions. %s next attack will do critical damage."):format(self.name:capitalize(), string.his(self), string.his(self):capitalize()) end,
+    long_desc = function(self, eff) return ("%s's desperation fuels %s actions. %s next attack will be a critical hit."):format(self.name:capitalize(), string.his(self), string.his(self):capitalize()) end,
 
     -- Player:onTakeHit's "LOW HEALTH!" should suffice here.
-    on_gain = function(self, err) return "#Target# is desperate!", "+Desperation" end,
+    --on_gain = function(self, err) return "#Target# is desperate!", "+Desperation" end,
     on_lose = function(self, err) return "#Target#'s desperation subsides.", "-Desperation" end,
 
     activate = function(self, eff)

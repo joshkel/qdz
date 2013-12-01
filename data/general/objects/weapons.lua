@@ -29,7 +29,7 @@ newEntity{
     display = "\\", color=colors.UMBER,
     encumber = 4,
     rarity = 5,
-    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", crit = Talents.T_SWEEP },
+    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", crit_effect = Talents.T_SWEEP },
     traits = { double = true },
     desc = [[A staff.]],
 }
