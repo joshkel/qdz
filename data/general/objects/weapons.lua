@@ -126,7 +126,7 @@ newEntity{
     display = "|", color=colors.SLATE,
     encumber = 1,
     rarity = 5,
-    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
+    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", crit_effect = Talents.T_BLURRING_BLADES_STYLE },
     desc = [[Small, sharp, and pointy.]],
 }
 

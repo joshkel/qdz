@@ -59,6 +59,10 @@ function _M:getDesc()
     local wielder = self.wielder or {}
     local combat = self.combat or {}
 
+    -- Since tooltips are for the benefit of the player, show any talent
+    -- information from the perspective of the player.
+    local player = game.player
+
     text:add(true, color.caption, 'Type: ', color.text)
     if self.type == self.subtype then
         text:add(self.type)
@@ -92,6 +96,12 @@ function _M:getDesc()
         if v[2] then text:add(' #{italic}#(', v[2], ')#{normal}#') end
     end
 
+    -- Critical effects
+    if self.combat and self.combat.crit_effect then
+        local ab = self:getTalentFromId(self.combat.crit_effect)
+        text:add(true, color.caption, 'Critical Hit: ', color.text, ab.info(player, ab))
+    end
+
     -- Modifiers
     if self.wielder then
         local delim = true
@@ -118,6 +128,7 @@ function _M:getDesc()
         end
     end
 
+    -- Description (flavor text, etc.)
     if self.desc then text:add(true, true, color.text, self.desc) end
 
     -- Usage effects
@@ -125,9 +136,7 @@ function _M:getDesc()
         text:add(true, true, color.caption, 'Use: ', color.text, self.use_message)
     elseif self.use_talent then
         local ab = self:getTalentFromId(self.use_talent.id)
-        -- Hack: We don't necessarily have an Actor, but tooltips are for the
-        -- player's benefit, so use the player.
-        text:add(true, true, color.caption, 'Use: ', color.text, ab.info(game.player, ab))
+        text:add(true, true, color.caption, 'Use: ', color.text, ab.info(player, ab))
     end
 
     return text

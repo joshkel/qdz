@@ -30,7 +30,7 @@ newTalent{
         local speed, hit = self:attackTargetWith(target, combat)
         if hit and not target.dead then
             if not target:canBe("knockback") then
-                game.logSeen(target, ("%s stands its ground!"):format(target.name:capitalize()))
+                game.logSeen(target, ("%s stands %s ground!"):format(target.name:capitalize(), string.his(target)))
             elseif self:isCrit(target) or self:skillCheck(self:combatAttack(combat), target:combatDefense()) then
                 -- TODO: Replace that skillCheck with some kind of combat maneuver check or saving throw.  Ditto for Kick.
                 target:setEffect(target.EFF_PRONE, 1, {})
@@ -39,7 +39,7 @@ newTalent{
         return speed, hit
     end,
     action = meleeTalent(function(self, t, target)
-        local combat = self:findCombat(function(combat, o) return o.subtype == "staff" end)
+        local combat = self:findCombat(function(combat, o) return o and o.subtype == "staff" end)
         if not combat then
             game.logPlayer(self, "You can only use Sweep with a staff equipped.")
             return nil
@@ -99,7 +99,7 @@ newTalent{
         return speed, hit
     end,
     action = function(self, t)
-        local combat = self:findCombat(function(combat, o) return o.subtype == "polearm" end)
+        local combat = self:findCombat(function(combat, o) return o and o.subtype == "polearm" end)
         if not combat then
             game.logPlayer(self, "You can only use Spinning Halberd with a polearm equipped.")
             return nil
@@ -129,9 +129,12 @@ newTalent{
 
         local off_hand = self:getTalentFromId(self.T_OFF_HAND_ATTACK)
         local off_combat = self:getOffHandCombat(self, t)
-        local speed2, hit2 = self:attackTargetWith(target, self:combatMod(off_combat, {attack=off_hand.attack_bonus}), nil, nil, self:getOffHandMult(off_combat), false)
+        local speed2, hit2
+        if not target.dead then
+            speed2, hit2 = self:attackTargetWith(target, self:combatMod(off_combat, {attack=off_hand.attack_bonus}), nil, nil, self:getOffHandMult(off_combat), false)
+        end
 
-        return math.max(speed1, speed2), hit1 or hit2
+        return math.max(speed1, speed2 or 0), hit1 or hit2
     end,
 
     action = meleeTalent(function(self, t, target)
@@ -171,6 +174,50 @@ newTalent{
 
     info = function(self, t)
         return ([[A normal melee attack that also causes bleeding for %i%% weapon damage for %i turns.]]):format(t.getPower(self, t) * 100, t.getDuration(self, t))
+    end,
+}
+
+newTalent{
+    name = "Blurring Blades Style",
+    type = {"basic/weapons", 1},
+    cooldown = 6,
+    requires_target = true,
+    range = 1,
+
+    -- Hack: Suppress use message if a critical effect triggers this >1 per turn.
+    message = function(self, t) return self.__blurring_blades_turn == game.turn and "" or ("%s uses %s."):format(self.name:capitalize(), t.name) end,
+
+    attack = function(self, t, target, combat, mult)
+        self.__blurring_blades_turn = game.turn
+
+        local speed1, hit1, speed2, hit2
+        speed1, hit1 = self:attackTargetWith(target, combat, nil, nil, mult)
+        if not target.dead then
+            speed2, hit2 = self:attackTargetWith(target, combat, nil, nil, mult, false)
+        end
+        return math.max(speed1, speed2 or 0), hit1 or hit2
+    end,
+
+    action = meleeTalent(function(self, t, target)
+        local combat = self:findCombat(function(combat, o) return o and o.subtype == "dagger" end)
+        if not combat then
+            game.logPlayer(self, "You can only use Blurring Blades Style with one or more daggers equipped.")
+            return nil
+        end
+
+        -- FIXME: Use speed?
+        self:attackTarget(target)
+        for combat, combat_mult, obj in self:iterCombat() do
+            if not target.dead and obj and obj.subtype == "dagger" then
+                self:attackTargetWith(target, combat, nil, nil, combat_mult)
+            end
+        end
+
+        return true
+    end),
+
+    info = function(self, t)
+        return [[Attacks twice with your dagger or daggers.]]
     end,
 }
 

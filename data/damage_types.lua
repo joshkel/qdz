@@ -70,7 +70,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
         dam = math.round((dam - sub) * mult)
         dam = math.max(dam, 0)
         if dam ~= init_dam then
-            print(("%s resistance reduced %i damage to %i"):format(damtype.name, init_dam, dam))
+            print(("%s resistance reduced %f damage to %i"):format(damtype.name, init_dam, dam))
         end
     end
 

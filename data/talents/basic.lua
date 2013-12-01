@@ -162,7 +162,7 @@ newTalent{
         local speed, hit = self:attackTargetWith(target, combat)
         if hit and not target.dead then
             if not target:canBe("knockback") then
-                game.logSeen(target, ("%s stands its ground!"):format(target.name:capitalize()))
+                game.logSeen(target, ("%s stands %s ground!"):format(target.name:capitalize(), string.his(target)))
             elseif self:isCrit(target) or self:skillCheck(self:combatAttack(combat), target:combatDefense()) then
                 -- TODO: Replace that skillCheck with some kind of combat maneuver check or saving throw.  Ditto for Sweep.
                 target:setEffect(target.EFF_PRONE, 1, {})
