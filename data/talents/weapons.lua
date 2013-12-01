@@ -27,7 +27,7 @@ newTalent{
     message = function(self, t) return ("@Source@ sweeps %s staff."):format(string.his(self)) end,
 
     attack = function(self, t, target, combat, mult)
-        local speed, hit = self:attackTargetWith(target, combat)
+        local speed, hit = self:attackTargetWith(target, combat, nil, nil, mult)
         if hit and not target.dead then
             if not target:canBe("knockback") then
                 game.logSeen(target, ("%s stands %s ground!"):format(target.name:capitalize(), string.his(target)))

@@ -184,20 +184,11 @@ function _M:attackTarget(target, damtype, damargs, mult, can_crit)
         if not target.dead then
             local s, h
 
+            combat_mult = (mult or 1) * combat_mult
             if combat.crit_effect and self:isCrit(target) and can_crit ~= false then
-                -- Special case: Replace a normal attack with a critical effect
-                local t = self:getTalentFromId(combat.crit_effect)
-                if t.attack then
-                    self:showTalentMessage(t)
-                    s, h = t.attack(self, t, target, combat, (mult or 1) * combat_mult)
-                else
-	                self:forceUseTalent(combat.crit, { ignore_energy=true, ignore_cd=true, force_target=target })
-                    -- HACK: Assume crits always hit.  Assume normal speed.
-                    s, h = 1, true
-                end
+                s, h = self:critAttackTargetWith(target, combat, combat_mult)
             else
-                -- Normal attack
-                s, h = self:attackTargetWith(target, combat, damtype, damargs, (mult or 1) * combat_mult)
+                s, h = self:attackTargetWith(target, combat, damtype, damargs, combat_mult)
             end
 
             speed = math.max(speed or 0, s)
@@ -206,6 +197,19 @@ function _M:attackTarget(target, damtype, damargs, mult, can_crit)
     end
 
     return speed, hit
+end
+
+---Alternative to attackTargetWith that replaces a normal attack with a critical effect.
+function _M:critAttackTargetWith(target, combat, mult)
+    local t = self:getTalentFromId(combat.crit_effect)
+    if t.attack then
+        self:showTalentMessage(t)
+        return t.attack(self, t, target, combat, mult)
+    else
+        self:forceUseTalent(combat.crit, { ignore_energy=true, ignore_cd=true, force_target=target })
+        -- HACK: Assume crits always hit.  Assume normal speed.
+        return 1, true
+    end
 end
 
 ---Attempts to attack target using the given combat information.

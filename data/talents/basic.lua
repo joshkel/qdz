@@ -64,9 +64,15 @@ newTalent{
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
         local combat, obj = self:getOffHandCombat(self, t)
+        local mult = self:getOffHandMult(combat)
+        combat = self:combatMod(combat, {attack=t.attack_bonus})
 
-        -- FIXME: Use speed?
-        self:attackTargetWith(target, self:combatMod(combat, {attack=t.attack_bonus}), nil, nil, self:getOffHandMult(combat))
+        -- FIXME: Use speed?  Duplication with Combat.attackTarget?
+        if combat.crit_effect and self:isCrit(target) then
+            self:critAttackTargetWith(target, combat, mult)
+        else
+            self:attackTargetWith(target, combat, nil, nil, mult)
+        end
         return true
     end,
 

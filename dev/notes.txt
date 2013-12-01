@@ -1,6 +1,6 @@
 To do:
 Damage scaling, again / still - critical effects are semi-useless if no monster can survive two hits...
-Critical effects for Off-Hand Attack, Bash, Kick, pickaxe
+Critical effects for Off-Hand Attack, Bash, Kick, pickaxe, unarmed
 Scale life regen (and qi regen?) as you gain levels
 
 "nothing to pickup"
@@ -10,7 +10,6 @@ Split act base from act
 Why do I get an "offline" error message, even after uploading?
 Basic game mechanics: shields
 Flasher needs to not go off the edge of the screen
-Critical hits
 Left vs right hand
 Quick switch weapons???
 Not sure that dig speed is working right - monsters may get a free move afterwards, and displayed number of turns is always 1 greater than intended digspeed
@@ -20,7 +19,7 @@ Monsters should probably not have flawless no-light vision of player
 
 To do later:
 Timed effects' processing means that, e.g., a fire ant can recover its balance after bleeding kills it.
-Turn orders, effects, etc.  Does Off-Hand Attack let you dodge a crit?  Should it?  Should a bat dodge a crit just because it's +25% speed?
+Turn orders, effects, etc.  Does Off-Hand Attack let you dodge a crit?  Should it?  Should a bat dodge a crit just because it's +25% speed?  Ideally, effects should timeout based on their creators, not their subjects.
 
 To do a while later:
 Logo
