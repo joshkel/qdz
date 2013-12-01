@@ -54,7 +54,7 @@ newEffect{
     type = "other",  -- ???
     status = "detrimental",
     long_desc = function(self, eff) return ("%s is off balance - too unsteady to move, and the next attack against %s will be a critical hit."):format(self.name:capitalize(), string.him(self)) end,
-    on_gain = function(self, err) return "#Target# is knocked off balance!", "+Off balance" end,
+    on_gain = function(self, err) return "#Target# was knocked off balance!", "+Off balance" end,
     on_lose = function(self, err) return ("#Target# regains %s balance."):format(string.his(self)), "-Off balance" end,
     activate = function(self, eff)
         -- Next hit received is guaranteed (barring flat miss chance) and will

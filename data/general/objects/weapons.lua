@@ -54,7 +54,7 @@ newEntity{
     display = "/", color=colors.SLATE,
     encumber = 12,
     rarity = 5,
-    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
+    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", crit_effect = Talents.T_SPINNING_HALBERD },
     desc = [[A polearm.]],
 }
 

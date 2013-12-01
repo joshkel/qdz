@@ -121,7 +121,7 @@ newTalent{
             DamageType.PHYSICAL_KNOCKBACK, { distance = t.getDistance(self, t) })
         if not hit then
             if target:canBe("knockback") then
-                -- TODO: Keep this "driven back a square" mechanic?
+                -- TODO: Keep this "driven back a square" mechanic?  See also Spinning Halberd.
                 -- It implies that an immobile target can't dodge a tackle...
                 target:knockback(self.x, self.y, 1)
                 target:setMoveAnim(x, y, 8, 4)

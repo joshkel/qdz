@@ -172,26 +172,36 @@ function _M:findCombat(f)
 end
 
 --- Makes the death happen!
+--
+-- If can_crit is false, then combat objects' critical effects cannot occur,
+-- but other aspects of a critical hit (guaranteed hit and bonus damage / bonus
+-- damage effects) can occur.
 function _M:attackTarget(target, damtype, damargs, mult, can_crit)
     local speed
     local hit
 
     for combat, combat_mult in self:iterCombat() do
         if not target.dead then
+            local s, h
+
             if combat.crit_effect and self:isCrit(target) and can_crit ~= false then
+                -- Special case: Replace a normal attack with a critical effect
                 local t = self:getTalentFromId(combat.crit_effect)
                 if t.attack then
-                    speed, hit = t.attack(self, t, target, combat, (mult or 1) * combat_mult)
+                    self:showTalentMessage(t)
+                    s, h = t.attack(self, t, target, combat, (mult or 1) * combat_mult)
                 else
 	                self:forceUseTalent(combat.crit, { ignore_energy=true, ignore_cd=true, force_target=target })
                     -- HACK: Assume crits always hit.  Assume normal speed.
-                    speed, hit = 1, true
+                    s, h = 1, true
                 end
             else
-                local s, h = self:attackTargetWith(target, combat, damtype, damargs, (mult or 1) * combat_mult)
-                speed = math.max(speed or 0, s)
-                hit = hit or h
+                -- Normal attack
+                s, h = self:attackTargetWith(target, combat, damtype, damargs, (mult or 1) * combat_mult)
             end
+
+            speed = math.max(speed or 0, s)
+            hit = hit or h
         end
     end
 
@@ -199,9 +209,12 @@ function _M:attackTarget(target, damtype, damargs, mult, can_crit)
 end
 
 ---Attempts to attack target using the given combat information.
--- This is a lower-level method and so does NOT apply any special critical effects.
+--
+-- This is a lower-level method and so does NOT apply any combat objects'
+-- critical effects.
+--
 -- Returns speed, hit
-function _M:attackTargetWith(target, combat, damtype, damargs, mult)
+function _M:attackTargetWith(target, combat, damtype, damargs, mult, can_crit)
     damtype = damtype or DamageType.PHYSICAL
     mult = mult or 1
 
@@ -220,7 +233,7 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
             -- NOTE that we assume that concealment is always due to smoke.
             miss = "%s misses %s in the smoke."
             missile_miss = miss
-        elseif not self:isCrit(target) and not self:skillCheck(atk, def) then
+        elseif (can_crit == false or not self:isCrit(target)) and not self:skillCheck(atk, def) then
             miss = "%s misses %s."
         end
         if miss then
@@ -250,7 +263,7 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     local blessing_virtue_active = self:isTalentActive(self.T_BLESSING_VIRTUE) and not self:getTalentFromId(self.T_BLESSING_VIRTUE).canKill(self, target)
     if blessing_virtue_active then self.on_kill = self:getTalentFromId(self.T_BLESSING_VIRTUE).on_kill end
 
-    DamageType:get(damtype).projector(self, target.x, target.y, damtype, damargs)
+    DamageType:get(damtype).projector(self, target.x, target.y, damtype, damargs, {can_crit = can_crit})
 
     -- Melee project
     if is_melee then
