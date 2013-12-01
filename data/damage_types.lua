@@ -33,11 +33,25 @@ end
 -- * silent - if true, suppresses any log message
 -- * msg - a function(src, target, dam, dam_type) that displays any appropriate log message
 setDefaultProjector(function(src, x, y, type, dam, extra)
+    extra = extra or {}
     local target = game.level.map(x, y, Map.ACTOR)
     if not target then return nil end
 
     local damtype = DamageType:get(type)
     local init_dam = dam
+    local adverb, punct
+    adverb, punct = "", "."
+
+    -- Handle critical hits.
+    -- This may need changing.  E.g., ToME has physicalCrit et al. in
+    -- Combat.lua, so it can handle different weapons, backstab, etc.
+    if src:isCrit(target) and damtype.can_crit ~= false and extra.can_crit ~= false and not Qi.getIntermediate(src).is_passive then
+        -- TODO: Damage type-specific effects (caught on fire, debilitating poison, etc.)
+        dam = dam * 1.5
+        adverb, punct = "critically ", "!"
+        -- TODO: Force-expire the off-balance effect at the end of this action,
+        -- instead of waiting for beginning of target's next turn?
+    end
 
     -- Apply armor.
     if type == DamageType.PHYSICAL then
@@ -56,23 +70,24 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
         dam = math.round((dam - sub) * mult)
         dam = math.max(dam, 0)
         if dam ~= init_dam then
-            print(("%s resistance reduced %i damage to %i"):format(damtype.name, init_dam, dam))
+            print(("%s resistance reduced %f damage to %i"):format(damtype.name, init_dam, dam))
         end
     end
 
     -- Display log message.
     extra = extra or {}
     if extra.msg then
+        -- TODO: Include critical damage here?  How best to communicate?
         extra.msg(src, target, dam, damtype)
     elseif not extra.silent then
         local src_name, seen, used_intermediate = src:getSrcName()
 
         local message
-        if Qi.getIntermediate(src).damage_message_passive then
+        if Qi.getIntermediate(src).is_passive then
             message = ("%s takes %s%i %s damage#LAST#."):format(target:getTargetName():capitalize(), damtype.text_color, dam, damtype.name)
             game.logSeen(target, getDamageFlash(src, target), message)
         else
-            message = ("%s hits %s for %s%i %s damage#LAST#."):format(src_name:capitalize(), target:getTargetName(src, used_intermediate), damtype.text_color, dam, damtype.name)
+            message = ("%s %shits %s for %s%i %s damage#LAST#%s"):format(src_name:capitalize(), adverb, target:getTargetName(src, used_intermediate), damtype.text_color, dam, damtype.name, punct)
             game.logSeenAny({src, target}, getDamageFlash(src, target), message)
         end
     end
@@ -149,7 +164,7 @@ local function damageKnockback(src, target, dam)
     dam.tmp[target] = true
 
     local seen = { target }
-    if not Qi.getIntermediate(src).damage_message_passive then table.insert(seen, src) end
+    if not Qi.getIntermediate(src).is_passive then table.insert(seen, src) end
 
     if target:canBe("knockback") then
         local before_name, before_seen = target:getTargetName()
@@ -212,15 +227,16 @@ newDamageType{
 
 newDamageType{
     name = "poison gas", type = "POISON_GAS", text_color = "#GREEN#",
-    projector = function(src, x, y, typ, dam)
+    can_crit = false,
+    projector = function(src, x, y, typ, dam, extra)
         -- For now, treat poison gas as poison.  A later version may add
         -- special handling for non-breathing creatures.
-        return DamageType:get(DamageType.POISON).projector(src, x, y, DamageType.POISON, dam, {
+        return DamageType:get(DamageType.POISON).projector(src, x, y, DamageType.POISON, dam, table.merge(extra or {}, {
             msg=function(src, target, dam, dam_type)
                 game.logSeen(target, getDamageFlash(src, target),
                     ("%s takes %s%i %s damage#LAST# from the gas."):format(target:getTargetName():capitalize(), dam_type.text_color, dam, dam_type.name))
             end
-        })
+        }))
     end
 }
 
@@ -230,8 +246,8 @@ newDamageType{
 
 newDamageType{
     name = "negative qi", type = "NEGATIVE_QI", text_color = "#LIGHT_DARK#",
-    projector = function(src, x, y, typ, dam)
-        local realdam = DamageType.defaultProjector(src, x, y, typ, dam)
+    projector = function(src, x, y, typ, dam, extra)
+        local realdam = DamageType.defaultProjector(src, x, y, typ, dam, extra)
         local target = game.level.map(x, y, Map.ACTOR)
         if target then
             target:incQi(-math.min(realdam / math.pow(GameRules.dam_level_mod, src.level - 1), target:getQi()))
@@ -261,14 +277,14 @@ newDamageType{
 -- dam should be a table containing elements dam and distance et al.; see damageKnockback.
 newDamageType{
     name = "physical knockback", type = "PHYSICAL_KNOCKBACK",
-    projector = function(src, x, y, typ, dam)
+    projector = function(src, x, y, typ, dam, extra)
         local target = game.level.map(x, y, Map.ACTOR)
         if not target then return end
 
         local msg = damageKnockback(src, target, dam)
         if not msg then return end
  
-        return DamageType:get(DamageType.PHYSICAL).projector(src, target.x, target.y, DamageType.PHYSICAL, dam.dam, {msg=msg} )
+        return DamageType:get(DamageType.PHYSICAL).projector(src, target.x, target.y, DamageType.PHYSICAL, dam.dam, table.merge(extra or {}, {msg=msg}) )
     end,
 }
 
@@ -278,8 +294,8 @@ newDamageType{
 -- - duration - optional duration of the poison effect
 newDamageType{
     name = "physical poison", type = "PHYSICAL_POISON",
-    projector = function(src, x, y, typ, dam)
-        local result = DamageType:get(DamageType.PHYSICAL).projector(src, x, y, DamageType.PHYSICAL, dam.dam)
+    projector = function(src, x, y, typ, dam, extra)
+        local result = DamageType:get(DamageType.PHYSICAL).projector(src, x, y, DamageType.PHYSICAL, dam.dam, extra)
         if result ~= 0 then
             local target = game.level.map(x, y, Map.ACTOR)
             if not target or target.dead then return result end   -- I don't think checking target.dead is necessary
@@ -300,8 +316,8 @@ newDamageType{
 -- - duration - optional duration of the bleeding effect
 newDamageType{
     name = "physical bleeding", type = "PHYSICAL_BLEEDING",
-    projector = function(src, x, y, typ, dam)
-        local result = DamageType:get(DamageType.PHYSICAL).projector(src, x, y, DamageType.PHYSICAL, dam.dam)
+    projector = function(src, x, y, typ, dam, extra)
+        local result = DamageType:get(DamageType.PHYSICAL).projector(src, x, y, DamageType.PHYSICAL, dam.dam, extra)
         if result ~= 0 then
             local target = game.level.map(x, y, Map.ACTOR)
             if not target or target.dead then return result end   -- I don't think checking target.dead is necessary
@@ -321,7 +337,7 @@ newDamageType{
 -- dam should be a table containing elements dam and distance et al.; see damageKnockback.
 newDamageType{
     name = "explosion", type = "EXPLOSION",
-    projector = function(src, x, y, typ, dam)
+    projector = function(src, x, y, typ, dam, extra)
         -- TODO: Damage items / environment
         local target = game.level.map(x, y, Map.ACTOR)
         if not target then return end
@@ -329,9 +345,9 @@ newDamageType{
         local msg = damageKnockback(src, target, dam)
         if not msg then return end
  
-        local result = DamageType:get(DamageType.FIRE_REF_HALF).projector(src, target.x, target.y, DamageType.FIRE_REF_HALF, dam.dam / 2)
+        local result = DamageType:get(DamageType.FIRE_REF_HALF).projector(src, target.x, target.y, DamageType.FIRE_REF_HALF, dam.dam / 2, extra)
         if not target.dead then
-            result = result + refHalf(src, target.x, target.y, DamageType.PHYSICAL, dam.dam / 2, {msg=msg})
+            result = result + refHalf(src, target.x, target.y, DamageType.PHYSICAL, dam.dam / 2, table.merge(extra or {}, {msg=msg}))
         end
         return result
     end,

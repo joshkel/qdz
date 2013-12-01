@@ -34,6 +34,7 @@ newBirthDescriptor{
         max_qi = 10,
 
         move_others = true,
+        desperation_threshold = 0.30,
 
         resolvers.equip {
             {type="weapon", subtype="staff", name="staff", ego_change=-1000},

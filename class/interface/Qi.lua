@@ -36,7 +36,11 @@ require "engine.class"
 --   doing anything that might kill a creature.
 --
 -- Tracking intermediate effects is also useful for displaying more detailed
--- messages in damage_types.lua.  See that file for more details.
+-- messages in damage_types.lua.  See that file for more details.  Some extra
+-- notes are relevant here:
+-- * is_passive means that an effect is some sort of passive or damage-over-
+--   time effect.  It cannot cause critical hits, and its damage is logged as
+--   "Guy takes damage" instead of "Someone hits guy for damage."
 module(..., package.seeall, class.make)
 
 --- Definitions of qi technique slots.  See also talents.lua, load.lua.

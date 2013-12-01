@@ -22,6 +22,7 @@ newTalentType{ type="basic/qi", name = "qi", description = "Basic manipulation o
 newTalentType{ type="basic/combat", name = "combat", description = "Basic combat techniques" }
 newTalentType{ type="basic/proficiencies", name = "proficiencies", description = "Proficiencies are various (mostly) mundane skills. Most beings learn these through instinct, training, or practice. As a qi daozei, you can instead be granted them through the techniques you absorb from your foes."}
 
+newTalentType{ type="basic/weapons", name = "weapons", description = "Various weapon techniques." }
 newTalentType{ type="basic/items", name = "items", description = "Various item effects." }
 
 newTalentType{ type="qi techniques/right hand", name = "right hand", description = "Qi techniques bound to your right hand. These are typically direct, physical, hand-to-hand attacks.", slot="rhand" }
@@ -41,8 +42,20 @@ function flavorText(rules_text, flavor_text)
     end
 end
 
+function meleeTalent(f)
+    return function(self, t)
+        local tg = {type="hit", range=self:getTalentRange(t)}
+        local x, y, target = self:getTarget(tg)
+        if not x or not y or not target then return nil end
+        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
+
+        return f(self, t, target, x, y)
+    end
+end
+
 load("/data/talents/basic.lua")
 load("/data/talents/proficiencies.lua")
+load("/data/talents/weapons.lua")
 load("/data/talents/items.lua")
 
 load("/data/talents/bat.lua")

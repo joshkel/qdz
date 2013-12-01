@@ -211,7 +211,7 @@ newTalent {
         if not x or not y or not target then return nil end
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
-        local speed, hit = self:attackTarget(target, DamageType.FIRE, nil, t.hit_mult)
+        local speed, hit = self:attackTarget(target, DamageType.FIRE, nil, t.hit_mult, false)
         if not hit then
             DamageType:get(DamageType.FIRE).projector(self, x, y, DamageType.FIRE,
                 self:combatDamage(self:getInvenCombat(self.INVEN_RHAND, true) or self.combat) * t.miss_mult,

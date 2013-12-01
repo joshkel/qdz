@@ -139,38 +139,58 @@ function _M:iterCombat()
     if self:getInven(self.INVEN_RHAND) then
         for i, o in ipairs(self:getInven(self.INVEN_RHAND)) do
             if o.combat then
-                table.insert(result, { o.combat, 1 })
+                table.insert(result, { o.combat, 1, o })
             end
         end
     end
     if self:getInven(self.INVEN_RHAND) then
         for i, o in ipairs(self:getInven(self.INVEN_LHAND)) do
             if o.combat then
-                table.insert(result, { o.combat, self:getOffHandMult(o.combat) })
+                table.insert(result, { o.combat, self:getOffHandMult(o.combat), o })
             end
         end
     end
 
     if next(result) == nil then
-        table.insert(result, { self.combat, 1 })
+        table.insert(result, { self.combat, 1, nil })
     end
 
     local i = 0
     local n = #result
     return function()
         i = i + 1
-        if i <= n then return result[i][1], result[i][2] end
+        if i <= n then return result[i][1], result[i][2], result[i][3] end
     end
 end
 
+-- Finds the first combat method for which f(combat, obj) returns true.
+function _M:findCombat(f)
+    for combat, combat_mult, obj in self:iterCombat() do
+        if f(combat, obj) then return combat end
+    end
+    return nil
+end
+
 --- Makes the death happen!
-function _M:attackTarget(target, damtype, damargs, mult)
+--
+-- If can_crit is false, then combat objects' critical effects cannot occur,
+-- but other aspects of a critical hit (guaranteed hit and bonus damage / bonus
+-- damage effects) can occur.
+function _M:attackTarget(target, damtype, damargs, mult, can_crit)
     local speed
     local hit
 
     for combat, combat_mult in self:iterCombat() do
         if not target.dead then
-            local s, h = self:attackTargetWith(target, combat, damtype, damargs, (mult or 1) * combat_mult)
+            local s, h
+
+            combat_mult = (mult or 1) * combat_mult
+            if combat.crit_effect and self:isCrit(target) and can_crit ~= false then
+                s, h = self:critAttackTargetWith(target, combat, combat_mult)
+            else
+                s, h = self:attackTargetWith(target, combat, damtype, damargs, combat_mult)
+            end
+
             speed = math.max(speed or 0, s)
             hit = hit or h
         end
@@ -179,9 +199,26 @@ function _M:attackTarget(target, damtype, damargs, mult)
     return speed, hit
 end
 
+---Alternative to attackTargetWith that replaces a normal attack with a critical effect.
+function _M:critAttackTargetWith(target, combat, mult)
+    local t = self:getTalentFromId(combat.crit_effect)
+    if t.attack then
+        self:showTalentMessage(t)
+        return t.attack(self, t, target, combat, mult)
+    else
+        self:forceUseTalent(combat.crit, { ignore_energy=true, ignore_cd=true, force_target=target })
+        -- HACK: Assume crits always hit.  Assume normal speed.
+        return 1, true
+    end
+end
+
 ---Attempts to attack target using the given combat information.
----Returns speed, hit
-function _M:attackTargetWith(target, combat, damtype, damargs, mult)
+--
+-- This is a lower-level method and so does NOT apply any combat objects'
+-- critical effects.
+--
+-- Returns speed, hit
+function _M:attackTargetWith(target, combat, damtype, damargs, mult, can_crit)
     damtype = damtype or DamageType.PHYSICAL
     mult = mult or 1
 
@@ -200,7 +237,7 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
             -- NOTE that we assume that concealment is always due to smoke.
             miss = "%s misses %s in the smoke."
             missile_miss = miss
-        elseif not self:skillCheck(atk, def) then
+        elseif (can_crit == false or not self:isCrit(target)) and not self:skillCheck(atk, def) then
             miss = "%s misses %s."
         end
         if miss then
@@ -221,12 +258,16 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
         damargs = dam
     end
 
+    if rng.percent(self.combat_crit) then
+        game:addCrit(target)
+    end
+
     -- Special case: First Blessing: Virtue (part 1)
     local prev_on_kill = self.on_kill
     local blessing_virtue_active = self:isTalentActive(self.T_BLESSING_VIRTUE) and not self:getTalentFromId(self.T_BLESSING_VIRTUE).canKill(self, target)
     if blessing_virtue_active then self.on_kill = self:getTalentFromId(self.T_BLESSING_VIRTUE).on_kill end
 
-    DamageType:get(damtype).projector(self, target.x, target.y, damtype, damargs)
+    DamageType:get(damtype).projector(self, target.x, target.y, damtype, damargs, {can_crit = can_crit})
 
     -- Melee project
     if is_melee then
@@ -257,6 +298,10 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult)
     end
 
     return 1, true
+end
+
+function _M:isCrit(target)
+    return self:attr("force_crit") or target:attr("take_crit")
 end
 
 function _M:fortSave()

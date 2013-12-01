@@ -64,6 +64,7 @@ function _M:init(t, no_default)
     self.combat_atk = 0
     self.combat_def = 0
     self.combat_dam = 0
+    self.combat_crit = 5
     self.global_speed = 1
     self.movement_speed = 1
 
@@ -129,6 +130,8 @@ end
 
 function _M:act()
     if not engine.Actor.act(self) then return end
+
+    game:processCrit()
 
     self.changed = true
 
@@ -298,10 +301,12 @@ function _M:tooltip()
 
     local text = GameUI:tooltipTitle(self:getDisplayString(), self.name)
 
+    -- Basic tooltips
     text:add(true, color.caption, 'Type: ', color.text, tostring(self.type))
     text:add(true, color.caption, 'Level: ', color.text, tostring(self.level))
     text:add(true, color.caption, 'Life: ', color.health, ("%d (%d%%)"):format(self.life, self.life * 100 / self.max_life))
 
+    -- Stats
     delim = {}
     text:add(true, color.caption, 'Stats: ')
     for i, v in ipairs({self:getStr(), self:getSki(), self:getCon(), self:getAgi(), self:getMnd()}) do
@@ -310,10 +315,10 @@ function _M:tooltip()
         delim = { color.caption, ' / ' }
     end
 
+    -- Attack, damage
     delim = nil
     local attack, dam attack, dam = tstring{}, tstring{}
     for combat, combat_mult in self:iterCombat() do
-        util.inspect(combat)
         attack:add(delim, tostring(self:combatAttack(combat)))
         -- FIXME: Damage on hit?
         dam:add(delim, string.describe_range(self:combatDamageRange(combat, combat_mult)))
@@ -326,10 +331,12 @@ function _M:tooltip()
         text:merge(dam)
     end
 
+    -- Defense, armor
     text:add(true, color.caption, 'Defense: ', color.text, tostring(self:combatDefense()))
     local armor_min, armor_max = self:combatArmorRange()
     text:add(true, color.caption, 'Armor: ', color.text, string.describe_range(armor_min, armor_max))
 
+    -- Temporary effects
     for tid, act in pairs(self.sustain_talents) do
         if act then text:add(true, color.text, ' - ', color.good, self:getTalentFromId(tid).name) end
     end
@@ -353,6 +360,13 @@ end
 
 function _M:onTakeHit(value, src)
     self:checkAngered(src)
+
+    if self.desperation_threshold and not self:attr("fatigued") and self.life / self.max_life <= self.desperation_threshold then
+        -- TODO: Possible improvements / changes:
+        -- More than 1 turn, but end as soon as you attack?
+        -- Boost move speed as well?  (That would require that it time out based on base, not actor turns.)
+        self:setEffect(self.EFF_DESPERATION, 1, {})
+    end
 
     return value
 end
@@ -426,6 +440,7 @@ end
 
 function _M:heal(value, src)
     engine.interface.ActorLife.heal(self, value, src)
+
     -- Friends' healing is green, enemies is red.
     -- Use base reactionToward to ignore EFF_CALM_AURA.
     local sx, sy = game.level.map:getTileToScreen(self.x, self.y)
@@ -486,7 +501,7 @@ function _M:showTalentMessage(ab)
     -- Allow for silent talents
     if ab.message ~= nil then
         if ab.message then
-            game.logSeen(self, "%s", self:useTalentMessage(ab))
+            game.logSeen(self, "%s", self:useTalentMessage(ab) or "")
         end
     elseif ab.mode == "sustained" and not self:isTalentActive(ab.id) then
         game.logSeen(self, "%s activates %s.", self.name:capitalize(), ab.name)
@@ -641,7 +656,10 @@ function _M:canBe(what)
     if what == "fear" and rng.percent(100 * (self:attr("fear_immune") or 0)) then return false end
 
     -- Note that knockback also covers knockdown.
-    if what == "knockback" and (rng.percent(100 * (self:attr("knockback_immune") or 0)) or self:attr("never_move")) then return false end
+    -- FIXME: Clean up never_move confusion.  A truly immobile enemy cannot be knocked down or back;
+    -- a stunned or off balance enemy can.
+    if what == "knockback" and rng.percent(100 * (self:attr("knockback_immune") or 0)) then return false end
+    --if what == "knockback" and (rng.percent(100 * (self:attr("knockback_immune") or 0)) or self:attr("never_move")) then return false end
 
     if what == "instakill" and rng.percent(100 * (self:attr("instakill_immune") or 0)) then return false end
 

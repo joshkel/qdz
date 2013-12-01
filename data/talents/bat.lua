@@ -218,7 +218,7 @@ newTalent {
         if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
 
         local _, hit = self:attackTarget(target, DamageType.PHYSICAL_BLEEDING,
-            { power=t.getPower(self, t), duration=t.getDuration(self, t) })
+            { power=t.getPower(self, t), duration=t.getDuration(self, t) }, nil, false)
 
         -- Trigger on_bleed now, to make the talent more attractive.
         if hit then

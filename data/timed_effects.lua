@@ -24,11 +24,12 @@ local Particles = require "engine.Particles"
 local Qi = require "mod.class.interface.Qi"
 local GameRules = require "mod.class.GameRules"
 
-local function merge_pow_dur(old_eff, new_eff)
+local function merge_pow_dur(self, old_eff, new_eff)
     local old_dam = old_eff.power * old_eff.dur
     local new_dam = new_eff.power * new_eff.dur
     old_eff.dur = math.ceil((old_eff.dur + new_eff.dur) / 2)
     old_eff.power = (old_dam + new_dam) / old_eff.dur
+    return old_eff
 end
 
 newEffect{
@@ -48,6 +49,73 @@ newEffect{
 }
 
 newEffect{
+    name = "OFF_BALANCE",
+    desc = "Off Balance",
+    type = "other",  -- ???
+    status = "detrimental",
+    long_desc = function(self, eff) return ("%s is off balance - too unsteady to move, and the next attack against %s will be a critical hit."):format(self.name:capitalize(), string.him(self)) end,
+    on_gain = function(self, err) return "#Target# was knocked off balance!", "+Off balance" end,
+    on_lose = function(self, err) return ("#Target# regains %s balance."):format(string.his(self)), "-Off balance" end,
+    activate = function(self, eff)
+        -- Next hit received is guaranteed (barring flat miss chance) and will
+        -- force a critical effect.
+        self:effectTemporaryValue(eff, "take_crit", 1)
+
+        -- No fair just stepping out of the way of an incoming crit.  :-)
+        self:effectTemporaryValue(eff, "never_move", 1)
+    end,
+    deactivate = function(self, eff)
+    end,
+}
+
+newEffect{
+    name = "DESPERATION",
+    desc = "Desperation",
+    type = "other",  -- ???
+    status = "beneficial",
+    long_desc = function(self, eff) return ("%s's desperation fuels %s actions. %s next attack will be a critical hit."):format(self.name:capitalize(), string.his(self), string.his(self):capitalize()) end,
+
+    -- Player:onTakeHit's "LOW HEALTH!" should suffice here.
+    --on_gain = function(self, err) return "#Target# is desperate!", "+Desperation" end,
+    on_lose = function(self, err) return "#Target#'s desperation subsides.", "-Desperation" end,
+
+    activate = function(self, eff)
+        -- Next attack is guaranteed (barring flat miss chance) and will force
+        -- a critical effect.
+        if not eff.tmpid then eff.tmpid = self:addTemporaryValue("force_crit", 1) end
+    end,
+    deactivate = function(self, eff)
+        self:removeTemporaryValue("force_crit", eff.tmpid)
+        self:setEffect(self.EFF_FATIGUED, 1, {})
+    end,
+    on_merge = function(self, old_eff, new_eff)
+        return old_eff
+    end
+}
+
+newEffect{
+    name = "FATIGUED",
+    desc = "Fatigued",
+    type = "other", --- TODO: Should probably be physical, but shouldn't be covered by Blessing: Health
+    status = "detrimental",
+    long_desc = function(self, eff) return ("%s is fatigued after the rush of adrenaline. Desperation cannot be triggered again until health rises above 50%%."):format(self.name:capitalize()) end,
+    on_gain = function(self, err) return "#Target# is fatigued.", "+Fatigued" end,
+    on_lose = function(self, err) return "#Target# is no longer fatigued.", "-Fatigued" end,
+
+    decrease = 0,
+
+    activate = function(self, eff)
+        self:effectTemporaryValue(eff, "fatigued", 1)
+    end,
+    deactivate = function(self, eff)
+    end,
+
+    on_timeout = function(self, eff)
+        if self.life / self.max_life >= 0.50 then self:removeEffect(self.EFF_FATIGUED) end
+    end
+}
+
+newEffect{
     name = "SMOKE_CONCEALMENT",
     desc = "Smoke Concealment",
     type = "other",
@@ -59,12 +127,10 @@ newEffect{
     on_gain = function(self, err) return "#Target# is concealed by the smoke.", "+Concealment" end,
     on_lose = function(self, err) return "#Target# is no longer concealed by the smoke.", "-Concealment" end,
     activate = function(self, eff)
-        eff.tmpid1 = self:addTemporaryValue("concealment", 1)
-        eff.tmpid2 = self:addTemporaryValue("concealment_attack", 1)
+        self:effectTemporaryValue(eff, "concealment", 1)
+        self:effectTemporaryValue(eff, "concealment_attack", 1)
     end,
     deactivate = function(self, eff)
-        self:removeTemporaryValue("concealment", eff.tmpid1)
-        self:removeTemporaryValue("concealment_attack", eff.tmpid2)
     end,
 
     on_timeout = function(self, eff)
@@ -78,7 +144,7 @@ newEffect{
     type = "physical",
     status = "beneficial",
 
-    -- This effect is based on D20's implementation of temporary hit points
+    -- This effect is based on D20's definition of temporary hit points
     long_desc = function(self, eff) return ("%s's body is hardened by the flow of qi, adding %i temporary life. When this effect ends, %s life will drop back to %i (unless already reduced below that)."):format(self.name:capitalize(), eff.power, string.his(self), eff.start_life) end,
     on_gain = function(self, err) return "#Target#'s body hardens.", "+Body Hardening" end,
     on_lose = function(self, err) return "#Target#'s body returns to normal .", "-Body Hardening" end,
@@ -98,7 +164,7 @@ newEffect{
     desc = "Burning from acid",
     type = "physical",
     status = "detrimental",
-    parameters = { power=1, damage_message_passive=true },
+    parameters = { power=1, is_passive=true },
     on_gain = function(self, err) return "#Target# is covered in acid!", "+Acid" end,
     on_lose = function(self, err) return "#Target# is free from the acid.", "-Acid" end,
     on_timeout = function(self, eff)
@@ -106,10 +172,7 @@ newEffect{
         DamageType:get(DamageType.ACID).projector(eff.src or self, self.x, self.y, DamageType.ACID, eff.power)
         Qi.postCall(eff, eff.src, saved)
     end,
-    on_merge = function(self, old_eff, new_eff)
-        merge_pow_dur(old_eff, new_eff)
-        return old_eff
-    end,
+    on_merge = merge_pow_dur,
 }
 
 newEffect{
@@ -117,7 +180,7 @@ newEffect{
     desc = "Poisoned",
     type = "physical",
     status = "detrimental",
-    parameters = { power=1, damage_message_passive=true },
+    parameters = { power=1, is_passive=true },
     long_desc = function(self, eff) return ("%s is poisoned, taking %i damage per turn."):format(self.name:capitalize(), eff.power) end,
     on_gain = function(self, err) return "#Target# is poisoned!", "+Poison" end,
     on_lose = function(self, err) return "#Target# recovers from the poison.", "-Poison" end,
@@ -126,10 +189,7 @@ newEffect{
         DamageType:get(DamageType.POISON).projector(eff.src or self, self.x, self.y, DamageType.POISON, eff.power)
         Qi.postCall(eff, saved)
     end,
-    on_merge = function(self, old_eff, new_eff)
-        merge_pow_dur(old_eff, new_eff)
-        return old_eff
-    end,
+    on_merge = merge_pow_dur,
 }
 
 newEffect{
@@ -137,7 +197,7 @@ newEffect{
     desc = "Bleeding",
     type = "physical",
     status = "detrimental",
-    parameters = { power=1, damage_message_passive=true },
+    parameters = { power=1, is_passive=true },
     long_desc = function(self, eff) return ("%s is bleeding, taking %.1f damage per turn."):format(self.name:capitalize(), eff.power) end,
     on_gain = function(self, err) return ("#Target# bleeds from %s injuries."):format(string.his(self)), "+Bleeding" end,
     on_lose = function(self, err) return "#Target#'s bleeding stops.", "-Bleeding" end,
@@ -152,10 +212,7 @@ newEffect{
 
         Qi.postCall(eff, saved)
     end,
-    on_merge = function(self, old_eff, new_eff)
-        merge_pow_dur(old_eff, new_eff)
-        return old_eff
-    end,
+    on_merge = merge_pow_dur,
 }
 
 newEffect{
@@ -164,7 +221,7 @@ newEffect{
     type = "physical",
     status = "detrimental",
     on_gain = function(self, err) return "#Target# is knocked down!", "+Prone" end,
-    on_lose = function(self, err) return "#Target# stands up.", "-Prone" end,
+    on_lose = function(self, err) return "#Target# stands up.", "-Prone" end,   -- FIXME: Alt. message (or immunity???) for flyers
     on_merge = function(self, old_eff, new_eff)
         -- Merging has no effect, to prevent repeated knockdowns from stunlocking
         -- a creature.
@@ -172,12 +229,10 @@ newEffect{
     end,
     activate = function(self, eff)
         -- TODO: Should prone or unconscious status grant knockback resistance?
-        eff.tmpid = self:addTemporaryValue("prone", 1)
-        eff.defid = self:addTemporaryValue("combat_def", -4)
+        self:effectTemporaryValue(eff, "prone", 1)
+        self:effectTemporaryValue(eff, "combat_def", -4)
     end,
     deactivate = function(self, eff)
-        self:removeTemporaryValue("prone", eff.tmpid)
-        self:removeTemporaryValue("combat_def", eff.defid)
     end,
 }
 
@@ -197,12 +252,10 @@ newEffect{
     long_desc = function(self, eff) return ("%s is unconscious until %s wounds start to heal."):format(self.name:capitalize(), string.his(self)) end,
 
     activate = function(self, eff)
-        eff.tmpid = self:addTemporaryValue("unconscious", 1)
-        eff.defid = self:addTemporaryValue("combat_def_zero", 1)
+        self:effectTemporaryValue(eff, "unconscious", 1)
+        self:effectTemporaryValue(eff, "combat_def_zero", 1)
     end,
     deactivate = function(self, eff)
-        self:removeTemporaryValue("unconscious", eff.tmpid)
-        self:removeTemporaryValue("combat_def_zero", eff.defid)
     end,
 
     on_timeout = function(self, eff)
@@ -292,10 +345,9 @@ newEffect{
     on_lose = function(self, eff) return ("#Target# cringes a bit when %s enters the light."):format(string.he(self)), "-Dweller in Darkness" end,
 
     activate = function(self, eff)
-        eff.lifeid = self:addTemporaryValue("life_regen", eff.life_regen)
+        self:effectTemporaryValue(eff, "life_regen", eff.life_regen)
     end,
     deactivate = function(self, eff)
-        self:removeTemporaryValue("life_regen", eff.lifeid)
     end,    
 }
 
@@ -311,10 +363,9 @@ newEffect{
 
     activate = function(self, eff)
         eff.power = eff.power or 50
-        eff.confid = self:addTemporaryValue("confused", eff.power)
+        self:effectTemporaryValue(eff, "confused", eff.power)
     end,
     deactivate = function(self, eff)
-        self:removeTemporaryValue("confused", eff.confid)
     end,
 }
 
@@ -329,10 +380,9 @@ newEffect{
     on_lose = function(self, eff) return ("#Target#'s %s is no longer fire-hardened."):format(self.body_parts.skin), "-Heat Carapace" end,
 
     activate = function(self, eff)
-        eff.armorid = self:addTemporaryValue("combat_natural_armor", eff.power)
+        self:effectTemporaryValue(eff, "combat_natural_armor", eff.power)
     end,
     deactivate = function(self, eff)
-        self:removeTemporaryValue("combat_natural_armor", eff.armorid)
     end,    
 }
 

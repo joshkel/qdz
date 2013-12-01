@@ -1,11 +1,21 @@
-Version Next
-============
+Version 0.4.0, "Desperation Attack" (2013-11-30)
+================================================
+
+Major changes:
 
 * Boot screen
+* Critical hits.
+    * Each attack has a 5% chance of knocking an opponent off balance.
+    * The next attack against an off balance opponent is an automatic critical hit. In addition to dealing bonus damage, critical hits allow you to execute weapon-specific maneuvers, such as a staff sweep or spinning halberd attack.
+* Desperation attacks. When reduced to 30% health or lower, your next attack is an automatic critical hit.
 * Changes to Off-Hand Attack make learning left hand techniques easier:
     * Staffs are now classified as double weapons and so can be used with Off-Hand Attack.  (Currently, double weapons _only_ help with Off-Hand Attack; rumors exist of fighting styles that take full advantage of double weapons, but such techniques cannot be found this early in the dungeon...)
     * Off-Hand Attack's tooltip now gives more information, to help you know whether or not it can deal the finishing blow.
-* Various other tweaks to techniques:
+
+Less visible changes:
+
+* Rebalance health, damage, and armor.
+* Various tweaks to techniques:
     * Blood Sip heals on hit as well as on each turn.
     * You can now step past unconscious opponents who you've chosen not to kill.
     * Pickpocketing an unconscious creature always succeeds.
@@ -16,8 +26,6 @@ Version Next
 * Various tweaks to creatures.  In particular:
     * Fire ants are rarer.
     * Cave bats know Blood Sip.
-* Bugfixes
-    * Creatures who've regain consciousness were still considered to have 0 defense.
 
 Version 0.3.0, "A Warrior's Tools" (2013-11-18)
 ===============================================
