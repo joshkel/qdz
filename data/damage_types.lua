@@ -33,6 +33,7 @@ end
 -- * silent - if true, suppresses any log message
 -- * msg - a function(src, target, dam, dam_type) that displays any appropriate log message
 setDefaultProjector(function(src, x, y, type, dam, extra)
+    extra = extra or {}
     local target = game.level.map(x, y, Map.ACTOR)
     if not target then return nil end
 
@@ -44,7 +45,7 @@ setDefaultProjector(function(src, x, y, type, dam, extra)
     -- Handle critical hits.
     -- This may need changing.  E.g., ToME has physicalCrit et al. in
     -- Combat.lua, so it can handle different weapons, backstab, etc.
-    if src:isCrit(target) and damtype.can_crit ~= false and not Qi.getIntermediate(src).is_passive then
+    if src:isCrit(target) and damtype.can_crit ~= false and extra.can_crit ~= false and not Qi.getIntermediate(src).is_passive then
         -- TODO: Damage type-specific effects (caught on fire, debilitating poison, etc.)
         dam = dam * 1.5
         adverb, punct = "critically ", "!"

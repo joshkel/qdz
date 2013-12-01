@@ -55,6 +55,7 @@ newTalent{
     requires_target = true,
     range = 1,
     speed = 2.0,
+    attack_bonus = 2,
 
     action = function(self, t)
         local tg = {type="hit", range=self:getTalentRange(t)}
@@ -65,7 +66,7 @@ newTalent{
         local combat, obj = self:getOffHandCombat(self, t)
 
         -- FIXME: Use speed?
-        self:attackTargetWith(target, self:combatMod(combat, {attack=2}), nil, nil, self:getOffHandMult(combat))
+        self:attackTargetWith(target, self:combatMod(combat, {attack=t.attack_bonus}), nil, nil, self:getOffHandMult(combat))
         return true
     end,
 
@@ -162,7 +163,7 @@ newTalent{
         if hit and not target.dead then
             if not target:canBe("knockback") then
                 game.logSeen(target, ("%s stands its ground!"):format(target.name:capitalize()))
-            elseif self:skillCheck(self:combatAttack(combat), target:combatDefense()) then
+            elseif self:isCrit(target) or self:skillCheck(self:combatAttack(combat), target:combatDefense()) then
                 -- TODO: Replace that skillCheck with some kind of combat maneuver check or saving throw.  Ditto for Sweep.
                 target:setEffect(target.EFF_PRONE, 1, {})
             end

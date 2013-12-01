@@ -115,3 +115,62 @@ newTalent{
     end,
 }
 
+newTalent{
+    name = "Dual Strike",
+    type = {"basic/weapons", 1},
+    cooldown = 6,
+    requires_target = true,
+    range = 1,
+    --message = false,
+
+    attack = function(self, t, target, combat, mult)
+        mult = mult or 1
+        local speed1, hit1 = self:attackTargetWith(target, combat, nil, nil, mult)
+
+        local off_hand = self:getTalentFromId(self.T_OFF_HAND_ATTACK)
+        local off_combat = self:getOffHandCombat(self, t)
+        local speed2, hit2 = self:attackTargetWith(target, self:combatMod(off_combat, {attack=off_hand.attack_bonus}), nil, nil, self:getOffHandMult(off_combat), false)
+
+        return math.max(speed1, speed2), hit1 or hit2
+    end,
+
+    action = meleeTalent(function(self, t, target)
+        -- FIXME: Use speed
+        self:attackTarget(target)
+        self:forceUseTalent(self.T_OFF_HAND_ATTACK, { ignore_energy=true, ignore_cd=true, force_target=target, silent=true })
+        return true
+    end),
+
+    info = function(self, t)
+        -- TODO: Once one-handed style is implemented, one-hand style should be a second attack with main weapon
+        return [[A normal melee attack plus a free Off-Hand Attack.]]
+    end,
+}
+
+newTalent{
+    name = "Bloodletting Strike",
+    type = {"basic/weapons", 1},
+    cooldown = 6,
+    requires_target = true,
+    range = 1,
+
+    getPower = function(self, t) return 0.20 end,
+    getDuration = function(self, t) return 3 end,
+
+    attack = function(self, t, target, combat, mult)
+        return self:attackTargetWith(target, combat, DamageType.PHYSICAL_BLEEDING,
+            { power=t.getPower(self, t), duration=t.getDuration(self, t) }, mult)
+    end,
+
+    action = meleeTalent(function(self, t, target)
+        -- FIXME: Use speed
+        self:attackTarget(target, DamageType.PHYSICAL_BLEEDING,
+            { power=t.getPower(self, t), duration=t.getDuration(self, t) }, nil, false)
+        return true
+    end),
+
+    info = function(self, t)
+        return ([[A normal melee attack that also causes bleeding for %i%% weapon damage for %i turns.]]):format(t.getPower(self, t) * 100, t.getDuration(self, t))
+    end,
+}
+

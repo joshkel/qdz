@@ -78,7 +78,7 @@ newEntity{
     display = "|", color=colors.SLATE,
     encumber = 4,
     rarity = 5,
-    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
+    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", crit_effect = Talents.T_DUAL_STRIKE },
     desc = [[A saber.]],
 }
 
@@ -101,7 +101,7 @@ newEntity{
     display = "|", color=colors.SLATE,
     encumber = 4,
     rarity = 5,
-    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", },
+    combat = { sound = "actions/melee", sound_miss = "actions/melee_miss", crit_effect = Talents.T_BLOODLETTING_STRIKE },
     desc = [[A sword.]],
 }
 

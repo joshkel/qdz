@@ -1,6 +1,10 @@
 To do:
-"nothing to pickup"
+Damage scaling, again / still - critical effects are semi-useless if no monster can survive two hits...
+Critical effects for Off-Hand Attack, Bash, Kick, pickaxe
 Scale life regen (and qi regen?) as you gain levels
+
+"nothing to pickup"
+column width for, e.g., pickup dialog
 Cancel button / option for birther
 Split act base from act
 Why do I get an "offline" error message, even after uploading?
@@ -14,6 +18,10 @@ What to do about fractional HP?  It stinks to think you do enough damage to kill
 Monsters should probably not have flawless no-light vision of player
 "Something misses grid bug in the smoke."  What was attacking???  Verify that smoke bombs + LoS work as expected.
 
+To do later:
+Timed effects' processing means that, e.g., a fire ant can recover its balance after bleeding kills it.
+Turn orders, effects, etc.  Does Off-Hand Attack let you dodge a crit?  Should it?  Should a bat dodge a crit just because it's +25% speed?
+
 To do a while later:
 Logo
 More artwork for startup screens?
@@ -23,4 +31,3 @@ Game mechanics
 Melee accuracy - based on str, ski, or a combination?  (E.g., average for most weapons, str for power weapons, ski for finesse weapons)  Kick should be based on agi; what about bash?
 Bash's knockback distance may be excessive
 Starting a scholar is too tough
-Fire ants are probably too tough - Burning Hand seems better than Poisoned Dart, damage on hit is probably high
