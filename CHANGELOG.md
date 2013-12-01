@@ -1,12 +1,12 @@
-Version 0.4.0, "Desperation Attack" (2013-11-30)
-================================================
+Version 0.4.0, "Desperate Stratagems" (2013-11-30)
+==================================================
 
 Major changes:
 
 * Boot screen
 * Critical hits.
     * Each attack has a 5% chance of knocking an opponent off balance.
-    * The next attack against an off balance opponent is an automatic critical hit. In addition to dealing bonus damage, critical hits allow you to execute weapon-specific maneuvers, such as a staff sweep or spinning halberd attack.
+    * The next attack against an off-balance opponent is an automatic critical hit. In addition to dealing 50% bonus damage, critical hits allow you to execute weapon-specific maneuvers, such as a staff sweep or spinning halberd attack.
 * Desperation attacks. When reduced to 30% health or lower, your next attack is an automatic critical hit.
 * Changes to Off-Hand Attack make learning left hand techniques easier:
     * Staffs are now classified as double weapons and so can be used with Off-Hand Attack.  (Currently, double weapons _only_ help with Off-Hand Attack; rumors exist of fighting styles that take full advantage of double weapons, but such techniques cannot be found this early in the dungeon...)

@@ -75,7 +75,7 @@ def write_team(mod_base_dir, team_filename):
     Note: Changes the current directory.
     """
 
-    error_to_catch = getattr(__builtins__,'FileNotFoundError', IOError)
+    error_to_catch = getattr(__builtins__, 'FileNotFoundError', OSError)
 
     try:
         os.remove(team_filename)

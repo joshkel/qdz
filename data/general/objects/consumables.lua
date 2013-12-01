@@ -36,6 +36,7 @@ newEntity{
     name = "minor healing potion",
     level_range = {1, 10},
     cost = 5,
+    -- TODO: Scale healing based on level (and Con???)
     use_simple = {
         name = "minor healing",
         use = function(self, who)

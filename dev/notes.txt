@@ -1,7 +1,8 @@
 To do:
-Damage scaling, again / still - critical effects are semi-useless if no monster can survive two hits...
+Damage scaling, again / still - critical effects are semi-useless if no monster can survive two hits, and a peasant with a polearm can be death incarnate...
 Critical effects for Off-Hand Attack, Bash, Kick, pickaxe, unarmed
 Scale life regen (and qi regen?) as you gain levels
+Allow projectiles to fly farther than targeted?
 
 "nothing to pickup"
 column width for, e.g., pickup dialog
