@@ -26,7 +26,7 @@ module(..., package.seeall, class.inherit(
 
 function _M:mouseTooltip(text, _, _, _, w, h, x, y)
     self:mouseZones({
-        { x=x, y=y+(self.hoffset or 0), w=w, h=h, fct=function(button) game.tooltip_x, game.tooltip_y = 1, 1; game.tooltip:displayAtMap(nil, nil, game.w, game.h, text) end},
+        { x=x, y=y+(self.hoffset or 0), w=w, h=h, fct=function(button) game:tooltipDisplayAtMap(game.w, game.h, text) end},
     }, true)
 end
 

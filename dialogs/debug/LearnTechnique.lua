@@ -51,7 +51,7 @@ end
 
 function _M:selectItem(item, sel)
     local t = Talents:getTalentFromId(item.id)
-    game.tooltip:displayAtMap(nil, nil, game.w, game.h, game.player:getTalentFullDescription(t), true)
+    game:tooltipDisplayAtMap(game.w, game.h, game.player:getTalentFullDescription(t), nil, true)
 end
 
 function _M:generateListContents()

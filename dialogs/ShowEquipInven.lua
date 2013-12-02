@@ -41,9 +41,9 @@ function _M:init(title, actor, filter, action, on_select)
     -- Add tooltips
     self.on_select = function(item)
         if item.last_display_x and item.object then
-            game.tooltip:displayAtMap(nil, nil, game.w, game.h, item.object:tooltip(), true)
+            game:tooltipDisplayAtMap(game.w, game.h, item.object:tooltip(), nil, true)
         elseif item.last_display_x and item.data and item.data.desc then
-            game.tooltip:displayAtMap(nil, nil, game.w, game.h, item.data.desc, true)
+            game:tooltipDisplayAtMap(game.w, game.h, item.data.desc, nil, true)
         end
     end
 

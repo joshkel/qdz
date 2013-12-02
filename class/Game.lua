@@ -299,7 +299,7 @@ function _M:display(nb_keyframe)
     engine.GameTurnBased.display(self, nb_keyframe)
 
     -- Tooltip is displayed over all else, even dialogs
-    self:targetDisplayTooltip(self.w, self.h)
+    self:targetDisplayTooltip(self.w, self.h, false, nb_keyframe)
 end
 
 --- Setup the keybinds
@@ -583,7 +583,15 @@ function _M:saveGame()
     self.log("Saving game...")
 end
 
-function _M:onUnregisterDialog()
-    if game.tooltip then game.tooltip:erase() end
+function _M:onRegisterDialog(d)
+    -- Hide any active tooltips, using ToME's approach.
+    -- Alternate approach:
+    --if game.tooltip then game.tooltip:erase() end
+    self.tooltip_x, self.tooltip_y = nil, nil
+end
+
+function _M:onUnregisterDialog(d)
+    -- Hide any active tooltips.
+    self.tooltip_x, self.tooltip_y = nil, nil
 end
 
