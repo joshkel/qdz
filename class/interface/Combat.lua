@@ -163,7 +163,14 @@ function _M:iterCombat()
     end
 end
 
--- Finds the first combat method for which f(combat, obj) returns true.
+---Convenience method to get the first / default / primary combat method.
+function _M:firstCombat()
+    for combat in self:iterCombat() do
+        return combat
+    end
+end
+
+---Finds the first combat method for which f(combat, obj) returns true.
 function _M:findCombat(f)
     for combat, combat_mult, obj in self:iterCombat() do
         if f(combat, obj) then return combat end
@@ -271,16 +278,13 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult, can_crit)
 
     -- Melee project
     if is_melee then
-        if not target.dead and combat and combat.melee_project then for typ, dam in pairs(combat.melee_project) do
-            if dam > 0 then
-                DamageType:get(typ).projector(self, target.x, target.y, typ, dam)
+        for _, melee_project in ipairs{ combat.melee_project or {}, self.melee_project } do
+            for typ, dam in pairs(melee_project) do
+                if not target.dead and dam > 0 then
+                    DamageType:get(typ).projector(self, target.x, target.y, typ, dam)
+                end
             end
-        end end
-        if not target.dead then for typ, dam in pairs(self.melee_project) do
-            if dam > 0 then
-                DamageType:get(typ).projector(self, target.x, target.y, typ, dam)
-            end
-        end end
+        end
     end
 
     -- Special case: First Blessing: Virtue (part 2)

@@ -19,6 +19,7 @@ Monsters should probably not have flawless no-light vision of player
 "Something misses grid bug in the smoke."  What was attacking???  Verify that smoke bombs + LoS work as expected.
 
 To do later:
+More detailed descriptions of hit chances and chances of success?  Currently, it's buried in tooltips in a character sheet.
 Timed effects' processing means that, e.g., a fire ant can recover its balance after bleeding kills it.
 Turn orders, effects, etc.  Does Off-Hand Attack let you dodge a crit?  Should it?  Should a bat dodge a crit just because it's +25% speed?  Ideally, effects should timeout based on their creators, not their subjects.
 

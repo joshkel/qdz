@@ -274,7 +274,6 @@ function _M:drawDialog(kind)
         local COL_WIDTH = 0.2
         w = 0
 
-        -- FIXME: Damage on hit?
         h = 0
         if player:getInven(player.INVEN_RHAND) then
             for i, o in ipairs(player:getInven(player.INVEN_RHAND)) do
@@ -303,11 +302,20 @@ function _M:drawDialog(kind)
         h = 0
         w = 0
         s:drawColorStringBlended(self.font, "#GOLD##{bold}#Physical Defenses#{normal}##LAST#", w, h, 255, 255, 255, true) h = h + self.font_h
+
+        --  * Defense value, including optional hit chance
+        local defense_tooltip = GameUI:tooltipTitle('Defense'):merge{true, "Ability to dodge or block attacks. Against an evenly matched opponent, +1 Defense decreases the chance to hit by roughly 5%."}
+        if player ~= game.player then
+            local attack, defense = game.player:combatAttack(game.player:firstCombat()), player:combatDefense()
+            defense_tooltip:add(true, true, ("Your Attack of %i gives you a %i%% chance to hit this Defense."):format(attack, game.player:skillChanceOfSuccess(attack, defense)))
+        end
+        --  * Armor value, including reduction range
         self:drawString(s, "Defense : #00ff00# "..player:combatDefense(), w, h,
-            GameUI:tooltipTitle('Defense'):merge{true, "Ability to dodge or block attacks. Against an evenly matched opponent, +1 Defense decreases the chance to hit by roughly 5%."}) h = h + self.font_h
+            defense_tooltip) h = h + self.font_h
+
         local armor_min, armor_max = player:combatArmorRange()
         self:drawString(s, "Armor   : #00ff00# "..string.describe_range(armor_min, armor_max, true), w, h,
-            GameUI:tooltipTitle('Armor'):merge{true, ("An armor of %i reduces damage from every physical attack by %s (after including natural armor bonuses, techniques, etc.)."):format(armor_max, string.describe_range(armor_min, armor_max))}) h = h + self.font_h
+            GameUI:tooltipTitle('Armor'):merge{true, ("This armor reduces damage from every physical attack by %s (after including natural armor bonuses, techniques, etc.)."):format(armor_max, string.describe_range(armor_min, armor_max))}) h = h + self.font_h
 
         -- Second column: Saving throws
         h = 0
@@ -379,12 +387,26 @@ function _M:drawCombatBlock(s, w, h, desc1, desc2, combat, mult)
 
     self:drawString(s, "#GOLD##{bold}#"..desc1.."#{normal}##LAST#", w, h) h = h + self.font_h
     self:drawString(s, "#GOLD#"..desc2.."#LAST#", w, h) h = h + self.font_h
+
+    local attack_tooltip = GameUI:tooltipTitle('Attack'):merge{true, "Accuracy in combat. Against an evenly matched opponent, +1 Attack increases the chance to hit by roughly 5%."}
+    if player ~= game.player then
+        local attack, defense = player:combatAttack(combat), game.player:combatDefense()
+        attack_tooltip:add(true, true, ("This Attack gives a %i%% chance to hit your Defense of %i."):format(player:skillChanceOfSuccess(attack, defense), defense))
+    end
     self:drawString(s, "Attack : #00ff00# "..player:combatAttack(combat), w, h,
-        GameUI:tooltipTitle('Attack'):merge{true, "Accuracy in combat. Against an evenly matched opponent, +1 Attack increases the chance to hit by roughly 5%."}) h = h + self.font_h
+        attack_tooltip) h = h + self.font_h
 
     local dam_min, dam_max = player:combatDamageRange(combat, mult)
     self:drawString(s, "Damage : #00ff00# "..string.describe_range(dam_min, dam_max, true), w, h,
         GameUI:tooltipTitle('Damage'):merge{true, "The damage range of this attack, before the opponent's armor is applied."}) h = h + self.font_h
+    for _, melee_project in ipairs{ combat.melee_project or {}, player.melee_project } do
+        for typ, dam in pairs(melee_project) do
+            if dam > 0 then
+                local damtype = DamageType:get(typ)
+                self:drawString(s, ("       #00ff00# + %s%i %s"):format(damtype.text_color, dam, damtype.name), w, h) h = h + self.font_h
+            end
+        end
+    end
 
     h = h + self.font_h
     return h

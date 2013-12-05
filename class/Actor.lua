@@ -36,6 +36,7 @@ local Talents = require "engine.interface.ActorTalents"
 local Qi = require "mod.class.interface.Qi"
 local GameUI = require "mod.class.ui.GameUI"
 local GameRules = require "mod.class.GameRules"
+local DamageType = require "engine.DamageType"
 
 module(..., package.seeall, class.inherit(
     engine.Actor,
@@ -320,8 +321,29 @@ function _M:tooltip()
     local attack, dam attack, dam = tstring{}, tstring{}
     for combat, combat_mult in self:iterCombat() do
         attack:add(delim, tostring(self:combatAttack(combat)))
-        -- FIXME: Damage on hit?
         dam:add(delim, string.describe_range(self:combatDamageRange(combat, combat_mult)))
+
+        -- Add damage-on-hit
+        local project_dam = tstring{}
+        local total_project_dam = 0
+        local project_count = 0
+        for _, melee_project in ipairs{ combat.melee_project or {}, self.melee_project } do
+            for typ, dam in pairs(melee_project) do
+                if dam > 0 then
+                    local damtype = DamageType:get(typ)
+                    project_dam:add('+', damtype.text_color, tostring(dam), color.text)
+                    total_project_dam = total_project_dam + dam
+                    project_count = project_count + 1
+                end
+            end
+        end
+        if project_count > 3 then
+            -- A rainbow-colored number would be tacky, so we'll just say it's GOLD damage!  Ooh!
+            dam:add('+#GOLD#', tostring(total_project_dam), color.text)
+        else
+            dam:merge(project_dam)
+        end
+
         delim = ' / '
     end
     if delim then

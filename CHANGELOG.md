@@ -1,3 +1,10 @@
+Version Next
+============
+
+* UI improvements
+    * The character sheet and tooltips include non-physical melee damage (such as a fire ant's bonus fire damage).
+    * When inspecting an enemy, the tooltips for the enemy's Attack and Defense values show the hit chances for you versus the enemy.
+
 Version 0.4.0, "Desperate Stratagems" (2013-11-30)
 ==================================================
 
