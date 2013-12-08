@@ -54,6 +54,8 @@ module(..., package.seeall, class.inherit(
 
 _M.projectile_class = "mod.class.Projectile"
 
+_M.temporary_values_conf.flying = "last"
+
 _M.BASE_UNARMED_DAMAGE = 2
 
 function _M:init(t, no_default)
@@ -244,6 +246,18 @@ function _M:setEffect(eff_id, dur, p, silent)
     end
 end
 
+--- Override ActorTemporaryEffects:removeAllEffects to add silent, force
+function _M:removeAllEffects(silent, force)
+    local todel = {}
+    for eff, p in pairs(self.tmp) do
+        todel[#todel+1] = eff
+    end
+
+    while #todel > 0 do
+        self:removeEffect(table.remove(todel), silent, force)
+    end
+end
+
 function _M:resolveSource()
     if self.summoner_gain_exp and self.summoner then
         return self.summoner:resolveSource()
@@ -419,6 +433,10 @@ function _M:die(src)
             Qi.clearFocus(src)
         end
     end
+
+    -- Remove any remaining temporary effects so that they don't get processed
+    -- after death.
+    self:removeAllEffects(true, true)
 
     return true
 end

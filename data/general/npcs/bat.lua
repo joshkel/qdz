@@ -33,6 +33,7 @@ newEntity{
     random_move = 50,
 
     ai = "dumb_talented_simple", ai_state = { talent_in=3, },
+    flying = 1,
     combat_armor = 0
 }
 

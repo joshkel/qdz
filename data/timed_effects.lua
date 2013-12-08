@@ -38,8 +38,8 @@ newEffect{
     type = "physical",  -- ???
     status = "beneficial",
     long_desc = function(self, eff) return ("%s's qi aura is focused, causing %s attacks to always hit and do maximum damage."):format(self.name:capitalize(), string.his(self)) end,
-    on_gain = function(self, err) return ("#Target# focuses %s qi."):format(string.his(self)), "+Qi focus" end,
-    on_lose = function(self, err) return "#Target#'s qi focus dissipates.", "-Qi focus" end,
+    on_gain = function(self, eff) return ("#Target# focuses %s qi."):format(string.his(self)), "+Qi focus" end,
+    on_lose = function(self, eff) return "#Target#'s qi focus dissipates.", "-Qi focus" end,
     activate = function(self, eff)
         eff.particle = self:addParticles(Particles.new("focused_qi", 1))
     end,
@@ -54,8 +54,8 @@ newEffect{
     type = "other",  -- ???
     status = "detrimental",
     long_desc = function(self, eff) return ("%s is off balance - too unsteady to move, and the next attack against %s will be a critical hit."):format(self.name:capitalize(), string.him(self)) end,
-    on_gain = function(self, err) return "#Target# was knocked off balance!", "+Off balance" end,
-    on_lose = function(self, err) return ("#Target# regains %s balance."):format(string.his(self)), "-Off balance" end,
+    on_gain = function(self, eff) return "#Target# was knocked off balance!", "+Off balance" end,
+    on_lose = function(self, eff) return ("#Target# regains %s balance."):format(string.his(self)), "-Off balance" end,
     activate = function(self, eff)
         -- Next hit received is guaranteed (barring flat miss chance) and will
         -- force a critical effect.
@@ -63,8 +63,6 @@ newEffect{
 
         -- No fair just stepping out of the way of an incoming crit.  :-)
         self:effectTemporaryValue(eff, "never_move", 1)
-    end,
-    deactivate = function(self, eff)
     end,
 }
 
@@ -75,9 +73,9 @@ newEffect{
     status = "beneficial",
     long_desc = function(self, eff) return ("%s's desperation fuels %s actions. %s next attack will be a critical hit."):format(self.name:capitalize(), string.his(self), string.his(self):capitalize()) end,
 
-    -- Player:onTakeHit's "LOW HEALTH!" should suffice here.
-    --on_gain = function(self, err) return "#Target# is desperate!", "+Desperation" end,
-    on_lose = function(self, err) return "#Target#'s desperation subsides.", "-Desperation" end,
+    -- Player:onTakeHit's "LOW HEALTH!" should suffice here.  TODO: Does it?
+    --on_gain = function(self, eff) return "#Target# is desperate!", "+Desperation" end,
+    on_lose = function(self, eff) return "#Target#'s desperation subsides.", "-Desperation" end,
 
     activate = function(self, eff)
         -- Next attack is guaranteed (barring flat miss chance) and will force
@@ -99,15 +97,13 @@ newEffect{
     type = "other", --- TODO: Should probably be physical, but shouldn't be covered by Blessing: Health
     status = "detrimental",
     long_desc = function(self, eff) return ("%s is fatigued after the rush of adrenaline. Desperation cannot be triggered again until health rises above 50%%."):format(self.name:capitalize()) end,
-    on_gain = function(self, err) return "#Target# is fatigued.", "+Fatigued" end,
-    on_lose = function(self, err) return "#Target# is no longer fatigued.", "-Fatigued" end,
+    on_gain = function(self, eff) return "#Target# is fatigued.", "+Fatigued" end,
+    on_lose = function(self, eff) return "#Target# is no longer fatigued.", "-Fatigued" end,
 
     decrease = 0,
 
     activate = function(self, eff)
         self:effectTemporaryValue(eff, "fatigued", 1)
-    end,
-    deactivate = function(self, eff)
     end,
 
     on_timeout = function(self, eff)
@@ -124,13 +120,11 @@ newEffect{
     decrease = 0,
 
     long_desc = function(self, eff) return ("Smoke obscures %s's vision and others' view of %s, granting a %i%% miss chance on attacks by or against %s."):format(self.name:capitalize(), string.him(self), GameRules.concealment_miss, string.him(self)) end,
-    on_gain = function(self, err) return "#Target# is concealed by the smoke.", "+Concealment" end,
-    on_lose = function(self, err) return "#Target# is no longer concealed by the smoke.", "-Concealment" end,
+    on_gain = function(self, eff) return "#Target# is concealed by the smoke.", "+Concealment" end,
+    on_lose = function(self, eff) return "#Target# is no longer concealed by the smoke.", "-Concealment" end,
     activate = function(self, eff)
         self:effectTemporaryValue(eff, "concealment", 1)
         self:effectTemporaryValue(eff, "concealment_attack", 1)
-    end,
-    deactivate = function(self, eff)
     end,
 
     on_timeout = function(self, eff)
@@ -146,8 +140,8 @@ newEffect{
 
     -- This effect is based on D20's definition of temporary hit points
     long_desc = function(self, eff) return ("%s's body is hardened by the flow of qi, adding %i temporary life. When this effect ends, %s life will drop back to %i (unless already reduced below that)."):format(self.name:capitalize(), eff.power, string.his(self), eff.start_life) end,
-    on_gain = function(self, err) return "#Target#'s body hardens.", "+Body Hardening" end,
-    on_lose = function(self, err) return "#Target#'s body returns to normal .", "-Body Hardening" end,
+    on_gain = function(self, eff) return "#Target#'s body hardens.", "+Body Hardening" end,
+    on_lose = function(self, eff) return "#Target#'s body returns to normal .", "-Body Hardening" end,
     activate = function(self, eff)
         eff.start_life = self.life
         eff.tmpid = self:addTemporaryValue("max_life", eff.power)
@@ -165,8 +159,8 @@ newEffect{
     type = "physical",
     status = "detrimental",
     parameters = { power=1, is_passive=true },
-    on_gain = function(self, err) return "#Target# is covered in acid!", "+Acid" end,
-    on_lose = function(self, err) return "#Target# is free from the acid.", "-Acid" end,
+    on_gain = function(self, eff) return "#Target# is covered in acid!", "+Acid" end,
+    on_lose = function(self, eff) return "#Target# is free from the acid.", "-Acid" end,
     on_timeout = function(self, eff)
         local saved = Qi.preCall(eff)
         DamageType:get(DamageType.ACID).projector(eff.src or self, self.x, self.y, DamageType.ACID, eff.power)
@@ -182,8 +176,8 @@ newEffect{
     status = "detrimental",
     parameters = { power=1, is_passive=true },
     long_desc = function(self, eff) return ("%s is poisoned, taking %i damage per turn."):format(self.name:capitalize(), eff.power) end,
-    on_gain = function(self, err) return "#Target# is poisoned!", "+Poison" end,
-    on_lose = function(self, err) return "#Target# recovers from the poison.", "-Poison" end,
+    on_gain = function(self, eff) return "#Target# is poisoned!", "+Poison" end,
+    on_lose = function(self, eff) return "#Target# recovers from the poison.", "-Poison" end,
     on_timeout = function(self, eff)
         local saved = Qi.preCall(eff)
         DamageType:get(DamageType.POISON).projector(eff.src or self, self.x, self.y, DamageType.POISON, eff.power)
@@ -199,8 +193,8 @@ newEffect{
     status = "detrimental",
     parameters = { power=1, is_passive=true },
     long_desc = function(self, eff) return ("%s is bleeding, taking %.1f damage per turn."):format(self.name:capitalize(), eff.power) end,
-    on_gain = function(self, err) return ("#Target# bleeds from %s injuries."):format(string.his(self)), "+Bleeding" end,
-    on_lose = function(self, err) return "#Target#'s bleeding stops.", "-Bleeding" end,
+    on_gain = function(self, eff) return ("#Target# bleeds from %s injuries."):format(string.his(self)), "+Bleeding" end,
+    on_lose = function(self, eff) return "#Target#'s bleeding stops.", "-Bleeding" end,
     on_timeout = function(self, eff)
         local saved = Qi.preCall(eff)
         DamageType:get(DamageType.BLEEDING).projector(eff.src or self, self.x, self.y, DamageType.BLEEDING, eff.power)
@@ -220,8 +214,8 @@ newEffect{
     desc = "Prone",
     type = "physical",
     status = "detrimental",
-    on_gain = function(self, err) return "#Target# is knocked down!", "+Prone" end,
-    on_lose = function(self, err) return "#Target# stands up.", "-Prone" end,   -- FIXME: Alt. message (or immunity???) for flyers
+    on_gain = function(self, eff) return "#Target# is knocked down!", "+Prone" end,
+    on_lose = function(self, eff) return "#Target# gets up again.", "-Prone" end,  -- "gets up" should be generic enough for flyers, legless, etc.
     on_merge = function(self, old_eff, new_eff)
         -- Merging has no effect, to prevent repeated knockdowns from stunlocking
         -- a creature.
@@ -231,8 +225,11 @@ newEffect{
         -- TODO: Should prone or unconscious status grant knockback resistance?
         self:effectTemporaryValue(eff, "prone", 1)
         self:effectTemporaryValue(eff, "combat_def", -4)
-    end,
-    deactivate = function(self, eff)
+
+        -- It would probably be probably unbalanced for flying to grant
+        -- knockdown immunity.  Instead, we'll just say that the flyer got hit
+        -- hard enough to fall to the ground.
+        self:effectTemporaryValue(eff, "flying", 0)
     end,
 }
 
@@ -247,15 +244,13 @@ newEffect{
 
     decrease = 0,
 
-    on_gain = function(self, err) return "#Target# is is knocked out.", "+Unconscious" end,
-    on_lose = function(self, err) return "#Target# regains consciousness.", "-Unconscious" end,
+    on_gain = function(self, eff) return "#Target# is is knocked out.", "+Unconscious" end,
+    on_lose = function(self, eff) return "#Target# regains consciousness.", "-Unconscious" end,
     long_desc = function(self, eff) return ("%s is unconscious until %s wounds start to heal."):format(self.name:capitalize(), string.his(self)) end,
 
     activate = function(self, eff)
         self:effectTemporaryValue(eff, "unconscious", 1)
         self:effectTemporaryValue(eff, "combat_def_zero", 1)
-    end,
-    deactivate = function(self, eff)
     end,
 
     on_timeout = function(self, eff)
@@ -284,8 +279,8 @@ newEffect{
     -- This can be gained and lost on every attack, which is noisy.
     -- Try this as a compromise for now.
     -- Note that on_gain's current message would be inaccurate for Electrostatic Capture.
-    --on_gain = function(self, err) return "#Target# begins to charge electricity.", "+Charged" end,
-    on_lose = function(self, err) return "#Target#'s electrical charge dissipates.", "-Charged" end,
+    --on_gain = function(self, eff) return "#Target# begins to charge electricity.", "+Charged" end,
+    on_lose = function(self, eff) return "#Target#'s electrical charge dissipates.", "-Charged" end,
 
     activate = function(self, eff)
         eff.particle = self:addParticles(Particles.new("charged", 1, {power = eff.power}))
@@ -315,8 +310,8 @@ newEffect{
     type = "mental",
     status = "beneficial",
     long_desc = function(self, eff) return ("An aura of calm surrounds %s, causing hostilities to cease in the area."):format(self.name) end,
-    on_gain = function(self, err) return "An aura of calm emanates from #target#.", "+Aura of Calm" end,
-    on_lose = function(self, err) return "The aura of calm dissipates.", "-Aura of Calm" end,
+    on_gain = function(self, eff) return "An aura of calm emanates from #target#.", "+Aura of Calm" end,
+    on_lose = function(self, eff) return "The aura of calm dissipates.", "-Aura of Calm" end,
 
     activate = function(self, eff)
         -- Reset NPCs' targets.  Otherwise, they follow the player around
@@ -348,8 +343,6 @@ newEffect{
     activate = function(self, eff)
         self:effectTemporaryValue(eff, "life_regen", eff.life_regen)
     end,
-    deactivate = function(self, eff)
-    end,    
 }
 
 newEffect{
@@ -366,8 +359,6 @@ newEffect{
         eff.power = eff.power or 50
         self:effectTemporaryValue(eff, "confused", eff.power)
     end,
-    deactivate = function(self, eff)
-    end,
 }
 
 newEffect{
@@ -383,7 +374,5 @@ newEffect{
     activate = function(self, eff)
         self:effectTemporaryValue(eff, "combat_natural_armor", eff.power)
     end,
-    deactivate = function(self, eff)
-    end,    
 }
 
