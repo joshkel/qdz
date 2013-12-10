@@ -16,6 +16,18 @@
 
 require("engine.utils")
 
+function table.pack(...)
+    return { n = select("#", ...), ... }
+end
+
+--- Returns true if any elements are true.
+-- (Technically, returns the first non-false element.)
+function table.any(...) 
+    local arg = table.pack(...)
+    for i = 1, arg.n do if arg[i] then return arg[i] end end 
+    return nil
+end 
+
 --- Debugging utility function: Attempts to print obj, whatever it is.
 function util.inspect(name, obj)
     if not obj then name, obj = "obj", name end

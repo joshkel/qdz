@@ -22,7 +22,7 @@
 --
 -- Of course, many of the rules and mechanics are embedded in code (especially
 -- Combat.lua and Actor.lua), but this will hopefully be a convenient place to
--- keep values for tweaking.
+-- keep tweakable values.
 module(..., package.seeall, class.make)
 
 _M.extra_stat_desc = {
