@@ -64,14 +64,13 @@ newTalent {
     getDuration = function(self, t) return 5 end,
     getDamage = function(self, t)
         local combat, obj = self:getInvenCombat(self.INVEN_RHAND, true)
+        combat = self:combatMod(combat, {dam = self:getTalentLevel(self.T_MINING)})
         local min_dam, dam = self:combatDamageRange(combat)
         if obj and obj.subtype == "digger" then
             dam = dam / 2
         else
             dam = dam / 4
         end
-        -- FIXME: Scale damage, and include mastery
-        dam = dam + self:getTalentLevel(self.T_MINING)
         return dam
     end,
     getDirectDamage = function(self, t) return t.getDamage(self, t) * 3 end,

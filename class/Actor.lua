@@ -585,6 +585,21 @@ function _M:postUseTalent(ab, ret)
     return true
 end
 
+---Override engine.ActorTalents.getTalentLevel to support talents whose level
+-- depends on a stat rather than just talent mastery.
+function _M:getTalentLevel(id)
+    local level = Talents.getTalentLevel(self, id)
+
+	if type(id) == "table" then
+		t, id = id, id.id
+	else
+		t = _M.talents_def[id]
+	end
+    if t.stat then level = level * self:getStat(t.stat) / 10 end
+
+    return level
+end
+
 --- Return the full description of a talent
 function _M:getTalentFullDescription(t)
     local d = tstring{}
@@ -609,6 +624,15 @@ function _M:getTalentFullDescription(t)
     end
 
     if t.cooldown then d:add(color.caption, "Cooldown: ", color.text, ""..t.cooldown, true) end
+
+    -- Hack: Only proficiencies have multiple talent levels (at least for now)
+    if t.type[1] == "basic/proficiencies" then
+        d:add(color.caption, "Effective proficiency: ", color.text, ("%.1f"):format(self:getTalentLevel(t)))
+        if t.stat then
+            d:add(' #{italic}#(based on your ', self.stats_def[t.stat].name, ')#{normal}#')
+        end
+        d:add(true)
+    end
 
     -- Two versions, with and without "Description: " caption.
     --d:add(true, color.caption, "Description: ", true, color.text)

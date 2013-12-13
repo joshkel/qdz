@@ -21,6 +21,13 @@
 newTalent{
     name = "Mining",
     type = {"basic/proficiencies", 1},
+
+    -- Strength or constitution?  Mining is granted by chest techniques, and
+    -- it seems reasonable to say that a guy who can work all day without
+    -- taking a break would be more desirable than a bodybuilder with less
+    -- stamina...
+    stat = "con",
+
     findBest = function(self, t)
         local best = nil
         local find = function(inven)
@@ -45,7 +52,7 @@ newTalent{
         local best = t.findBest(self, t)
         local result = "Mining lets you use a pickaxe or similar tool to dig stone and earth.\n\n"
         if best then
-            result = result .. ("Digging with your %s takes %d turns (based on your Mining proficiency, Constitution, and best mining tool available)."):format(best.name, best:getEffectiveDigSpeed(self))
+            result = result .. ("Digging with your %s takes %d turns (based on your effective Mining proficiency and best mining tool available)."):format(best.name, best:getEffectiveDigSpeed(self))
         else
             result = result .. "You currently have no mining tools."
         end
@@ -60,9 +67,10 @@ newTalent{
     cooldown = 6,
     no_npc_use = true,  -- TODO: Actually, pickpocket NPCs would be cool, but implementation would have to change.
     range = 1,
+    stat = "ski",
 
     chanceOfSuccess = function(self, t)
-        return self:talentPercentage(t, 20, self:getSki())
+        return self:talentPercentage(t, 20)
     end,
 
     action = meleeTalent(function(self, t, target)
@@ -109,7 +117,7 @@ newTalent{
     end),
 
     info = function(self, t)
-        return ("Attempts to steal a small item from a nearby enemy. Only humanoid enemies can be robbed. The chance of success is %i%% (based on your Pickpocket proficiency and Skill)."):format(t.chanceOfSuccess(self, t))
+        return ("Attempts to steal a small item from a nearby enemy. Only humanoid enemies can be robbed. The chance of success is %i%% (based on your effective Pickpocket proficiency)."):format(t.chanceOfSuccess(self, t))
     end,
 }
 

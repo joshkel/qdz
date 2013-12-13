@@ -36,8 +36,7 @@ newEntity{
 
     getEffectiveDigSpeed = function(self, who, show_message)
         local Talents = require "engine.interface.ActorTalents"
-        -- TODO: Duplicate logic from Combat.talentPercentage; clean up
-        local mining = who:getTalentLevel(Talents.T_MINING) * who:getCon() / 10
+        local mining = who:getTalentLevel(Talents.T_MINING)
         if mining == 0 then
             if show_message then game.logPlayer(who, "You don't know the first thing about mining. This could take a while...") end
             return math.floor(self.digspeed * 2)

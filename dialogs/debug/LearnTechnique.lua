@@ -33,7 +33,7 @@ module(..., package.seeall, class.inherit(mod.class.ui.SimpleListDialog))
 -- but is useful for testing.
 function _M:init(qi_only)
     self.qi_only = qi_only
-    mod.class.ui.SimpleListDialog.init(self, qi_only and "Debug Menu - Learn Technique" or "Debug Menu - Test Talent")
+    mod.class.ui.SimpleListDialog.init(self, qi_only and "Debug Menu - Learn Technique" or "Debug Menu - Test Talent", {enable_hotkeys=true, hotkeys_select_only=true})
 end
 
 function _M:useItem(item)

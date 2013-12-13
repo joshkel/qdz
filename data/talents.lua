@@ -42,6 +42,8 @@ function flavorText(rules_text, flavor_text)
     end
 end
 
+-- Talent helper function: returns a function suitable for the "action" of
+-- a melee talent (or a melee-like talent, like Pickpocket).
 function meleeTalent(f)
     return function(self, t)
         local tg = {type="hit", range=self:getTalentRange(t)}

@@ -28,8 +28,14 @@ module(..., package.seeall, class.inherit(engine.ui.Dialog))
 -- * useItem - called when an item is chosen
 -- * generateListContents - called at creation to populate the list
 -- * selectItem - optional; provides tooltip, hover help, etc.
-function _M:init(name)
-    self:generateList()
+--
+-- If generateListContents populates list.chars, or if opt.enable_hotkeys,
+-- then hotkeys are enabled, and pressing the corresponding character will
+-- select (if opt.hotkeys_select_only) or select and use (if not) the
+-- corresponding item.
+function _M:init(name, opt)
+    opt = opt or {}
+    self:generateList(opt.enable_hotkeys)
 
     local w = self.font_bold:size(name)
     engine.ui.Dialog.init(self, name, 1, 100)
@@ -47,6 +53,26 @@ function _M:init(name)
     self.mouse:registerZone(0, 0, game.w, game.h, function(button, x, y, xrel, yrel, bx, by, event) if (button == "left" or button == "right") and event == "button" then self.key:triggerVirtual("EXIT") end end)
     self.mouse:registerZone(self.display_x, self.display_y, self.w, self.h, function(button, x, y, xrel, yrel, bx, by, event) if button == "right" and event == "button" then self.key:triggerVirtual("EXIT") else self:mouseEvent(button, x, y, xrel, yrel, bx, by, event) end end)
     self.key:addBinds{ EXIT = function() game:unregisterDialog(self) end, }
+
+    if self.list.chars then    
+        self.key:addCommands{
+            __TEXTINPUT = function(c)
+                if self.list and self.list.chars[c] then
+                    if opt.hotkeys_select_only then
+                        list:select(self.list.chars[c])
+                    else
+                        self:use(self.list[self.list.chars[c]])
+                    end
+                end
+            end,
+        }
+    end
+end
+
+function _M:on_register()
+    if self.list.chars then
+        game:onTickEnd(function() self.key:unicodeInput(true) end)
+    end
 end
 
 function _M:unload()
@@ -61,8 +87,16 @@ function _M:use(item)
     self:useItem(item)
 end
 
-function _M:generateList()
+function _M:generateList(enable_hotkeys)
     local list = self:generateListContents()
+
+    if enable_hotkeys then
+        list.chars = {}
+        for i, v in ipairs(list) do
+            local c = string.lower(v.name:sub(1,1))
+            list.chars[c] = list.chars[c] or i
+        end
+    end
 
     self.max = 0
     self.maxh = 0
