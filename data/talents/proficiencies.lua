@@ -65,12 +65,7 @@ newTalent{
         return self:talentPercentage(t, 20, self:getSki())
     end,
 
-    action = function(self, t)
-        local tg = {type="hit", range=self:getTalentRange(t)}
-        local x, y, target = self:getTarget(tg)
-        if not x or not y or not target then return nil end
-        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
-
+    action = meleeTalent(function(self, t, target)
         if target.type ~= "humanoid" then
             game.logPlayer(self, ("%s has no pockets."):format(target.name:capitalize()))
             return false
@@ -111,7 +106,7 @@ newTalent{
         end
 
         return true
-    end,
+    end),
 
     info = function(self, t)
         return ("Attempts to steal a small item from a nearby enemy. Only humanoid enemies can be robbed. The chance of success is %i%% (based on your Pickpocket proficiency and Skill)."):format(t.chanceOfSuccess(self, t))

@@ -8,7 +8,6 @@ Consolidate Qi module into T-Engine 1.0.5's __project_source?
 Change death message for killing oneself
 "nothing to pickup"
 column width for, e.g., pickup dialog
-Cancel button / option for birther
 Split act base from act
 Why do I get an "offline" error message, even after uploading?
 Basic game mechanics: shields

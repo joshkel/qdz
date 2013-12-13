@@ -45,7 +45,6 @@ newTalent{
             return nil
         end
 
-        -- FIXME: Use speed
         t.attack(self, t, target, combat)
         return true
     end),
@@ -105,7 +104,6 @@ newTalent{
             return nil
         end
 
-        -- FIXME: Use speed
         t.attack(self, t, nil, combat)
         return true
     end,
@@ -138,7 +136,6 @@ newTalent{
     end,
 
     action = meleeTalent(function(self, t, target)
-        -- FIXME: Use speed
         self:attackTarget(target)
         self:forceUseTalent(self.T_OFF_HAND_ATTACK, { ignore_energy=true, ignore_cd=true, force_target=target, silent=true })
         return true
@@ -166,7 +163,6 @@ newTalent{
     end,
 
     action = meleeTalent(function(self, t, target)
-        -- FIXME: Use speed
         self:attackTarget(target, DamageType.PHYSICAL_BLEEDING,
             { power=t.getPower(self, t), duration=t.getDuration(self, t) }, nil, false)
         return true
@@ -205,7 +201,6 @@ newTalent{
             return nil
         end
 
-        -- FIXME: Use speed?
         self:attackTarget(target)
         for combat, combat_mult, obj in self:iterCombat() do
             if not target.dead and obj and obj.subtype == "dagger" then

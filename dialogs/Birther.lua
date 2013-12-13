@@ -117,3 +117,9 @@ function _M:selectType(type)
     end
 end
 
+-- Override engine.Birther.prev to permit escaping back to the main menu
+function _M:prev()
+    local prev_order = self.cur_order
+    engine.Birther.prev(self)
+    if prev_order == self.cur_order then util.showMainMenu() end
+end

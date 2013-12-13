@@ -57,24 +57,19 @@ newTalent{
     speed = 2.0,
     attack_bonus = 2,
 
-    action = function(self, t)
-        local tg = {type="hit", range=self:getTalentRange(t)}
-        local x, y, target = self:getTarget(tg)
-        if not x or not y or not target then return nil end
-        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
-
+    action = meleeTalent(function(self, t, target)
         local combat, obj = self:getOffHandCombat(self, t)
         local mult = self:getOffHandMult(combat)
         combat = self:combatMod(combat, {attack=t.attack_bonus})
 
-        -- FIXME: Use speed?  Duplication with Combat.attackTarget?
+        -- Note the minor duplication with Combat.attackTarget
         if combat.crit_effect and self:isCrit(target) then
             self:critAttackTargetWith(target, combat, mult)
         else
             self:attackTargetWith(target, combat, nil, nil, mult)
         end
         return true
-    end,
+    end),
 
     info = function(self, t)
         local function obj_name(obj) return obj.unique and obj.name or "your "..obj.name end
@@ -89,7 +84,7 @@ newTalent{
                 msg = ("strike with %s"):format(obj_name(obj))
             end
         else
-            msg = "unarmed strike with your left hand"
+            msg = "unarmed strike with your free hand"
         end
 
         return ([[A quick, unexpected %s.
@@ -116,14 +111,7 @@ newTalent{
         return self:combatMod(self.combat, { dam = (self:getCon() - 10) / 2 })
     end,
 
-    action = function(self, t)
-        -- TODO? This block is duplicated throughout basic.lua and other talents - can it be cleaned up?
-        local tg = {type="hit", range=self:getTalentRange(t)}
-        local x, y, target = self:getTarget(tg)
-        if not x or not y or not target then return nil end
-        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
-
-        -- FIXME: Use speed
+    action = meleeTalent(function(self, t, target, x, y)
         local speed, hit = self:attackTargetWith(target, t.getCombat(self, t),
             DamageType.PHYSICAL_KNOCKBACK, { distance = t.getDistance(self, t) })
         if not hit then
@@ -138,7 +126,7 @@ newTalent{
             end
         end
         return true
-    end,
+    end),
 
     info = function(self, t)
         return ([[Bashes into an enemy with a shoulder tackle, dealing %s damage and knocking it back %i squares. Damage and knockback distance are determined by your Strength and Constitution. Even if your opponent manages to dodge, it will be driven back one square.
@@ -157,14 +145,8 @@ newTalent{
         -- Kick damage is unarmed damage modified by agility.
         return self:combatMod(self.combat, { dam = 2, dammod = {str=0.5, agi=0.5}})
     end,
-    action = function(self, t)
-        local tg = {type="hit", range=self:getTalentRange(t)}
-        local x, y, target = self:getTarget(tg)
-        if not x or not y or not target then return nil end
-        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
-
+    action = meleeTalent(function(self, t, target)
         local combat = t.getCombat(self, t)
-        -- FIXME: Use speed
         local speed, hit = self:attackTargetWith(target, combat)
         if hit and not target.dead then
             if not target:canBe("knockback") then
@@ -175,7 +157,7 @@ newTalent{
             end
         end
         return true
-    end,
+    end),
     info = function(self, t)
         return ([[Kicks an enemy, dealing %s damage and possibly knocking it prone. A prone enemy's turn is delayed and is easier to hit. Damage and knockdown chance are determined by your Strength and Agility.
 

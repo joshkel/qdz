@@ -25,14 +25,15 @@
 -- keep tweakable values.
 module(..., package.seeall, class.make)
 
-_M.extra_stat_desc = {
-    blindsense = "Blindsense lets you detect creatures (but not necessarily stealthed or invisible creatures) and major terrain features within a certain radius."
-}
-
 _M.concealment_miss = 25
 _M.blind_miss = 50
 
--- Base life scales expontially with level.
+_M.extra_stat_desc = {
+    blindsense = "Blindsense lets you detect creatures (but not necessarily stealthed or invisible creatures) and major terrain features within a certain radius.",
+    blind_fight = ("You no longer suffer the flat %i%% miss chance for attacking an unseen opponent or the flat %i%% miss chance for attacking a concealed opponent."):format(_M.blind_miss, _M.concealment_miss),
+}
+
+-- Base life scales exponentially with level.
 -- Every point of Con modifies the base by 5%.
 _M.dam_level_mod = 1.1
 function _M:damStatMod(stat)
@@ -43,8 +44,11 @@ function _M:damScale(level, stat)
     return math.pow(dam_level_mod, level - 1) * (stat and self:damStatMod(stat) or 1)
 end
 
--- Approximate amount by which *base* damage and armor (before dam_level_mod)
+-- Approximate amount by which items' *base* damage and armor (before dam_level_mod)
 -- is expected to scale per level.
+--
+-- This is useful for talents and NPCs whose stat growth should mimic the
+-- player's items' growth.
 _M.item_dam_per_level = 0.5
 
 -- Qi scales linearly with level and Mind.

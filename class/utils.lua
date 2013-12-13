@@ -133,6 +133,17 @@ function string.pluralize(s, n)
     end
 end
 
+--- Lowercases the first letter of s.
+function string.lowerFirst(s)
+    if #s > 1 then
+        return string.lower(s:sub(1, 1))..s:sub(2)
+    elseif #s == 1 then
+        return str:upper()
+    else
+        return s
+    end
+end
+
 --- Adds an indefinite article to s.  Special cases will be added as needed.
 --- See also T-Engine's string.a_an.
 function string.a(s)

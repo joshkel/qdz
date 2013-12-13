@@ -205,21 +205,16 @@ newTalent {
     hit_mult = 1.1,
     miss_mult = 0.4,
 
-    action = function(self, t)
-        local tg = {type="hit", range=self:getTalentRange(t)}
-        local x, y, target = self:getTarget(tg)
-        if not x or not y or not target then return nil end
-        if core.fov.distance(self.x, self.y, x, y) > 1 then return nil end
-
+    action = meleeTalent(function(self, t, target, x, y)
         local speed, hit = self:attackTarget(target, DamageType.FIRE, nil, t.hit_mult, false)
         if not hit then
             DamageType:get(DamageType.FIRE).projector(self, x, y, DamageType.FIRE,
                 self:combatDamage(self:getInvenCombat(self.INVEN_RHAND, true) or self.combat) * t.miss_mult,
-                { msg = function(self, target, dam, dam_type) return ("The flames of the near miss scorch %s for %s%i %s damage#LAST#."):format(target:getTargetName(), dam_type.text_color, dam, dam_type.name) end })
+                { msg = function(self, target, dam, dam_type) game.logSeenAny({self, target}, ("The flames of the near miss scorch %s for %s%i %s damage#LAST#."):format(target:getTargetName(), dam_type.text_color, dam, dam_type.name)) end })
         end
         game.level.map:particleEmitter(self.x, self.y, 1, "fire_slash", {tx=x-self.x, ty=y-self.y})
         return true
-    end,
+    end),
 
     info = function(self, t)
         return ("Turns your weapon (or body part) into solid flame and attacks, dealing %i%% of weapon damage as fire damage. Even if the attack misses, the intense heat will deal %i%% of weapon damage as fire damage."):format(t.hit_mult * 100, t.miss_mult * 100)

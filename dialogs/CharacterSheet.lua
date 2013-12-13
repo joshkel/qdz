@@ -266,7 +266,7 @@ function _M:drawDialog(kind)
         drawBlock("Other Senses", nil,
             player:attr("blind_fight") and
                 {"Blind-Fighting",
-                    GameUI:tooltipTitle('Blind-Fighting'):merge{true, "You have learned how to use senses other than sight in combat. You no longer suffer the flat ", tostring(GameRules.blind_miss), "% miss chance for attacking an unseen opponent or the flat ", tostring(GameRules.concealment_miss), "% miss chance for attacking a concealed opponent."}})
+                    GameUI:tooltipTitle('Blind-Fighting'):merge{true, "You have learned how to use senses other than sight in combat. ", GameRules.extra_stat_desc.blind_fight}})
 
         drawBlock("Movement", nil,
             player:attr("flying") and

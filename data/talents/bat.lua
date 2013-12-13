@@ -385,10 +385,8 @@ newTalent {
     end,
 
     info = function(self, t)
-        -- FIXME: Replace "flat miss chance" with actual percentage
         return flavorText("Adds +1 to your blindsense radius. " .. GameRules.extra_stat_desc.blindsense ..
-           "\n\nAlso grants blind-fighting, which negates the flat miss chance for attacking an opponent you can't see.",
-           "Despite darkness and their nearly blind vision, bats have a mysterious ability to navigate their surroundings.")
+           "\n\nAlso grants blind-fighting, which means " .. string.lowerFirst(GameRules.extra_stat_desc.blind_fight))
     end,
 }
 
