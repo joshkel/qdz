@@ -1,6 +1,8 @@
 Version Next
 ============
 
+* Gameplay tweaks
+    * Boost Fourth Blessing: Longevity.
 * UI improvements
     * Character sheets and map tooltips include non-physical melee damage (such as a fire ant's bonus fire damage).
     * When inspecting an enemy, the character sheet's tooltips for the enemy's Attack and Defense values show the hit chances for you versus the enemy.
@@ -12,6 +14,7 @@ Version Next
 * Minor changes
     * Various tooltip improvements
     * Adjust the effect of Mining proficiency on Poison Ore Strike
+    * Reading scrolls now requires the ability to see.
 * Compatible with T-Engine 1.1.0
 
 Version 0.4.0, "Desperate Stratagems" (2013-11-30)

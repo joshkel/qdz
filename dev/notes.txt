@@ -2,11 +2,11 @@ To do:
 Damage scaling, again / still - critical effects are semi-useless if no monster can survive two hits, and a peasant with a polearm can be death incarnate...
 Critical effects for Off-Hand Attack, Bash, Kick, pickaxe, unarmed
 Scale life regen (and qi regen?) as you gain levels
+Reevaluate resistances - should the base subtraction resemble armor (with scaling)?  Should scaling handle everything and the percentage be removed?
 Allow projectiles to fly farther than targeted?
 
 Consolidate Qi module into T-Engine 1.0.5's __project_source?
 Change death message for killing oneself
-"nothing to pickup"
 column width for, e.g., pickup dialog
 Split act base from act
 Why do I get an "offline" error message, even after uploading?

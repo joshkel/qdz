@@ -719,9 +719,9 @@ function _M:canBe(what)
     if what == "stun" and rng.percent(100 * (self:attr("stun_immune") or 0)) then return false end
     if what == "fear" and rng.percent(100 * (self:attr("fear_immune") or 0)) then return false end
 
-    -- Note that knockback also covers knockdown.
-    -- FIXME: Clean up never_move confusion.  A truly immobile enemy cannot be knocked down or back;
-    -- a stunned or off balance enemy can.
+    -- Note that knockback also covers knockdown.  Note that never_move only
+    -- means that an actor can't move of his own will; he's not rooted to the
+    -- ground and can still be knocked around or forced back.
     if what == "knockback" and rng.percent(100 * (self:attr("knockback_immune") or 0)) then return false end
     --if what == "knockback" and (rng.percent(100 * (self:attr("knockback_immune") or 0)) or self:attr("never_move")) then return false end
 

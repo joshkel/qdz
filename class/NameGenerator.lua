@@ -25,7 +25,9 @@ end
 
 -- Chinese surnames, taken from http://en.wikipedia.org/wiki/List_of_common_Chinese_surnames
 -- and used under the terms of the Creative Commons Attribution-ShareAlike License.
-_M.chinese_surnames = "Wang, Li, Zhang, Liu, Chen, Yang, Huang, Zhao, Wu, Zhou, Xu, Sun, Ma, Zhu, Hu, Guo, He, Gao, Lin, Luo, Zheng, Liang, Xie, Song, Tang, Xu, Han, Feng, Deng, Cao, Peng, Zeng, Xiao, Tian, Dong, Yuan, Pan, Yu, Jiang, Cai, Yu, Du, Ye, Cheng, Su, Wei, Lu, Ding, Ren, Shen, Yao, Yu, Jiang, Cui, Zhong, Tan, Lu, Wang, Fan, Jin, Shi, Liao, Jia, Xia, Wei, Fu, Fang, Bai, Zou, Meng, Xiong, Qin, Qui, Jiang, Yin, Xue, Yan, Duan, Lei, Hou, Long, Shi, Tao, Li, He, Gu, Mao, Hao, Gong, Shao, Wan, Qian, Yan, Tan, Wu, Dai, Mo, Kong, Xiang, Tang, Kang, Yi, Chang, Qiao, Lai, Wen"
+--
+-- Modifications to this list: Delete "Mo."  It doesn't sound foreign enough.
+_M.chinese_surnames = "Wang, Li, Zhang, Liu, Chen, Yang, Huang, Zhao, Wu, Zhou, Xu, Sun, Ma, Zhu, Hu, Guo, He, Gao, Lin, Luo, Zheng, Liang, Xie, Song, Tang, Xu, Han, Feng, Deng, Cao, Peng, Zeng, Xiao, Tian, Dong, Yuan, Pan, Yu, Jiang, Cai, Yu, Du, Ye, Cheng, Su, Wei, Lu, Ding, Ren, Shen, Yao, Yu, Jiang, Cui, Zhong, Tan, Lu, Wang, Fan, Jin, Shi, Liao, Jia, Xia, Wei, Fu, Fang, Bai, Zou, Meng, Xiong, Qin, Qui, Jiang, Yin, Xue, Yan, Duan, Lei, Hou, Long, Shi, Tao, Li, He, Gu, Mao, Hao, Gong, Shao, Wan, Qian, Yan, Tan, Wu, Dai, Kong, Xiang, Tang, Kang, Yi, Chang, Qiao, Lai, Wen"
 
 -- Chinese given names, taken from http://en.wikipedia.org/wiki/Chinese_given_name
 -- and used under the terms of the Creative Commons Attribution-ShareAlike License.

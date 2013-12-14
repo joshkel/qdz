@@ -28,7 +28,7 @@ newEntity{
     rarity = 5,
     stacking = true,
     use_verb = "Drink",
-    desc = [[Potions may have a variety of effects.]]
+    desc = [[Potions may have a variety of effects.]],
 }
 
 newEntity{
@@ -36,16 +36,19 @@ newEntity{
     name = "minor healing potion",
     level_range = {1, 10},
     cost = 5,
-    -- TODO: Scale healing based on level (and Con???)
+    base_heal = 10,
+    get_heal = function(self, who) return self.base_heal * require("mod.class.GameRules"):damScale(who.level, who:getCon()) end,
     use_simple = {
         name = "minor healing",
         use = function(self, who)
-            who:heal(10, self)
-            game.log(("%s's wounds heal."):format(who.name))
+            who:heal(self:get_heal(who), self)
+            game.logSeen(who, ("%s's wounds heal."):format(who.name:capitalize()))
             return {used = true, destroy = true}
         end
     },
-    use_message = [[Instantly heals 10 points of damage.]],
+    use_message = function(self, who)
+        return ([[Instantly heals %i damage (based on your level and Constitution).]]):format(self:get_heal(who))
+    end
 }
 
 newEntity{
@@ -77,7 +80,19 @@ newEntity{
     rarity = 5,
     stacking = true,
     use_verb = "Read",
-    desc = [[A scroll containing a verse, invocation, or calligraphy. When read, it bursts into flame, releasing the power in its writing.]]
+    desc = [[A scroll containing a verse, invocation, or calligraphy. When read, it bursts into flame, releasing the power in its writing.]],
+
+    can_use = function(self, who)
+        if who:attr("blind") or (who.sight or 0) <= 0 then
+            game.logPlayer(who, "You cannot invoke the scroll while blind.")
+            return false
+        elseif not game.level.map.lites(who.x, who.y) and (who.lite or 0) <= 0 then
+            game.logPlayer(who, "You have no light to read by.")
+            return false
+        else
+            return true
+        end
+    end,
 }
 
 newEntity{

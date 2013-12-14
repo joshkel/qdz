@@ -154,13 +154,13 @@ newTalent{
         -- discouraging over-levelling?
         --
         -- This math should be very roughly equal to 5 monsters, at least
-        -- until we start messing with experience values.
+        -- before we started messing with experience values.
         --
         -- Also note that this relies on our disallowing going back to previous
         -- levels.  If we allowed that, we'd have to track visited levels, to
         -- avoid grinding for XP.
         local target_level = game.level.level + math.average(game.level.data.level_range)
-        local exp_bonus = target_level * 5
+        local exp_bonus = target_level * 2 * 5
         print(("Blessing: Longevity: %i bonus experience"):format(exp_bonus))
         self:gainExp(target_level)
     end,

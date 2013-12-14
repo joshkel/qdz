@@ -133,7 +133,8 @@ function _M:getDesc()
 
     -- Usage effects
     if self.use_message then
-        text:add(true, true, color.caption, 'Use: ', color.text, self.use_message)
+        local msg = (type(self.use_message) == "function") and self.use_message(self, player) or self.use_message
+        text:add(true, true, color.caption, 'Use: ', color.text, msg)
     elseif self.use_talent then
         local ab = self:getTalentFromId(self.use_talent.id)
         text:add(true, true, color.caption, 'Use: ', color.text, ab.info(player, ab))
@@ -180,13 +181,15 @@ function _M:use(who, typ, inven, item)
     if not typ and #types == 1 then typ = types[1] end
 
     if typ == "use" then
+        if self.can_use and not self:can_use(who) then return end
+
         who.last_action = 'use_object'
 
         local ret = self:useObject(who, inven, item)
         if ret.used then
             if self.use_sound then game:playSoundNear(who, self.use_sound) end
             if not self.use_no_energy then
-                -- FIXME: I don't think inven.use_speed does anything.  What *is* inven?
+                -- Note that, as of December 2013, inven.use_speed is never defined.
                 who:useEnergy(game.energy_to_act * (inven.use_speed or 1))
             end
         end
