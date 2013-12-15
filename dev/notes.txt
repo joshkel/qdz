@@ -7,7 +7,6 @@ Allow projectiles to fly farther than targeted?
 
 Consolidate Qi module into T-Engine 1.0.5's __project_source?
 Change death message for killing oneself
-column width for, e.g., pickup dialog
 Split act base from act
 Why do I get an "offline" error message, even after uploading?
 Basic game mechanics: shields

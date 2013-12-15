@@ -147,6 +147,9 @@ newTalent {
 
         -- TODO: Debuff instead of just damage over time?
         self:projectile(tg, x, y, function(tx, ty, tg, self, tmp)
+            local DamageType = require("engine.DamageType")
+            local t = self:getTalentFromId(tg.talent_id)
+
             local target = game.level.map(tx, ty, game.level.map.ACTOR)
             if not target then return end
             local combat = t.getCombat(self, t)

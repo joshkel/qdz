@@ -247,10 +247,11 @@ function _M:attackTargetWith(target, combat, damtype, damargs, mult, can_crit)
             miss = "%s misses %s."
         end
         if miss then
+            local src_name, seen, used_intermediate = self:getSrcName()
             if is_melee then
-                game.logSeenAny({self, target}, game.flash.NEUTRAL, miss, self:getSrcName():capitalize(), target:getTargetName(self))
+                game.logSeenAny({self, target}, game.flash.NEUTRAL, miss, src_name:capitalize(), target:getTargetName(self, used_intermediate))
             else
-                game.logSeen(target, game.flash.NEUTRAL, missile_miss or "%s misses %s.", self:getSrcName():capitalize(), target:getTargetName(self))
+                game.logSeen(target, game.flash.NEUTRAL, missile_miss or "%s misses %s.", src_name:capitalize(), target:getTargetName(self, used_intermediate))
             end
             return 1, false
         end

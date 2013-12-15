@@ -1,16 +1,20 @@
 Version Next
 ============
 
-* Gameplay tweaks
-    * Boost Fourth Blessing: Longevity.
-* UI improvements
+* Noteworthy UI improvements
     * Character sheets and map tooltips include non-physical melee damage (such as a fire ant's bonus fire damage).
     * When inspecting an enemy, the character sheet's tooltips for the enemy's Attack and Defense values show the hit chances for you versus the enemy.
     * Character sheets list special movement qualities (flying, random movement, etc.).
     * Proficiencies' tooltips provide more information about proficiency level.
+* Other UI improvements
+    * Improve object tooltips for multiple objects.
+    * Improved Pick Up Items dialog.
+* Gameplay tweaks
+    * Boost Fourth Blessing: Longevity.
 * Bugfixes
     * Inventory screen tooltips sometimes failed to show.
     * A missed Fire Slash failed to display its "near miss" message.
+    * Saving a game while Poisoned Dart was in flight didn't work properly.
 * Minor changes
     * Various tooltip improvements
     * Adjust the effect of Mining proficiency on Poison Ore Strike

@@ -151,9 +151,12 @@ function _M:tooltip(x, y)
         text:add(true, true, color.caption, 'UID: ', color.text, tostring(self.uid))
     end
 
-    return text
+    local nb = game.level.map:getObjectTotal(x, y)
+    if nb == 2 then text:add(true, "---", true, "You see one more object here.")
+    elseif nb > 2 then text:add(true, "---", true, "You see "..(nb-1).." more objects here.")
+    end
 
-    -- TODO? Probably want a TOME-style "You see...more objects"
+    return text
 end
 
 function _M:canAct()

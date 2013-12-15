@@ -314,7 +314,7 @@ end
 
 function _M:playerDrop()
     local inven = self:getInven(self.INVEN_INVEN)
-    local d d = self:showInventory("Drop object", inven, nil, function(o, item)
+    local d d = self:showInventory("Drop Items", inven, nil, function(o, item)
         self:dropFloor(inven, item, true, true)
         self:sortInven(inven)
         self:useEnergy()
