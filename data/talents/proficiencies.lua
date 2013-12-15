@@ -18,9 +18,14 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+local Map = require "engine.Map"
+
 newTalent{
     name = "Mining",
     type = {"basic/proficiencies", 1},
+    points = 5,
+    no_npc_use = true,
+    no_energy = true, -- energy cost is handled by wait() below
 
     -- Strength or constitution?  Mining is granted by chest techniques, and
     -- it seems reasonable to say that a guy who can work all day without
@@ -38,23 +43,72 @@ newTalent{
         for inven_id, inven in pairs(self.inven) do find(inven) end
         return best
     end,
-    points = 5,
-    no_npc_use = true,
-    no_energy = true, -- energy cost is handled by diggers.lua's wait()
+    no_proficiency_penalty = 2,
+
+    -- NOTE: Dig speed logic is partially duplicated in diggers.lua
+    getEffectiveDigSpeed = function(self, t, obj, show_message)
+        local mining = self:getTalentLevel(t.id)
+
+        local digspeed
+        if not obj then
+            if show_message then game.logPlayer(self, "Without proper tools, this could take a while...") end
+            digspeed = 20
+        else
+            digspeed = obj.digspeed
+        end
+
+        if mining == 0 then
+            if show_message then game.logPlayer(self, "You don't know the first thing about mining. This could take a while...") end
+            return math.floor(digspeed * t.no_proficiency_penalty)
+        else
+            return math.floor(digspeed * math.pow(0.9, mining - 1))
+        end
+    end,
+
     action = function(self, t)
-        local best = t.findBest(self, t)
-        if not best then game.logPlayer(self, "You require a mining tool to dig.") return end
-        return best:useObject(self)
+        local digger = self._force_digger or t.findBest(self, t)
+
+        -- Based on ToME's DIG_OBJECT
+        local tg = {type="bolt", range=1, nolock=true}
+        local x, y = self:getTarget(tg)
+        if not x or not y then return nil end
+        local feat = game.level.map(x, y, Map.TERRAIN)
+        if not feat.dig then
+            game.logPlayer(self, ("The %s is not diggable."):format(feat.name))
+            return nil
+        end
+
+        -- Hack: Subtracting 1 is necessary to make turns taken match.
+        -- I'm not sure why.
+        local digspeed = t.getEffectiveDigSpeed(self, t, digger, true) - 1
+
+        local wait = function()
+            local co = coroutine.running()
+            local ok = false
+            self:restInit(digspeed, "digging", "dug", function(cnt, max)
+                if cnt > max then ok = true end
+                coroutine.resume(co)
+            end)
+            coroutine.yield()
+            if not ok then
+                game.logPlayer(self, "You have been interrupted!")
+                return false
+            end
+            return true
+        end
+        if wait() then
+            self:project(tg, x, y, engine.DamageType.DIG, 1)
+        end
+
+        return true
     end,
     info = function(self, t)
-        -- TODO: Permit Mining to work without a digger?
-        -- I'm not positive it will be worth a talent slot otherwise.
-        local best = t.findBest(self, t)
+        local digger = t.findBest(self, t)
         local result = "Mining lets you use a pickaxe or similar tool to dig stone and earth.\n\n"
-        if best then
-            result = result .. ("Digging with your %s takes %d turns (based on your effective Mining proficiency and best mining tool available)."):format(best.name, best:getEffectiveDigSpeed(self))
+        if digger then
+            result = result .. ("Digging with your %s takes %d turns (based on your effective Mining proficiency and best mining tool available)."):format(digger.name, t.getEffectiveDigSpeed(self, t, digger))
         else
-            result = result .. "You currently have no mining tools."
+            result = result .. ("Digging without proper tools takes %d turns (based on your effective Mining proficiency)."):format(t.getEffectiveDigSpeed(self, t, digger))
         end
         return result
     end,

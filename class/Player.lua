@@ -297,7 +297,6 @@ end
 function _M:playerPickup()
     -- If 2 or more objects, display a pickup dialog, otherwise just picks up
     if game.level.map:getObject(self.x, self.y, 2) then
-        -- TODO: Column width for this dialog
         local d d = self:showPickupFloor("Pickup", nil, function(o, item)
             self:pickupFloor(item, true)
             self.changed = true
