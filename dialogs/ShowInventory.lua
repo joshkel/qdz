@@ -74,6 +74,8 @@ end
 function _M:select(item)
     if item then
         self.c_desc:switchItem(item, item.desc)
+    else
+        self.c_desc:switchItem(0, "")
     end
 end
 function _M:use(item)

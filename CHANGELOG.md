@@ -1,15 +1,16 @@
-Version Next
-============
+Version 0.4.1, "An Apropos Word" (2013-12-16)
+=============================================
 
 * Noteworthy UI improvements
     * Character sheets and map tooltips include non-physical melee damage (such as a fire ant's bonus fire damage).
     * When inspecting an enemy, the character sheet's tooltips for the enemy's Attack and Defense values show the hit chances for you versus the enemy.
     * Character sheets list special movement qualities (flying, random movement, etc.).
     * Proficiencies' tooltips provide more information about proficiency level.
-    * Diggers' tooltips tell how long digging will take.
+    * Digging implements' tooltips tell how long digging will take.
 * Gameplay tweaks
     * Boost Fourth Blessing: Longevity.
-    * You can now use the Mining talent without a digging implement.
+    * You can now use the Mining talent without a digging implement (although it will take longer).
+    * Healing potions' effects now scale with constitution.
 * Other UI improvements
     * Improve object tooltips for multiple objects.
     * Improved Pick Up Items dialog.
@@ -18,8 +19,7 @@ Version Next
     * A missed Fire Slash failed to display its "near miss" message.
     * Saving a game while Poisoned Dart was in flight didn't work properly.
 * Minor changes
-    * Various tooltip improvements
-    * Adjust the effect of Mining proficiency on Poison Ore Strike
+    * Adjust the effect of Mining proficiency on Poison Ore Strike.
     * Reading scrolls now requires the ability to see.
 * Compatible with T-Engine 1.1.0
 
