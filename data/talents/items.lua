@@ -143,8 +143,8 @@ newTalent {
         -- The logic here gets confusing, because there are several coordinates
         -- we're dealing with:
         -- * The target x and y of the bomb. The bomb may be attached to a grid
-        --   (e.x and e.y are target x and y), or it may be attached to an
-        --   Actor (e.target gives the actor, so use e.target.x and e.target.y).
+        --   (given by e.x and e.y), or it may be attached to an Actor
+        --   (e.target gives the actor, so use e.target.x and e.target.y).
         -- * The source (self) x and y when the bomb was set. This is used when
         --   projecting the explosion. (If we don't use this, and if the bomb is
         --   set on a wall, then it can bleed through to either side of the

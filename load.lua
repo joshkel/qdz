@@ -40,6 +40,7 @@ local ActorTemporaryEffects = require "engine.interface.ActorTemporaryEffects"
 local ActorInventory = require "engine.interface.ActorInventory"
 local Birther = require "engine.Birther"
 local Map = require "engine.Map"
+local WorldAchievements = require "engine.interface.WorldAchievements"
 
 local UIBase = require "engine.ui.Base"
 local GameUI = require "mod.class.ui.GameUI"
@@ -62,6 +63,9 @@ KeyBind:defineAction{
     name = "Debug Mode",
     only_on_cheat = true,
 }
+
+-- Achievements
+WorldAchievements:loadDefinition("/data/achievements/")
 
 -- Damage types
 DamageType:loadDefinition("/data/damage_types.lua")
@@ -103,4 +107,4 @@ Birther:loadDefinition("/data/birth/descriptors.lua")
 -- Map additions - currently too minimal to go in their own file
 Map.TERRAIN_CLOUD = Map.TERRAIN + 3
 
-return { require "mod.class.Game" }
+return { require "mod.class.Game", require "mod.class.World" }

@@ -451,6 +451,7 @@ function _M:setupCommands()
                 { "Inventory", function() self:unregisterDialog(menu) self.key:triggerVirtual("SHOW_INVENTORY") end },
                 { "Character Sheet", function() self:unregisterDialog(menu) self.key:triggerVirtual("SHOW_CHARACTER_SHEET") end },
                 --{ "Show Techniques Learned", function() self:unregisterDialog(menu) self:registerDialog(require("mod.dialogs.ShowTechniquesLearned").new()) end },  TODO
+                "achievements",
                 "keybinds",
                 "video",
                 "save",
