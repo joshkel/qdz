@@ -94,7 +94,7 @@ def write_team(mod_base_dir, team_filename):
     for f in glob('*.lua'):
         team_file.write(f, join('mod', f))
 
-    for mod_dir in ['ai', 'class', 'dialogs']:
+    for mod_dir in ['ai', 'class', 'dialogs', 'thirdparty']:
         if not exists(mod_dir):
             continue
         for root, dirs, files in os.walk(mod_dir):

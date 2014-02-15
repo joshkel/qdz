@@ -463,7 +463,7 @@ function _M:setupCommands()
         -- Lua console
         LUA_CONSOLE = function()
             if config.settings.cheat then
-                self:registerDialog(require("engine.DebugConsole").new())
+                self:registerDialog(require("mod.dialogs.DebugConsole").new())
             end
         end,
 

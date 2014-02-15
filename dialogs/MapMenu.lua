@@ -75,7 +75,7 @@ function _M:use(item)
     elseif act == "inventory" then game.key:triggerVirtual("SHOW_INVENTORY")
     elseif act == "rest" then game.key:triggerVirtual("REST")
     elseif act == "debug-inspect" then
-        local DebugConsole = require"engine.DebugConsole"
+        local DebugConsole = require "mods.dialogs.DebugConsole"
         local d = DebugConsole.new()
         game:registerDialog(d)
         DebugConsole.line = "=__uids["..item.actor.uid.."]"
